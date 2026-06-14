@@ -2,1318 +2,874 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-<meta name="apple-mobile-web-app-title" content="CareerOS">
-<meta name="theme-color" content="#080C18">
-<title>CareerOS — Tarun Tangella</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Engineering Lab</title>
 <style>
-:root{
-  --bg:#080C18;--s1:#0F1629;--s2:#161E35;--s3:#1D2645;
-  --b1:rgba(255,255,255,0.06);--b2:rgba(255,255,255,0.11);--b3:rgba(255,255,255,0.18);
-  --tx:#EEF2FF;--t2:#8A94B0;--t3:#525D7A;
-  --ac:#5B8EF8;--ac2:#7C5CFC;--ac3:#06B6D4;
-  --gr:#22C55E;--am:#F59E0B;--rd:#EF4444;--gd:#F0B429;
-  --r:14px;--rs:8px;--rm:10px;
-}
-*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-html,body{height:100%;background:var(--bg);color:var(--tx);font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',sans-serif;font-size:15px;line-height:1.5;overflow:hidden;-webkit-font-smoothing:antialiased}
-#root{display:flex;flex-direction:column;height:100vh;max-width:440px;margin:0 auto;position:relative;overflow:hidden}
+  :root {
+    --bg: #0a0f1a;
+    --bg2: #111827;
+    --bg3: #1a2236;
+    --border: #1e2d45;
+    --accent: #3b82f6;
+    --accent2: #6366f1;
+    --green: #10b981;
+    --amber: #f59e0b;
+    --red: #ef4444;
+    --text: #e2e8f0;
+    --text2: #94a3b8;
+    --text3: #475569;
+    --mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
+    --sans: 'Inter', system-ui, sans-serif;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { font-size: 15px; }
+  body { background: var(--bg); color: var(--text); font-family: var(--sans); min-height: 100vh; display: flex; }
 
-/* ── NAV ─────────────────────────────────── */
-#nav{display:flex;background:var(--s1);border-top:1px solid var(--b1);padding:6px 2px calc(6px + env(safe-area-inset-bottom));flex-shrink:0;order:2}
-.nb{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:5px 2px;border:none;background:transparent;color:var(--t3);font-size:10px;font-weight:500;cursor:pointer;border-radius:var(--rs);transition:color .15s;letter-spacing:.01em}
-.nb svg{width:21px;height:21px;stroke-width:1.7;transition:stroke .15s}
-.nb.on{color:var(--ac)}
-.nb.on svg{stroke:var(--ac)}
+  /* SIDEBAR */
+  #sidebar {
+    width: 260px; min-width: 260px; background: var(--bg2);
+    border-right: 1px solid var(--border); display: flex; flex-direction: column;
+    height: 100vh; position: sticky; top: 0; overflow-y: auto;
+  }
+  #sidebar-logo {
+    padding: 20px 18px 14px; border-bottom: 1px solid var(--border);
+  }
+  #sidebar-logo .logo-title {
+    font-size: 15px; font-weight: 700; letter-spacing: -.3px;
+    background: linear-gradient(90deg, var(--accent), var(--accent2));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  #sidebar-logo .logo-sub { font-size: 11px; color: var(--text3); margin-top: 2px; }
 
-/* ── SCREENS ─────────────────────────────── */
-#screens{flex:1;overflow:hidden;order:1;position:relative}
-.sc{position:absolute;inset:0;overflow-y:auto;padding:16px 15px calc(20px + env(safe-area-inset-bottom));display:none;-webkit-overflow-scrolling:touch;scroll-behavior:smooth}
-.sc.on{display:block}
-::-webkit-scrollbar{width:2px}
-::-webkit-scrollbar-thumb{background:var(--b2);border-radius:4px}
+  .nav-section { padding: 12px 10px 4px; }
+  .nav-label { font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--text3); padding: 0 8px 6px; }
+  .nav-item {
+    display: flex; align-items: center; gap: 9px; padding: 8px 10px;
+    border-radius: 7px; cursor: pointer; font-size: 13px; color: var(--text2);
+    transition: background .15s, color .15s; border: none; background: none; width: 100%; text-align: left;
+  }
+  .nav-item:hover { background: var(--bg3); color: var(--text); }
+  .nav-item.active { background: rgba(59,130,246,.15); color: var(--accent); font-weight: 500; }
+  .nav-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+  .dot-blue { background: var(--accent); }
+  .dot-purple { background: var(--accent2); }
+  .dot-green { background: var(--green); }
+  .dot-amber { background: var(--amber); }
+  .dot-red { background: var(--red); }
 
-/* ── TYPOGRAPHY ──────────────────────────── */
-.ey{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ac);margin-bottom:3px}
-.h1{font-size:26px;font-weight:800;letter-spacing:-.03em;color:var(--tx)}
-.h2{font-size:19px;font-weight:700;letter-spacing:-.02em;color:var(--tx);margin-bottom:4px}
-.sub{font-size:13px;color:var(--t2);margin-top:2px}
-.ph{margin-bottom:22px}
+  #progress-wrap { padding: 14px 18px; border-top: 1px solid var(--border); margin-top: auto; }
+  .prog-label { font-size: 11px; color: var(--text3); margin-bottom: 6px; }
+  .prog-bar { height: 4px; background: var(--border); border-radius: 2px; }
+  .prog-fill { height: 100%; border-radius: 2px; background: linear-gradient(90deg, var(--accent), var(--accent2)); transition: width .4s; }
 
-/* ── CARDS ───────────────────────────────── */
-.card{background:var(--s1);border:1px solid var(--b1);border-radius:var(--r);padding:15px;margin-bottom:11px}
-.card-accent{border-left:3px solid var(--ac)}
-.cl{font-size:11px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--t2);margin-bottom:10px;display:flex;align-items:center;gap:6px}
-.cl svg{width:13px;height:13px;opacity:.6}
+  /* MAIN */
+  #main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
 
-/* ── BUTTONS ─────────────────────────────── */
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:12px 18px;border-radius:var(--rs);font-size:14px;font-weight:600;cursor:pointer;border:none;transition:all .15s;width:100%;letter-spacing:-.01em}
-.bp{background:linear-gradient(135deg,var(--ac),var(--ac2));color:#fff;box-shadow:0 4px 14px rgba(91,142,248,.25)}
-.bp:hover{opacity:.88;transform:translateY(-1px)}
-.bp:active{transform:scale(.98)}
-.bs{background:var(--s2);color:var(--tx);border:1px solid var(--b2)}
-.bs:hover{border-color:var(--ac)}
-.bg{background:transparent;color:var(--ac);border:1px solid rgba(91,142,248,.35);width:auto;padding:8px 14px;font-size:13px}
-.bg:hover{background:rgba(91,142,248,.08)}
-.bsm{padding:8px 13px;font-size:13px;width:auto}
-.brow{display:flex;gap:8px;margin-top:10px}
+  /* TOPBAR */
+  #topbar {
+    padding: 14px 28px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 12px; background: var(--bg2); position: sticky; top: 0; z-index: 10;
+  }
+  #topbar h1 { font-size: 15px; font-weight: 600; flex: 1; }
+  .tag { font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 20px; letter-spacing: .04em; }
+  .tag-blue { background: rgba(59,130,246,.15); color: var(--accent); }
+  .tag-green { background: rgba(16,185,129,.15); color: var(--green); }
+  .tag-amber { background: rgba(245,158,11,.15); color: var(--amber); }
+  #refresh-btn {
+    padding: 7px 14px; border-radius: 7px; border: 1px solid var(--border);
+    background: var(--bg3); color: var(--text2); font-size: 12px; cursor: pointer;
+    display: flex; align-items: center; gap: 6px; transition: all .15s; font-family: var(--sans);
+  }
+  #refresh-btn:hover { border-color: var(--accent); color: var(--accent); }
 
-/* ── INPUTS ──────────────────────────────── */
-input,textarea,select{background:var(--s2);border:1px solid var(--b2);border-radius:var(--rs);color:var(--tx);font-size:14px;padding:10px 12px;width:100%;font-family:inherit;outline:none;transition:border .15s;-webkit-appearance:none}
-input:focus,textarea:focus,select:focus{border-color:var(--ac);box-shadow:0 0 0 3px rgba(91,142,248,.12)}
-textarea{resize:none;line-height:1.6}
-input::placeholder,textarea::placeholder{color:var(--t3)}
-label{font-size:12px;font-weight:600;color:var(--t2);display:block;margin-bottom:5px;letter-spacing:.01em}
-.fi{margin-bottom:13px}
-select option{background:var(--s2);color:var(--tx)}
+  /* CONTENT */
+  #content { flex: 1; overflow-y: auto; padding: 28px; max-width: 900px; width: 100%; }
 
-/* ── BADGES ──────────────────────────────── */
-.badge{display:inline-flex;align-items:center;gap:3px;font-size:11px;font-weight:700;padding:3px 8px;border-radius:100px;letter-spacing:.02em}
-.bg-gr{background:rgba(34,197,94,.13);color:#22C55E}
-.bg-am{background:rgba(245,158,11,.13);color:#F59E0B}
-.bg-rd{background:rgba(239,68,68,.13);color:#EF4444}
-.bg-bl{background:rgba(91,142,248,.13);color:#5B8EF8}
-.bg-pu{background:rgba(124,92,252,.13);color:#7C5CFC}
-.bg-cy{background:rgba(6,182,212,.13);color:#06B6D4}
+  /* HOME */
+  .home-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-bottom: 28px; }
+  .stat-card {
+    background: var(--bg2); border: 1px solid var(--border); border-radius: 10px;
+    padding: 18px; display: flex; flex-direction: column; gap: 4px;
+  }
+  .stat-card .stat-val { font-size: 28px; font-weight: 700; letter-spacing: -1px; }
+  .stat-card .stat-lbl { font-size: 12px; color: var(--text3); }
+  .blue-val { color: var(--accent); }
+  .green-val { color: var(--green); }
+  .amber-val { color: var(--amber); }
+  .purple-val { color: var(--accent2); }
 
-/* ── STREAK HERO ─────────────────────────── */
-.streak-hero{background:linear-gradient(135deg,rgba(91,142,248,.14),rgba(124,92,252,.08));border:1px solid rgba(91,142,248,.18);border-radius:var(--r);padding:16px;margin-bottom:11px;display:flex;align-items:center;gap:14px}
-.streak-num{font-size:42px;font-weight:900;color:var(--ac);letter-spacing:-.04em;line-height:1;min-width:56px}
-.streak-info{flex:1}
-.streak-label{font-size:12px;color:var(--t2);margin-top:1px}
-.streak-sub{font-size:12px;color:var(--t3);margin-top:4px}
+  /* TRACK CARDS */
+  .track-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  .track-card {
+    background: var(--bg2); border: 1px solid var(--border); border-radius: 10px;
+    padding: 18px; cursor: pointer; transition: border-color .15s, transform .1s;
+  }
+  .track-card:hover { border-color: var(--accent); transform: translateY(-1px); }
+  .track-card .tc-icon { font-size: 22px; margin-bottom: 10px; }
+  .track-card .tc-title { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
+  .track-card .tc-desc { font-size: 12px; color: var(--text2); line-height: 1.5; }
+  .track-card .tc-level { font-size: 11px; margin-top: 10px; font-weight: 600; }
 
-/* ── RING ────────────────────────────────── */
-.ring-wrap{position:relative;width:76px;height:76px;flex-shrink:0}
-.ring-wrap svg{position:absolute;inset:0}
-.ring-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
-.ring-pct{font-size:17px;font-weight:800;color:var(--tx)}
-.ring-lbl{font-size:9px;color:var(--t2);font-weight:600;letter-spacing:.04em;text-transform:uppercase}
+  /* LAB SECTION */
+  #lab-section { display: none; }
+  .lab-header { margin-bottom: 22px; }
+  .lab-header h2 { font-size: 20px; font-weight: 700; letter-spacing: -.4px; margin-bottom: 6px; }
+  .lab-header p { font-size: 13px; color: var(--text2); line-height: 1.6; }
+  .lab-meta { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
 
-/* ── SIGNAL ──────────────────────────────── */
-.signal{background:linear-gradient(135deg,rgba(6,182,212,.1),rgba(91,142,248,.06));border:1px solid rgba(6,182,212,.2);border-radius:var(--r);padding:14px;margin-bottom:11px}
-.signal-tag{font-size:10px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--ac3);margin-bottom:7px;display:flex;align-items:center;gap:5px}
-.signal-tag::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--ac3);animation:pulse-dot 2s ease-in-out infinite}
-@keyframes pulse-dot{0%,100%{opacity:.4;transform:scale(.8)}50%{opacity:1;transform:scale(1.1)}}
-.signal-text{font-size:14px;color:var(--tx);line-height:1.7}
+  /* AI OUTPUT */
+  #ai-output {
+    background: var(--bg2); border: 1px solid var(--border); border-radius: 10px;
+    padding: 0; overflow: hidden; min-height: 300px;
+  }
+  #ai-output-header {
+    padding: 12px 18px; border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 10px; background: var(--bg3);
+  }
+  #ai-output-header .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
+  #ai-output-header span { font-size: 12px; color: var(--text2); }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
+  #ai-output-body { padding: 22px 24px; font-size: 13.5px; line-height: 1.8; color: var(--text); }
+  #ai-output-body.loading { color: var(--text3); font-style: italic; }
 
-/* ── FOCUS ITEMS ─────────────────────────── */
-.fi-item{display:flex;gap:11px;padding:11px 0;border-bottom:1px solid var(--b1)}
-.fi-item:last-child{border-bottom:none;padding-bottom:0}
-.fi-check{width:22px;height:22px;border-radius:6px;border:1.5px solid var(--b2);flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;margin-top:2px}
-.fi-check.done{background:var(--gr);border-color:var(--gr)}
-.fi-text{font-size:14px;color:var(--tx);line-height:1.4;font-weight:500}
-.fi-text.done{color:var(--t3);text-decoration:line-through;font-weight:400}
-.fi-meta{font-size:11px;color:var(--t3);margin-top:3px;display:flex;align-items:center;gap:6px}
+  /* MARKDOWN STYLES */
+  #ai-output-body h1,h2,h3 { color: var(--text); margin: 20px 0 8px; font-weight: 600; }
+  #ai-output-body h1 { font-size: 17px; }
+  #ai-output-body h2 { font-size: 15px; border-bottom: 1px solid var(--border); padding-bottom: 6px; }
+  #ai-output-body h3 { font-size: 14px; color: var(--accent); }
+  #ai-output-body p { margin-bottom: 12px; }
+  #ai-output-body ul, #ai-output-body ol { margin: 10px 0 12px 20px; }
+  #ai-output-body li { margin-bottom: 5px; }
+  #ai-output-body strong { color: var(--text); font-weight: 600; }
+  #ai-output-body em { color: var(--text2); }
+  #ai-output-body a { color: var(--accent); text-decoration: none; }
+  #ai-output-body a:hover { text-decoration: underline; }
+  #ai-output-body hr { border: none; border-top: 1px solid var(--border); margin: 18px 0; }
+  #ai-output-body blockquote {
+    border-left: 3px solid var(--accent2); padding-left: 14px;
+    color: var(--text2); margin: 14px 0; font-style: italic;
+  }
 
-/* ── PHASE BLOCK ─────────────────────────── */
-.phase{border-left:2px solid var(--b2);padding-left:14px;margin-bottom:15px}
-.phase.active{border-left-color:var(--ac)}
-.phase-title{font-size:14px;font-weight:600;color:var(--tx);margin-bottom:2px}
-.phase-dates{font-size:11px;color:var(--t3);margin-bottom:7px}
-.phase-desc{font-size:13px;color:var(--t2);line-height:1.7}
-.tags{display:flex;flex-wrap:wrap;gap:5px;margin-top:8px}
+  /* CODE BLOCKS */
+  #ai-output-body pre {
+    background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
+    padding: 16px; margin: 14px 0; overflow-x: auto; font-family: var(--mono);
+    font-size: 12.5px; line-height: 1.7; position: relative;
+  }
+  #ai-output-body code:not(pre code) {
+    background: rgba(59,130,246,.1); color: #93c5fd;
+    padding: 2px 6px; border-radius: 4px; font-family: var(--mono); font-size: 12px;
+  }
+  #ai-output-body pre code { color: #a8d8a8; background: none; padding: 0; }
 
-/* ── AI MESSAGES ─────────────────────────── */
-.ai-wrap{background:var(--s2);border:1px solid var(--b1);border-radius:12px 12px 12px 3px;padding:13px 14px;margin-bottom:10px}
-.ai-lbl{font-size:10px;font-weight:700;letter-spacing:.07em;color:var(--ac);text-transform:uppercase;margin-bottom:6px;display:flex;align-items:center;gap:5px}
-.ai-lbl::before{content:'✦';font-size:8px}
-.ai-body{font-size:14px;color:var(--tx);line-height:1.75}
-.ai-body strong{color:var(--ac);font-weight:600}
-.ai-body em{color:var(--am);font-style:normal;font-weight:500}
-.user-wrap{background:rgba(91,142,248,.12);border:1px solid rgba(91,142,248,.18);border-radius:12px 12px 3px 12px;padding:12px 14px;margin-bottom:10px;margin-left:24px}
-.user-body{font-size:14px;color:var(--tx);line-height:1.6}
+  /* COPY BUTTON */
+  .copy-btn {
+    position: absolute; top: 10px; right: 10px; padding: 4px 10px;
+    background: var(--bg2); border: 1px solid var(--border); border-radius: 5px;
+    color: var(--text3); font-size: 11px; cursor: pointer; font-family: var(--sans);
+  }
+  .copy-btn:hover { color: var(--text); border-color: var(--accent); }
 
-/* ── CHAT ────────────────────────────────── */
-#chat-box{min-height:160px;margin-bottom:12px}
-.chat-row{display:flex;gap:8px;align-items:flex-end}
-.chat-row textarea{min-height:44px;max-height:110px}
-.chat-send{background:linear-gradient(135deg,var(--ac),var(--ac2));border:none;border-radius:var(--rs);width:44px;height:44px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:opacity .15s}
-.chat-send:hover{opacity:.85}
-.chat-send svg{width:17px;height:17px;stroke:#fff;stroke-width:2.2;fill:none}
+  /* ACTION BUTTONS */
+  .action-row { display: flex; gap: 10px; margin-top: 18px; flex-wrap: wrap; }
+  .btn {
+    padding: 9px 18px; border-radius: 8px; font-size: 13px; font-weight: 500;
+    cursor: pointer; border: none; font-family: var(--sans); transition: all .15s; display: flex; align-items: center; gap: 7px;
+  }
+  .btn-primary { background: var(--accent); color: #fff; }
+  .btn-primary:hover { background: #2563eb; }
+  .btn-secondary { background: var(--bg3); color: var(--text); border: 1px solid var(--border); }
+  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-ghost { background: transparent; color: var(--text2); border: 1px solid var(--border); }
+  .btn-ghost:hover { color: var(--text); }
 
-/* ── JOB CARD ────────────────────────────── */
-.jc{background:var(--s1);border:1px solid var(--b1);border-radius:var(--r);padding:14px;margin-bottom:10px;transition:border-color .15s}
-.jc:hover{border-color:rgba(91,142,248,.3)}
-.jc-title{font-size:15px;font-weight:700;color:var(--tx);margin-bottom:2px}
-.jc-co{font-size:12px;color:var(--t2);margin-bottom:9px}
-.jc-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px}
-.jc-actions{display:flex;gap:7px}
+  /* BREADCRUMB */
+  .breadcrumb { font-size: 12px; color: var(--text3); margin-bottom: 16px; display: flex; align-items: center; gap: 6px; }
+  .breadcrumb span { cursor: pointer; } .breadcrumb span:hover { color: var(--accent); }
 
-/* ── SCORE BARS ──────────────────────────── */
-.sb-row{display:flex;align-items:center;gap:10px;margin-bottom:9px}
-.sb-label{font-size:12px;color:var(--t2);width:120px;flex-shrink:0;font-weight:500}
-.sb-track{flex:1;height:5px;background:var(--s3);border-radius:100px;overflow:hidden}
-.sb-fill{height:100%;border-radius:100px;transition:width .7s ease}
-.sb-val{font-size:12px;font-weight:700;width:28px;text-align:right;flex-shrink:0}
+  /* LOADING SPINNER */
+  .spinner { width: 20px; height: 20px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin .7s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
 
-/* ── COMM DRILL ──────────────────────────── */
-.drill-bad{background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.18);border-radius:var(--rs);padding:11px 13px;margin-bottom:9px;font-size:13px;color:var(--tx);line-height:1.6}
-.drill-bad-lbl{font-size:10px;font-weight:700;letter-spacing:.06em;color:var(--rd);text-transform:uppercase;margin-bottom:4px}
-.drill-good{background:rgba(34,197,94,.07);border:1px solid rgba(34,197,94,.18);border-radius:var(--rs);padding:11px 13px;font-size:13px;color:var(--tx);line-height:1.6}
-.drill-good-lbl{font-size:10px;font-weight:700;letter-spacing:.06em;color:var(--gr);text-transform:uppercase;margin-bottom:4px}
+  /* LABS LIST */
+  .labs-list { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
+  .lab-item {
+    background: var(--bg2); border: 1px solid var(--border); border-radius: 9px;
+    padding: 14px 18px; cursor: pointer; display: flex; align-items: center; gap: 14px;
+    transition: border-color .15s;
+  }
+  .lab-item:hover { border-color: var(--accent); }
+  .lab-item .li-num { font-size: 12px; font-weight: 700; color: var(--text3); font-family: var(--mono); width: 28px; flex-shrink: 0; }
+  .lab-item .li-info { flex: 1; }
+  .lab-item .li-title { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+  .lab-item .li-desc { font-size: 12px; color: var(--text2); }
+  .lab-item .li-time { font-size: 11px; color: var(--text3); flex-shrink: 0; }
+  .li-done { border-left: 3px solid var(--green) !important; }
 
-/* ── UPLOAD ZONE ─────────────────────────── */
-.upload-zone{border:2px dashed var(--b2);border-radius:var(--r);padding:28px 20px;text-align:center;cursor:pointer;transition:border-color .15s;margin-bottom:11px}
-.upload-zone:hover{border-color:var(--ac)}
-.upload-zone input{display:none}
+  /* SEARCH BOX */
+  .search-wrap { position: relative; margin-bottom: 18px; }
+  .search-wrap input {
+    width: 100%; padding: 10px 14px 10px 38px; background: var(--bg2);
+    border: 1px solid var(--border); border-radius: 8px; color: var(--text);
+    font-size: 13px; font-family: var(--sans); outline: none; transition: border-color .15s;
+  }
+  .search-wrap input:focus { border-color: var(--accent); }
+  .search-wrap .si { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text3); font-size: 15px; }
 
-/* ── MOOD ────────────────────────────────── */
-.mood-row{display:flex;gap:8px;margin-bottom:12px}
-.mood-btn{flex:1;padding:10px 4px;background:var(--s2);border:1px solid var(--b1);border-radius:var(--rs);font-size:20px;cursor:pointer;text-align:center;transition:all .15s}
-.mood-btn.sel{border-color:var(--ac);background:rgba(91,142,248,.1)}
+  /* CUSTOM TOPIC */
+  #custom-form { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin-top: 16px; }
+  #custom-form textarea {
+    width: 100%; background: var(--bg3); border: 1px solid var(--border); border-radius: 7px;
+    padding: 12px; color: var(--text); font-size: 13px; font-family: var(--sans);
+    resize: vertical; min-height: 80px; outline: none; transition: border-color .15s;
+  }
+  #custom-form textarea:focus { border-color: var(--accent); }
+  #custom-form label { font-size: 12px; color: var(--text2); display: block; margin-bottom: 7px; font-weight: 500; }
 
-/* ── SETTINGS SECTIONS ───────────────────── */
-.ss-title{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ac);margin-bottom:11px;padding-bottom:7px;border-bottom:1px solid var(--b1)}
-.ss{margin-bottom:22px}
+  /* TOOLTIP */
+  .tooltip { position: relative; }
+  .tooltip-text {
+    display: none; position: absolute; bottom: 120%; left: 50%; transform: translateX(-50%);
+    background: var(--bg3); border: 1px solid var(--border); border-radius: 6px;
+    padding: 6px 10px; font-size: 11px; color: var(--text2); white-space: nowrap; z-index: 100;
+  }
+  .tooltip:hover .tooltip-text { display: block; }
 
-/* ── LOADING ─────────────────────────────── */
-.ld{display:flex;align-items:center;gap:8px;color:var(--t2);font-size:13px;padding:10px 0}
-.ld-dot{width:5px;height:5px;border-radius:50%;background:var(--ac);animation:ldp 1.1s ease-in-out infinite}
-.ld-dot:nth-child(2){animation-delay:.18s}
-.ld-dot:nth-child(3){animation-delay:.36s}
-@keyframes ldp{0%,100%{opacity:.25;transform:scale(.7)}50%{opacity:1;transform:scale(1)}}
-
-/* ── TOAST ───────────────────────────────── */
-#toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(12px);background:var(--s2);border:1px solid var(--b2);color:var(--tx);font-size:13px;font-weight:600;padding:9px 18px;border-radius:100px;opacity:0;transition:all .25s;pointer-events:none;z-index:999;white-space:nowrap;backdrop-filter:blur(10px)}
-#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-
-/* ── SETUP ───────────────────────────────── */
-#setup{position:fixed;inset:0;background:var(--bg);z-index:200;overflow-y:auto;padding:env(safe-area-inset-top) 0 0}
-.setup-inner{padding:40px 22px 40px;max-width:440px;margin:0 auto}
-.setup-logo{font-size:32px;font-weight:900;letter-spacing:-.04em;margin-bottom:4px}
-.setup-logo span{background:linear-gradient(135deg,var(--ac),var(--ac2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.setup-tagline{font-size:14px;color:var(--t2);margin-bottom:32px;line-height:1.6}
-.setup-section{margin-bottom:24px}
-.setup-section-label{font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ac);margin-bottom:12px;display:flex;align-items:center;gap:7px}
-.setup-note{font-size:12px;color:var(--t3);line-height:1.6;margin-top:5px}
-.setup-note a{color:var(--ac);text-decoration:none}
-.divider{height:1px;background:var(--b1);margin:18px 0}
-
-/* ── TREND ROWS ──────────────────────────── */
-.trend-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--b1)}
-.trend-row:last-child{border-bottom:none}
-.trend-rank{font-size:12px;font-weight:700;color:var(--t3);width:20px}
-.trend-name{flex:1;font-size:14px;color:var(--tx);font-weight:500}
-.trend-delta{font-size:12px;font-weight:700}
-.trend-up{color:var(--gr)}
-.trend-down{color:var(--rd)}
-
-/* ── PORTFOLIO LOG ───────────────────────── */
-.pf-item{padding:11px 0;border-bottom:1px solid var(--b1)}
-.pf-item:last-child{border-bottom:none}
-.pf-date{font-size:10px;color:var(--t3);margin-bottom:3px;font-weight:600;letter-spacing:.04em}
-.pf-title{font-size:14px;font-weight:600;color:var(--tx);margin-bottom:2px}
-.pf-desc{font-size:13px;color:var(--t2);line-height:1.5}
-
-/* ── INTERVIEW Q ─────────────────────────── */
-.q-item{background:var(--s2);border-left:3px solid var(--ac2);border-radius:0 var(--rs) var(--rs) 0;padding:12px 13px;margin-bottom:9px}
-.q-num{font-size:10px;font-weight:700;letter-spacing:.06em;color:var(--ac2);text-transform:uppercase;margin-bottom:4px}
-.q-text{font-size:14px;color:var(--tx);line-height:1.5;font-weight:500}
-.q-meta{font-size:12px;color:var(--t2);margin-top:5px;line-height:1.5}
-
-/* ── MARKET PULSE ────────────────────────── */
-.pulse-card{background:var(--s2);border-radius:var(--rm);padding:12px;margin-bottom:8px;border:1px solid var(--b1)}
-.pulse-role{font-size:13px;font-weight:600;color:var(--tx);margin-bottom:3px}
-.pulse-detail{font-size:12px;color:var(--t2);line-height:1.5}
-
-/* ── SKILL GAP ───────────────────────────── */
-.gap-item{display:flex;justify-content:space-between;align-items:flex-start;padding:10px 0;border-bottom:1px solid var(--b1)}
-.gap-item:last-child{border-bottom:none}
-.gap-name{font-size:14px;font-weight:600;color:var(--tx);margin-bottom:2px}
-.gap-why{font-size:12px;color:var(--t2);line-height:1.4}
-.gap-weeks{font-size:12px;font-weight:700;color:var(--am);white-space:nowrap;margin-left:10px;flex-shrink:0}
-
-/* ── WEEKLY REPORT ───────────────────────── */
-.wr-stat{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--b1)}
-.wr-stat:last-child{border-bottom:none}
-.wr-label{font-size:13px;color:var(--t2)}
-.wr-val{font-size:14px;font-weight:700;color:var(--tx)}
-
-/* ── QUICK ACTIONS ───────────────────────── */
-.qa-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:11px}
-.qa-btn{background:var(--s2);border:1px solid var(--b1);border-radius:var(--rm);padding:13px 12px;cursor:pointer;transition:all .15s;text-align:left}
-.qa-btn:hover{border-color:rgba(91,142,248,.3);background:var(--s3)}
-.qa-icon{font-size:20px;margin-bottom:6px}
-.qa-label{font-size:13px;font-weight:600;color:var(--tx);line-height:1.3}
-.qa-sub{font-size:11px;color:var(--t3);margin-top:2px}
-
-@media(prefers-color-scheme:light){
-  :root{--bg:#F0F4FF;--s1:#FFFFFF;--s2:#F4F7FF;--s3:#E8EEFF;--b1:rgba(0,0,0,.07);--b2:rgba(0,0,0,.12);--b3:rgba(0,0,0,.18);--tx:#0D1117;--t2:#4B5563;--t3:#9CA3AF}
-  .streak-hero{background:linear-gradient(135deg,rgba(91,142,248,.1),rgba(124,92,252,.06))}
-  .signal{background:linear-gradient(135deg,rgba(6,182,212,.07),rgba(91,142,248,.04))}
-}
+  @media (max-width: 700px) {
+    #sidebar { display: none; }
+    .home-grid, .track-grid { grid-template-columns: 1fr; }
+    #content { padding: 16px; }
+  }
 </style>
 </head>
 <body>
 
-<!-- ═══ SETUP SCREEN ═══════════════════════════════════════════ -->
-<div id="setup">
-<div class="setup-inner">
-  <div class="setup-logo">Career<span>OS</span></div>
-  <div class="setup-tagline">Your personal career intelligence platform.<br>Market-driven · Long-term · Result-oriented.</div>
-
-  <div class="setup-section">
-    <div class="setup-section-label">🔑 OpenRouter API Key</div>
-    <input type="password" id="su-key" placeholder="sk-or-v1-..." autocomplete="off">
-    <div class="setup-note">Free at <a href="https://openrouter.ai" target="_blank">openrouter.ai</a> → Sign In → Keys → Create Key. Starts with sk-or-v1-</div>
+<!-- SIDEBAR -->
+<nav id="sidebar">
+  <div id="sidebar-logo">
+    <div class="logo-title">⚡ AI Lab</div>
+    <div class="logo-sub">Living AI Engineering Runbook</div>
   </div>
 
-  <div class="setup-section">
-    <div class="setup-section-label">👤 Your Profile</div>
-    <div class="fi"><label>Your Name</label><input type="text" id="su-name" value="Tarun"></div>
-    <div class="fi"><label>Current Role</label><input type="text" id="su-role" value="Senior IBM BAW/BPM Developer"></div>
-    <div class="fi"><label>Target Role</label><input type="text" id="su-target" value="AI Security Engineer / LLM Engineer"></div>
-    <div class="fi"><label>Years of Experience</label><input type="text" id="su-exp" value="6+"></div>
-    <div class="fi"><label>Core Skills</label><textarea id="su-skills" rows="3">IBM BAW/BPM 8.5–22.x, IBM FileNet, Java EE, Python, FastAPI, Ollama, LLM integration, IDP pipelines, Azure, REST APIs, LangChain, LangGraph, AI Security, Agentic AI</textarea></div>
-    <div class="fi"><label>Location</label><input type="text" id="su-loc" value="Hyderabad, India"></div>
+  <div class="nav-section">
+    <div class="nav-label">Start here</div>
+    <button class="nav-item active" onclick="showHome()">
+      <span class="nav-dot dot-blue"></span> Dashboard
+    </button>
+    <button class="nav-item" onclick="showCustomLab()">
+      <span class="nav-dot dot-purple"></span> Ask anything
+    </button>
   </div>
 
-  <div class="setup-section">
-    <div class="setup-section-label">🔄 GitHub Sync (optional)</div>
-    <div class="fi"><label>GitHub Username</label><input type="text" id="su-gh" value="TarunTangella"></div>
-    <div class="fi"><label>GitHub Token</label><input type="password" id="su-ght" placeholder="ghp_..."></div>
-    <div class="setup-note">github.com → Settings → Developer Settings → Personal Access Tokens → Generate (repo scope). Enables cross-device sync. <em style="color:var(--am)">Optional — app works without it.</em></div>
+  <div class="nav-section">
+    <div class="nav-label">Learning tracks</div>
+    <button class="nav-item" onclick="showTrack('python')">
+      <span class="nav-dot dot-amber"></span> Python for AI
+    </button>
+    <button class="nav-item" onclick="showTrack('rag')">
+      <span class="nav-dot dot-blue"></span> RAG from scratch
+    </button>
+    <button class="nav-item" onclick="showTrack('vectordb')">
+      <span class="nav-dot dot-green"></span> Vector databases
+    </button>
+    <button class="nav-item" onclick="showTrack('langchain')">
+      <span class="nav-dot dot-purple"></span> LangChain / agents
+    </button>
+    <button class="nav-item" onclick="showTrack('langgraph')">
+      <span class="nav-dot dot-red"></span> LangGraph / multi-agent
+    </button>
+    <button class="nav-item" onclick="showTrack('mlops')">
+      <span class="nav-dot dot-amber"></span> MLOps + deployment
+    </button>
   </div>
 
-  <button class="btn bp" onclick="launchApp()" style="margin-top:8px">Launch CareerOS →</button>
-</div>
-</div>
-
-<!-- ═══ MAIN APP ════════════════════════════════════════════════ -->
-<div id="root" style="display:none">
-<div id="screens">
-
-<!-- ─── HOME ──────────────────────────────────────────────────── -->
-<div class="sc on" id="sc-home">
-  <div class="ph">
-    <div class="ey" id="h-ey">Good morning</div>
-    <div class="h1" id="h-name">Tarun</div>
-    <div class="sub" id="h-date"></div>
+  <div class="nav-section">
+    <div class="nav-label">Real projects</div>
+    <button class="nav-item" onclick="showProject('banking')">
+      <span class="nav-dot dot-green"></span> Banking AI systems
+    </button>
+    <button class="nav-item" onclick="showProject('trending')">
+      <span class="nav-dot dot-blue"></span> Trending in 2026
+    </button>
+    <button class="nav-item" onclick="showProject('portfolio')">
+      <span class="nav-dot dot-purple"></span> Portfolio projects
+    </button>
   </div>
 
-  <div class="streak-hero">
-    <div>
-      <div class="streak-num" id="streak-n">0</div>
-      <div class="streak-label">day streak</div>
-    </div>
-    <div style="flex:1">
-      <div style="font-size:13px;font-weight:600;color:var(--tx)" id="phase-lbl">Phase 1 — Foundation</div>
-      <div style="font-size:12px;color:var(--t2);margin-top:2px" id="week-lbl">Week 1 of 26</div>
-      <div style="font-size:11px;color:var(--t3);margin-top:4px" id="exec-rate"></div>
-    </div>
-    <div class="ring-wrap">
-      <svg viewBox="0 0 76 76" fill="none" width="76" height="76">
-        <circle cx="38" cy="38" r="30" stroke="rgba(255,255,255,0.06)" stroke-width="7"/>
-        <circle cx="38" cy="38" r="30" stroke="url(#rg)" stroke-width="7" stroke-linecap="round" stroke-dasharray="188.5" id="ring-c" stroke-dashoffset="188.5" transform="rotate(-90 38 38)"/>
-        <defs><linearGradient id="rg" x1="0" y1="0" x2="1" y2="0"><stop offset="0%" stop-color="#5B8EF8"/><stop offset="100%" stop-color="#7C5CFC"/></linearGradient></defs>
-      </svg>
-      <div class="ring-center">
-        <div class="ring-pct" id="ring-pct">0%</div>
-        <div class="ring-lbl">done</div>
-      </div>
-    </div>
+  <div id="progress-wrap">
+    <div class="prog-label">Labs completed · <span id="prog-count">0</span></div>
+    <div class="prog-bar"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
   </div>
-
-  <div class="signal" id="signal-card">
-    <div class="signal-tag">Live Market Signal</div>
-    <div class="signal-text" id="signal-txt">Loading today's market intelligence...</div>
-    <div style="margin-top:10px;display:flex;gap:8px;flex-wrap:wrap">
-      <button class="bg" onclick="loadSignal(true)">Refresh</button>
-      <button class="bg" onclick="goTab('jobs')">Search Jobs →</button>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="cl">
-      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-      Today's focus blocks
-    </div>
-    <div id="focus-list"></div>
-  </div>
-
-  <div class="card" id="drill-card">
-    <div class="cl">Communication drill</div>
-    <div id="drill-content"><div style="font-size:13px;color:var(--t3)">Complete your first evening check-in to unlock daily communication drills.</div></div>
-  </div>
-
-  <div class="qa-grid">
-    <div class="qa-btn" onclick="goTab('jobs')">
-      <div class="qa-icon">🎯</div>
-      <div class="qa-label">Search Jobs</div>
-      <div class="qa-sub">By role or skill</div>
-    </div>
-    <div class="qa-btn" onclick="goTab('prep')">
-      <div class="qa-icon">🧠</div>
-      <div class="qa-label">Interview Prep</div>
-      <div class="qa-sub">Generate questions</div>
-    </div>
-    <div class="qa-btn" onclick="goTab('resume')">
-      <div class="qa-icon">📄</div>
-      <div class="qa-label">Resume Check</div>
-      <div class="qa-sub">Score & improve</div>
-    </div>
-    <div class="qa-btn" onclick="goTab('coach')">
-      <div class="qa-icon">💬</div>
-      <div class="qa-label">AI Coach</div>
-      <div class="qa-sub">Ask anything</div>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="cl">Morning intention</div>
-    <textarea id="m-intent" placeholder="What is the one thing that matters most today?" rows="2"></textarea>
-    <button class="btn bp" style="margin-top:10px" onclick="saveMorning()">Lock in my day</button>
-  </div>
-</div>
-
-<!-- ─── JOBS ───────────────────────────────────────────────────── -->
-<div class="sc" id="sc-jobs">
-  <div class="ph">
-    <div class="ey">Opportunity Radar</div>
-    <div class="h1">Job Search</div>
-    <div class="sub">Search any role, skill, or technology</div>
-  </div>
-
-  <div class="card">
-    <div class="fi"><label>Role, skill, or technology</label>
-      <input type="text" id="j-search" placeholder="e.g. IBM BAW, AI Security Engineer, LLM Python, LangGraph...">
-    </div>
-    <div class="fi"><label>Location</label>
-      <input type="text" id="j-loc" placeholder="e.g. Hyderabad, Remote, UAE, Global...">
-    </div>
-    <div class="fi"><label>Experience level</label>
-      <select id="j-level">
-        <option value="Senior">Senior (6+ years)</option>
-        <option value="Lead">Lead / Principal</option>
-        <option value="Architect">Architect</option>
-        <option value="Any">Any level</option>
-      </select>
-    </div>
-    <button class="btn bp" onclick="searchJobs()">Find Opportunities</button>
-  </div>
-
-  <div id="j-results"></div>
-
-  <div class="card" style="margin-top:4px">
-    <div class="cl">Paste a job description</div>
-    <div style="font-size:12px;color:var(--t2);margin-bottom:10px;line-height:1.6">Get instant fit analysis, gap report, and tailored interview prep from any JD.</div>
-    <textarea id="jd-text" placeholder="Paste full job description here..." rows="5"></textarea>
-    <div class="brow">
-      <button class="btn bs bsm" style="flex:1" onclick="analyseJD()">Analyse My Fit</button>
-      <button class="btn bs bsm" style="flex:1" onclick="prepFromJD()">Prep Interview</button>
-    </div>
-  </div>
-  <div id="jd-out"></div>
-
-  <!-- Market Pulse -->
-  <div class="card" style="margin-top:4px">
-    <div class="cl">Market Pulse — Trending Roles</div>
-    <button class="btn bs" onclick="loadMarketPulse()" style="margin-bottom:10px">Load Market Trends</button>
-    <div id="market-pulse"></div>
-  </div>
-</div>
-
-<!-- ─── PREP ───────────────────────────────────────────────────── -->
-<div class="sc" id="sc-prep">
-  <div class="ph">
-    <div class="ey">Interview Lab</div>
-    <div class="h1">Prep Session</div>
-    <div class="sub">Questions · Scoring · Tone coaching</div>
-  </div>
-
-  <div class="card">
-    <div class="fi"><label>Role or paste JD</label>
-      <textarea id="p-role" placeholder="e.g. 'Senior AI Security Engineer at a fintech' or paste full job description..." rows="3"></textarea>
-    </div>
-    <div class="fi"><label>Question type</label>
-      <select id="p-type">
-        <option value="mixed">Mixed — Technical + Behavioural + Scenario</option>
-        <option value="technical">Technical deep-dive only</option>
-        <option value="behavioural">Behavioural & leadership only</option>
-        <option value="scenario">Scenario & problem solving only</option>
-        <option value="communication">Communication & stakeholder management</option>
-      </select>
-    </div>
-    <div class="fi"><label>Difficulty</label>
-      <select id="p-diff">
-        <option value="senior panel">Senior panel (ETMO / Director level)</option>
-        <option value="technical lead">Technical lead interview</option>
-        <option value="HR screen">HR / initial screen</option>
-      </select>
-    </div>
-    <button class="btn bp" onclick="genQuestions()">Generate Questions</button>
-  </div>
-
-  <div id="p-questions"></div>
-
-  <div id="p-practice" style="display:none">
-    <div class="card">
-      <div class="cl">Practice your answer</div>
-      <div id="p-current-q" style="margin-bottom:12px"></div>
-      <textarea id="p-answer" placeholder="Write your full answer here using the STAR method..." rows="5"></textarea>
-      <button class="btn bp" style="margin-top:10px" onclick="scoreAnswer()">Score & Improve My Answer</button>
-    </div>
-    <div id="p-feedback"></div>
-  </div>
-
-  <!-- Speech & tone guide -->
-  <div class="card" style="margin-top:4px">
-    <div class="cl">Speech & tone coach</div>
-    <div class="fi"><label>Paste your answer to get tone analysis</label>
-      <textarea id="tone-input" placeholder="Paste any answer or statement you plan to say in an interview..." rows="4"></textarea>
-    </div>
-    <button class="btn bs" onclick="toneCoach()">Analyse Tone & Delivery</button>
-    <div id="tone-out"></div>
-  </div>
-</div>
-
-<!-- ─── RESUME ─────────────────────────────────────────────────── -->
-<div class="sc" id="sc-resume">
-  <div class="ph">
-    <div class="ey">Resume Intelligence</div>
-    <div class="h1">Resume Analyser</div>
-    <div class="sub">Upload or paste — scored against market 2026</div>
-  </div>
-
-  <div class="upload-zone" onclick="document.getElementById('r-file').click()">
-    <input type="file" id="r-file" accept=".pdf,.txt,.doc,.docx" onchange="handleResume(event)">
-    <div style="font-size:28px;margin-bottom:8px">📄</div>
-    <div style="font-size:14px;color:var(--t2);font-weight:500">Tap to upload resume</div>
-    <div style="font-size:12px;color:var(--t3);margin-top:3px">PDF, TXT — or paste text below</div>
-  </div>
-
-  <div class="card">
-    <div class="fi"><label>Or paste your resume text</label>
-      <textarea id="r-text" placeholder="Paste full resume content here..." rows="6"></textarea>
-    </div>
-    <div class="fi"><label>Target role (leave blank for general audit)</label>
-      <input type="text" id="r-target" placeholder="e.g. AI Security Engineer, LLM Platform Engineer...">
-    </div>
-    <div class="fi"><label>Audit depth</label>
-      <select id="r-depth">
-        <option value="full">Full audit — content, ATS, tone, gaps, rewrite</option>
-        <option value="quick">Quick scan — top 5 issues only</option>
-        <option value="ats">ATS only — keyword gaps</option>
-        <option value="rewrite">Rewrite summary section only</option>
-      </select>
-    </div>
-    <button class="btn bp" onclick="analyseResume()">Analyse Resume</button>
-  </div>
-
-  <div id="r-out"></div>
-</div>
-
-<!-- ─── COACH ──────────────────────────────────────────────────── -->
-<div class="sc" id="sc-coach">
-  <div class="ph">
-    <div class="ey">AI Career Coach</div>
-    <div class="h1">Ask Anything</div>
-    <div class="sub">Knows your full background · No generic advice</div>
-  </div>
-
-  <div style="margin-bottom:10px;display:flex;flex-wrap:wrap;gap:6px">
-    <button class="bg" style="font-size:12px" onclick="quickAsk('What should I focus on this week based on market trends?')">This week's focus</button>
-    <button class="bg" style="font-size:12px" onclick="quickAsk('What is the fastest skill I can build to increase my market value right now?')">Highest ROI skill</button>
-    <button class="bg" style="font-size:12px" onclick="quickAsk('Explain prompt injection attacks and how to defend against them in an LLM pipeline like mine.')">Prompt injection</button>
-    <button class="bg" style="font-size:12px" onclick="quickAsk('How should I position my IBM BAW experience when applying for AI Security roles?')">Reposition BAW</button>
-    <button class="bg" style="font-size:12px" onclick="quickAsk('Give me a 30-day learning plan for LangGraph starting from my current Python level.')">LangGraph plan</button>
-    <button class="bg" style="font-size:12px" onclick="quickAsk('What certifications should I target in the next 6 months for maximum career ROI?')">Best certs</button>
-  </div>
-
-  <div class="card" style="min-height:200px">
-    <div id="chat-box"></div>
-    <div class="chat-row">
-      <textarea id="chat-in" placeholder="Ask your career coach..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat()}"></textarea>
-      <button class="chat-send" onclick="sendChat()">
-        <svg viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
-      </button>
-    </div>
-  </div>
-
-  <!-- Roadmap Tab inside coach -->
-  <div class="card" style="margin-top:4px">
-    <div class="cl">6-Month Roadmap</div>
-    <div id="roadmap-content">
-      <div class="phase active">
-        <div class="phase-title">Phase 1 — Foundation & Differentiation</div>
-        <div class="phase-dates">Months 1–2 · June – July 2026 · Active now</div>
-        <div class="phase-desc">Deep Python mastery (async, type hints, Pydantic). LLM engineering fundamentals — RAG pipelines, vector databases, evaluation. OWASP LLM Top 10 study. Document one IDP project as a portfolio case study. Publish one technical article.</div>
-        <div class="tags"><span class="badge bg-bl">Advanced Python</span><span class="badge bg-cy">RAG / LLM</span><span class="badge bg-rd">OWASP LLM Top 10</span><span class="badge bg-pu">Portfolio writeup</span></div>
-      </div>
-      <div class="phase">
-        <div class="phase-title">Phase 2 — AI Security Specialisation</div>
-        <div class="phase-dates">Months 3–4 · August – September 2026</div>
-        <div class="phase-desc">LangGraph stateful agents. Prompt injection, jailbreak methodology, adversarial testing with PyRIT/Garak. Azure AI Engineer Associate certification. Build one demonstrable AI security project on GitHub.</div>
-        <div class="tags"><span class="badge bg-rd">LLM Red Teaming</span><span class="badge bg-bl">LangGraph</span><span class="badge bg-cy">Azure AI Cert</span><span class="badge bg-gr">GitHub portfolio</span></div>
-      </div>
-      <div class="phase">
-        <div class="phase-title">Phase 3 — Visibility & Role Readiness</div>
-        <div class="phase-dates">Months 5–6 · October – November 2026</div>
-        <div class="phase-desc">CAISP or OSAI certification. Conference talk or internal presentation on AI Security in banking. 3 documented portfolio wins. Active in AI security communities. Applying to target roles with a tailored narrative.</div>
-        <div class="tags"><span class="badge bg-gd">CAISP / OSAI</span><span class="badge bg-pu">Speaking</span><span class="badge bg-gr">3 Portfolio wins</span><span class="badge bg-am">Role applications</span></div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Portfolio Builder -->
-  <div class="card" style="margin-top:4px">
-    <div class="cl">Portfolio Builder</div>
-    <div class="fi"><label>Win title</label><input type="text" id="pf-title" placeholder="e.g. Built 5-layer IDP pipeline for Islamic bank"></div>
-    <div class="fi"><label>Outcome (measurable)</label><input type="text" id="pf-outcome" placeholder="e.g. Reduced review time from 55min to 8min per application"></div>
-    <div class="fi"><label>Skills demonstrated</label><input type="text" id="pf-skills" placeholder="e.g. Python, FastAPI, Ollama, IBM BAW, FileNet"></div>
-    <button class="btn bs" onclick="addPortfolioWin()">Add to Portfolio</button>
-    <div id="pf-list" style="margin-top:12px"></div>
-  </div>
-</div>
-
-<!-- ─── EVENING ────────────────────────────────────────────────── -->
-<div class="sc" id="sc-eve">
-  <div class="ph">
-    <div class="ey">Evening Session</div>
-    <div class="h1">Close the day</div>
-    <div class="sub" id="eve-date"></div>
-  </div>
-
-  <div class="card">
-    <div class="cl">How did today feel?</div>
-    <div class="mood-row">
-      <button class="mood-btn" onclick="setMood(0)" id="mood-0">😤</button>
-      <button class="mood-btn" onclick="setMood(1)" id="mood-1">😐</button>
-      <button class="mood-btn" onclick="setMood(2)" id="mood-2">🙂</button>
-      <button class="mood-btn" onclick="setMood(3)" id="mood-3">🔥</button>
-    </div>
-  </div>
-
-  <div class="card">
-    <div class="cl">Today's win</div>
-    <textarea id="e-win" placeholder="One specific thing you accomplished. Be precise — not 'did good work' but what exactly and what was the result." rows="3"></textarea>
-  </div>
-
-  <div class="card">
-    <div class="cl">What I would do differently</div>
-    <textarea id="e-imp" placeholder="One concrete behaviour to change tomorrow." rows="2"></textarea>
-  </div>
-
-  <div class="card">
-    <div class="cl">Knowledge gained</div>
-    <textarea id="e-know" placeholder="A technical concept, market insight, or communication lesson." rows="2"></textarea>
-  </div>
-
-  <div class="card" id="eve-blocks-card">
-    <div class="cl">Focus blocks completed</div>
-    <div id="eve-blocks"></div>
-  </div>
-
-  <button class="btn bp" onclick="saveEvening()" style="margin-bottom:11px">Close the day</button>
-
-  <!-- Weekly report -->
-  <div id="weekly-report" style="display:none">
-    <div class="card card-accent">
-      <div class="cl">Weekly Performance Report</div>
-      <div id="wr-content"></div>
-    </div>
-  </div>
-
-  <!-- Comm analysis -->
-  <div id="comm-analysis" style="display:none">
-    <div class="card">
-      <div class="cl">Communication Analysis</div>
-      <div id="comm-out"></div>
-    </div>
-  </div>
-</div>
-
-<!-- ─── SETTINGS ───────────────────────────────────────────────── -->
-<div class="sc" id="sc-set">
-  <div class="ph">
-    <div class="ey">Configuration</div>
-    <div class="h1">Settings</div>
-  </div>
-
-  <div class="ss">
-    <div class="ss-title">API & Model</div>
-    <div class="fi"><label>OpenRouter API Key</label><input type="password" id="s-key" placeholder="sk-or-v1-..."></div>
-    <div class="fi"><label>AI Model</label>
-      <select id="s-model">
-        <option value="google/gemma-4-31b-it:free">Google Gemma 4 31B — Best free (intelligence 39.2)</option>
-        <option value="nvidia/nemotron-3-ultra-550b-a55b:free">NVIDIA Nemotron 3 Ultra 550B — Powerful (Free)</option>
-        <option value="google/gemma-4-26b-a4b-it:free">Google Gemma 4 26B — Fast (Free)</option>
-        <option value="openai/gpt-oss-120b:free">OpenAI GPT OSS 120B — Capable (Free)</option>
-        <option value="nvidia/nemotron-3-super-120b-a12b:free">NVIDIA Nemotron 3 Super 120B (Free)</option>
-        <option value="qwen/qwen3-coder:free">Qwen3 Coder 480B — Best for code (Free)</option>
-        <option value="meta-llama/llama-3.3-70b-instruct:free">Llama 3.3 70B — Reliable (Free)</option>
-        <option value="qwen/qwen3-next-80b-a3b-instruct:free">Qwen3 Next 80B (Free)</option>
-        <option value="anthropic/claude-sonnet-4.6">Claude Sonnet 4.6 (Paid)</option>
-        <option value="anthropic/claude-haiku-4.5">Claude Haiku 4.5 (Paid — fastest)</option>
-        <option value="openai/gpt-4o-mini">GPT-4o Mini (Paid)</option>
-        <option value="google/gemini-2.5-flash">Gemini 2.5 Flash (Paid)</option>
-      </select>
-    </div>
-    <div class="setup-note" style="margin-bottom:10px">Free models have no cost. Paid models require OpenRouter credits.</div>
-  </div>
-
-  <div class="ss">
-    <div class="ss-title">Career Profile</div>
-    <div class="fi"><label>Name</label><input type="text" id="s-name"></div>
-    <div class="fi"><label>Current Role</label><input type="text" id="s-role"></div>
-    <div class="fi"><label>Target Role</label><input type="text" id="s-target"></div>
-    <div class="fi"><label>Experience</label><input type="text" id="s-exp"></div>
-    <div class="fi"><label>Skills</label><textarea id="s-skills" rows="3"></textarea></div>
-    <div class="fi"><label>Location</label><input type="text" id="s-loc"></div>
-  </div>
-
-  <div class="ss">
-    <div class="ss-title">GitHub Sync</div>
-    <div class="fi"><label>GitHub Username</label><input type="text" id="s-gh"></div>
-    <div class="fi"><label>GitHub Token</label><input type="password" id="s-ght" placeholder="ghp_..."></div>
-    <div class="fi"><label>Repo Name</label><input type="text" id="s-repo" value="career-os-data"></div>
-  </div>
-
-  <div class="ss">
-    <div class="ss-title">Job Search Defaults</div>
-    <div class="fi"><label>Preferred Locations</label><input type="text" id="s-jloc" placeholder="Hyderabad, Remote, UAE..."></div>
-    <div class="fi"><label>Open to Relocation</label>
-      <select id="s-reloc"><option value="yes">Yes</option><option value="no">No</option><option value="remote">Remote only</option></select>
-    </div>
-  </div>
-
-  <button class="btn bp" onclick="saveSettings()" style="margin-bottom:10px">Save Settings</button>
-  <button class="btn bs" onclick="testConnection()" style="margin-bottom:10px">Test API Connection</button>
-  <button class="btn bs" onclick="exportData()" style="margin-bottom:10px">Export Data (JSON backup)</button>
-  <button class="btn bs" onclick="syncGitHub(true)" style="margin-bottom:10px">Sync to GitHub Now</button>
-  <div class="divider"></div>
-  <button class="btn bs" onclick="if(confirm('Reset ALL data? Cannot be undone.')){localStorage.clear();location.reload()}">Reset All Data</button>
-</div>
-
-</div><!-- /screens -->
-
-<!-- ─── NAV ──────────────────────────────────────────────────── -->
-<nav id="nav">
-  <button class="nb on" onclick="goTab('home',this)" id="nb-home">
-    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
-    Home
-  </button>
-  <button class="nb" onclick="goTab('jobs',this)" id="nb-jobs">
-    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
-    Jobs
-  </button>
-  <button class="nb" onclick="goTab('prep',this)" id="nb-prep">
-    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
-    Prep
-  </button>
-  <button class="nb" onclick="goTab('coach',this)" id="nb-coach">
-    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
-    Coach
-  </button>
-  <button class="nb" onclick="goTab('eve',this)" id="nb-eve">
-    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
-    Evening
-  </button>
-  <button class="nb" onclick="goTab('set',this)" id="nb-set">
-    <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
-    Settings
-  </button>
 </nav>
-</div>
 
-<div id="toast"></div>
+<!-- MAIN -->
+<div id="main">
+  <div id="topbar">
+    <h1 id="topbar-title">Dashboard</h1>
+    <span class="tag tag-blue" id="topbar-tag">AI Engineering Lab</span>
+    <div class="tooltip">
+      <button id="refresh-btn" onclick="refreshCurrentLab()">
+        ↻ Refresh lab
+      </button>
+      <span class="tooltip-text">Regenerate with latest tools &amp; trends</span>
+    </div>
+  </div>
+
+  <div id="content">
+
+    <!-- HOME -->
+    <div id="home-section">
+      <div class="home-grid">
+        <div class="stat-card">
+          <div class="stat-val blue-val" id="s-labs">18</div>
+          <div class="stat-lbl">Total labs available</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val green-val" id="s-done">0</div>
+          <div class="stat-lbl">Completed by you</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val amber-val">2026</div>
+          <div class="stat-lbl">Tools updated for</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-val purple-val">AI</div>
+          <div class="stat-lbl">Generated on demand</div>
+        </div>
+      </div>
+
+      <div style="margin-bottom:16px">
+        <div style="font-size:13px;font-weight:600;margin-bottom:12px;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;font-size:11px">Choose a learning track</div>
+        <div class="track-grid">
+          <div class="track-card" onclick="showTrack('python')">
+            <div class="tc-icon">🐍</div>
+            <div class="tc-title">Python for AI</div>
+            <div class="tc-desc">Practical Python — data structures, APIs, file handling, and AI libraries. No theory, only what you need.</div>
+            <div class="tc-level tag tag-green" style="display:inline-block">Start here</div>
+          </div>
+          <div class="track-card" onclick="showTrack('rag')">
+            <div class="tc-icon">🔍</div>
+            <div class="tc-title">RAG from scratch</div>
+            <div class="tc-desc">Build a Retrieval Augmented Generation system step by step. Understand every component, not just run it.</div>
+            <div class="tc-level tag tag-blue" style="display:inline-block">Core concept</div>
+          </div>
+          <div class="track-card" onclick="showTrack('vectordb')">
+            <div class="tc-icon">🗄️</div>
+            <div class="tc-title">Vector databases</div>
+            <div class="tc-desc">What embeddings are, how vector search works, and hands-on labs with ChromaDB, Qdrant, and Pinecone.</div>
+            <div class="tc-level tag tag-green" style="display:inline-block">Core concept</div>
+          </div>
+          <div class="track-card" onclick="showTrack('langchain')">
+            <div class="tc-icon">🔗</div>
+            <div class="tc-title">LangChain / agents</div>
+            <div class="tc-desc">Build AI agents that can reason, use tools, and take actions. Real chains, not tutorial hello-worlds.</div>
+            <div class="tc-level tag tag-amber" style="display:inline-block">Intermediate</div>
+          </div>
+          <div class="track-card" onclick="showTrack('langgraph')">
+            <div class="tc-icon">🕸️</div>
+            <div class="tc-title">LangGraph / multi-agent</div>
+            <div class="tc-desc">Orchestrate multiple AI agents working together. The most in-demand skill in 2026 agentic AI roles.</div>
+            <div class="tc-level tag tag-amber" style="display:inline-block">Advanced</div>
+          </div>
+          <div class="track-card" onclick="showProject('trending')">
+            <div class="tc-icon">🚀</div>
+            <div class="tc-title">Trending projects 2026</div>
+            <div class="tc-desc">AI-generated list of what the market actually wants built. Updated on demand with current trends.</div>
+            <div class="tc-level tag tag-blue" style="display:inline-block">Market-driven</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LAB SECTION -->
+    <div id="lab-section">
+      <div class="breadcrumb">
+        <span onclick="showHome()">Dashboard</span>
+        <span style="color:var(--text3)">›</span>
+        <span id="bc-track" style="color:var(--text2)"></span>
+        <span style="color:var(--text3)">›</span>
+        <span id="bc-lab" style="color:var(--accent)"></span>
+      </div>
+
+      <div class="lab-header">
+        <h2 id="lab-title"></h2>
+        <p id="lab-desc"></p>
+        <div class="lab-meta" id="lab-meta"></div>
+      </div>
+
+      <div id="ai-output">
+        <div id="ai-output-header">
+          <div class="dot"></div>
+          <span id="ai-status">Generating lab...</span>
+        </div>
+        <div id="ai-output-body" class="loading">
+          <div style="display:flex;align-items:center;gap:12px;padding:20px 0">
+            <div class="spinner"></div>
+            <span>Generating your lab with current 2026 tools and real-world context...</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="action-row">
+        <button class="btn btn-primary" onclick="markDone()">✓ Mark complete</button>
+        <button class="btn btn-secondary" onclick="refreshCurrentLab()">↻ Regenerate</button>
+        <button class="btn btn-ghost" onclick="generateNextLab()">Next lab →</button>
+      </div>
+    </div>
+
+    <!-- TRACK LAB LIST -->
+    <div id="track-section" style="display:none">
+      <div class="breadcrumb">
+        <span onclick="showHome()">Dashboard</span>
+        <span style="color:var(--text3)">›</span>
+        <span id="bc-track2" style="color:var(--accent)"></span>
+      </div>
+      <div style="font-size:20px;font-weight:700;margin-bottom:6px" id="track-title"></div>
+      <div style="font-size:13px;color:var(--text2);margin-bottom:18px" id="track-desc"></div>
+      <div id="ai-output2" style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden;min-height:200px">
+        <div id="ai-output2-header" style="padding:12px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;background:var(--bg3)">
+          <div class="dot"></div>
+          <span style="font-size:12px;color:var(--text2)">Generating track overview...</span>
+        </div>
+        <div id="ai-output2-body" style="padding:22px 24px;font-size:13.5px;line-height:1.8;color:var(--text)"></div>
+      </div>
+    </div>
+
+    <!-- CUSTOM TOPIC -->
+    <div id="custom-section" style="display:none">
+      <div class="breadcrumb">
+        <span onclick="showHome()">Dashboard</span>
+        <span style="color:var(--text3)">›</span>
+        <span style="color:var(--accent)">Ask anything</span>
+      </div>
+      <div style="font-size:20px;font-weight:700;margin-bottom:6px">Ask anything</div>
+      <div style="font-size:13px;color:var(--text2);margin-bottom:18px">Ask about any AI concept, tool, or project. Get a hands-on lab generated instantly.</div>
+      <div id="custom-form">
+        <label>What do you want to learn or build?</label>
+        <textarea id="custom-input" placeholder="e.g. Build a document classifier using sentence transformers and FAISS&#10;e.g. How does attention mechanism work with code example&#10;e.g. Build a loan risk scoring agent with LangGraph&#10;e.g. Deploy a FastAPI + LLM app to Azure"></textarea>
+        <div class="action-row" style="margin-top:12px">
+          <button class="btn btn-primary" onclick="runCustomLab()">Generate lab →</button>
+          <button class="btn btn-ghost" onclick="suggestTopics()">Suggest topics for me</button>
+        </div>
+      </div>
+      <div id="custom-output" style="margin-top:18px;display:none">
+        <div id="ai-output3" style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden">
+          <div style="padding:12px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;background:var(--bg3)">
+            <div class="dot"></div>
+            <span style="font-size:12px;color:var(--text2)" id="custom-status">Generating...</span>
+          </div>
+          <div id="ai-output3-body" style="padding:22px 24px;font-size:13.5px;line-height:1.8;color:var(--text)"></div>
+        </div>
+        <div class="action-row">
+          <button class="btn btn-secondary" onclick="runCustomLab()">↻ Regenerate</button>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>
 
 <script>
-// ═══ CONFIG & STATE ════════════════════════════════════════════
-let C={};   // config
-let D={};   // data
-let chatHistory=[];
+const API = 'https://api.anthropic.com/v1/messages';
+const MODEL = 'claude-sonnet-4-6';
 
-const MODELS_FALLBACK=[
-  'google/gemma-4-26b-a4b-it:free',
-  'google/gemma-4-31b-it:free',
-  'qwen/qwen3-next-80b-a3b-instruct:free',
-  'openai/gpt-oss-20b:free',
-  'meta-llama/llama-3.3-70b-instruct:free',
-  'nvidia/nemotron-3-nano-30b-a3b:free',
-  'nvidia/nemotron-nano-9b-v2:free',
-  'openai/gpt-oss-120b:free'
-];
+// ─── STATE ───────────────────────────────────────────────────────────────────
+let currentTrack = null;
+let currentLabIdx = 0;
+let completedLabs = JSON.parse(localStorage.getItem('ai_lab_done') || '[]');
+let currentSection = 'home';
 
-const FOCUS_POOL=[
-  {t:'Study one OWASP LLM Top 10 vulnerability in depth',m:'30 min · AI Security',c:'sec'},
-  {t:'Build a Python async function with proper error handling',m:'20 min · Python depth',c:'tech'},
-  {t:'Read one LangGraph stateful workflow tutorial',m:'25 min · Agentic AI',c:'tech'},
-  {t:'Write a LinkedIn-ready bullet about one past project',m:'10 min · Visibility',c:'comm'},
-  {t:'Study prompt injection attack patterns and defences',m:'25 min · LLM Security',c:'sec'},
-  {t:'Implement a RAG pipeline component from scratch',m:'30 min · LLM Engineering',c:'tech'},
-  {t:'Write an Architecture Decision Record from a past project',m:'20 min · Portfolio',c:'comm'},
-  {t:'Read one Azure AI Security best practice document',m:'20 min · Cloud Security',c:'sec'},
-  {t:'Explain a technical concept to a non-technical audience',m:'10 min · Communication',c:'comm'},
-  {t:'Study LlamaIndex vector store integration patterns',m:'25 min · RAG',c:'tech'},
-  {t:'Review MITRE ATLAS AI threat framework — one technique',m:'20 min · AI Security',c:'sec'},
-  {t:'Write one cold outreach message to someone in AI Security',m:'10 min · Network',c:'comm'},
-  {t:'Build one FastAPI endpoint with full Pydantic validation',m:'25 min · Python',c:'tech'},
-  {t:'Study CrewAI multi-agent role patterns',m:'25 min · Agentic AI',c:'tech'},
-  {t:'Review and rewrite one bullet point on your resume',m:'15 min · Positioning',c:'comm'},
-  {t:'Implement an output guardrail for an LLM response',m:'30 min · AI Security',c:'sec'},
-  {t:'Study one real AI security incident case study',m:'20 min · Security awareness',c:'sec'},
-  {t:'Write your personal value proposition in two sentences',m:'10 min · Positioning',c:'comm'},
-  {t:'Practise one STAR answer for a leadership scenario out loud',m:'15 min · Interview',c:'comm'},
-  {t:'Read one paper on adversarial machine learning',m:'25 min · AI Security',c:'sec'},
-  {t:'Build a LangChain chain with tool use and memory',m:'30 min · LLM Engineering',c:'tech'},
-  {t:'Study data poisoning attack vectors for ML models',m:'20 min · Security',c:'sec'},
-  {t:'Draft a technical blog post outline on your IDP project',m:'15 min · Thought leadership',c:'comm'},
-  {t:'Review PyRIT or Garak documentation for 20 minutes',m:'20 min · Red teaming tools',c:'sec'},
-  {t:'Study zero-trust architecture principles for AI systems',m:'25 min · Cloud Security',c:'sec'},
-];
-
-// ═══ STORAGE ═══════════════════════════════════════════════════
-function sv(){try{localStorage.setItem('cos_d',JSON.stringify(D))}catch(e){}}
-function ld(){
-  try{const x=localStorage.getItem('cos_d');if(x)D=JSON.parse(x)}catch(e){}
-  D.streak=D.streak||0;D.lastIn=D.lastIn||'';D.focusDone=D.focusDone||{};
-  D.mLog=D.mLog||{};D.eLog=D.eLog||{};D.sigCache=D.sigCache||{};
-  D.startDate=D.startDate||tod();D.commHist=D.commHist||[];
-  D.portfolio=D.portfolio||[];D.chatHist=D.chatHist||[];
-}
-function ldC(){try{const x=localStorage.getItem('cos_c');if(x){C=JSON.parse(x);return true}}catch(e){}return false}
-function svC(){try{localStorage.setItem('cos_c',JSON.stringify(C))}catch(e){}}
-
-function tod(){return new Date().toISOString().slice(0,10)}
-function doy(){const n=new Date(),s=new Date(n.getFullYear(),0,0);return Math.floor((n-s)/86400000)}
-function toast(m,col){const t=document.getElementById('toast');t.textContent=m;t.style.borderColor=col||'var(--gr)';t.style.color=col||'var(--gr)';t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2600)}
-
-// ═══ OPENROUTER API ════════════════════════════════════════════
-async function ai(prompt,sys,isChat){
-  const model=C.model||MODELS_FALLBACK[0];
-  const messages=isChat?[...chatHistory,{role:'user',content:prompt}]:[{role:'user',content:prompt}];
-  const body={model,messages:[...(sys?[{role:'system',content:sys}]:[]),{role:'system',content:sysPrompt()},...messages],max_tokens:800,temperature:0.4};
-  
-  // Try selected model first, then fallbacks
-  const tryModels=[model,...MODELS_FALLBACK.filter(m=>m!==model)];
-  
-  for(const m of tryModels){
-    try{
-      body.model=m;
-      const r=await fetch('https://openrouter.ai/api/v1/chat/completions',{
-        method:'POST',
-        headers:{'Content-Type':'application/json','Authorization':`Bearer ${C.key}`,'HTTP-Referer':'https://taruntangella.github.io/career-os','X-Title':'CareerOS'},
-        body:JSON.stringify(body)
-      });
-      if(r.status===429||r.status===503){
-        const e=await r.json().catch(()=>({}));
-        const wait=(e.error?.metadata?.retry_after_seconds||3)*1000;
-        await new Promise(x=>setTimeout(x,Math.min(wait,5000)));
-        continue;
-      }
-      if(!r.ok){const e=await r.json().catch(()=>({}));const msg=e.error?.message||`HTTP ${r.status}`;if(msg.includes('model')||msg.includes('not found')||r.status===404)continue;throw new Error(msg)}
-      const d=await r.json();
-      const txt=d.choices?.[0]?.message?.content||'';
-      if(txt)return txt;
-    }catch(e){if(e.message?.includes('fetch')||e.message?.includes('network'))throw e;continue}
+// ─── TRACK DATA ──────────────────────────────────────────────────────────────
+const TRACKS = {
+  python: {
+    name: 'Python for AI', icon: '🐍',
+    desc: 'Practical Python — only what you need for AI engineering',
+    labs: [
+      { title: 'Python data structures for AI', desc: 'Lists, dicts, sets — how AI pipelines actually use them', time: '45 min', tags: ['Python', 'Beginner'] },
+      { title: 'Working with files and APIs', desc: 'Read PDFs, call REST APIs, handle JSON — the real workflow', time: '1 hr', tags: ['Python', 'Practical'] },
+      { title: 'Python for data with pandas', desc: 'Load, filter, transform data — preparation for AI models', time: '1.5 hr', tags: ['pandas', 'Data'] },
+      { title: 'Calling LLM APIs from Python', desc: 'OpenAI, Anthropic, Ollama — make your first real AI call', time: '1 hr', tags: ['LLM', 'APIs'] },
+      { title: 'Async Python for AI pipelines', desc: 'async/await, concurrent requests, streaming responses', time: '1.5 hr', tags: ['Advanced', 'Python'] },
+    ]
+  },
+  rag: {
+    name: 'RAG from scratch', icon: '🔍',
+    desc: 'Build a production-ready Retrieval Augmented Generation system step by step',
+    labs: [
+      { title: 'What RAG is and why it matters', desc: 'The concept, the architecture, and when to use it — with diagrams', time: '30 min', tags: ['Concept', 'Beginner'] },
+      { title: 'Document loading and chunking', desc: 'Load PDFs, split into chunks intelligently, handle edge cases', time: '1 hr', tags: ['Python', 'Practical'] },
+      { title: 'Text embeddings explained + built', desc: 'What embeddings are, how to generate them, compare models', time: '1.5 hr', tags: ['Embeddings', 'Core'] },
+      { title: 'Build a simple RAG pipeline', desc: 'End-to-end: load → embed → store → retrieve → answer', time: '2 hr', tags: ['RAG', 'Build'] },
+      { title: 'RAG for document Q&A — banking use case', desc: 'Apply RAG to loan documents, extract answers from policy PDFs', time: '2.5 hr', tags: ['Real project', 'Banking'] },
+      { title: 'Evaluate and improve RAG quality', desc: 'Measure retrieval accuracy, reduce hallucinations, tune chunks', time: '2 hr', tags: ['Advanced', 'MLOps'] },
+    ]
+  },
+  vectordb: {
+    name: 'Vector databases', icon: '🗄️',
+    desc: 'Understand vector search and build hands-on with real databases',
+    labs: [
+      { title: 'Vector databases explained clearly', desc: 'What vectors are, why semantic search beats keyword search', time: '30 min', tags: ['Concept', 'Beginner'] },
+      { title: 'ChromaDB hands-on', desc: 'Local vector DB — set up, insert, query, filter. Fastest to start.', time: '1 hr', tags: ['ChromaDB', 'Practical'] },
+      { title: 'Qdrant for production', desc: 'Cloud-ready vector DB with filtering, payloads, and collections', time: '1.5 hr', tags: ['Qdrant', 'Production'] },
+      { title: 'Pinecone serverless', desc: 'Managed vector DB — scale without infrastructure', time: '1 hr', tags: ['Pinecone', 'Cloud'] },
+      { title: 'Hybrid search: vector + keyword', desc: 'Combine semantic and exact matching for better results', time: '2 hr', tags: ['Advanced', 'Real project'] },
+    ]
+  },
+  langchain: {
+    name: 'LangChain / agents', icon: '🔗',
+    desc: 'Build AI agents that reason and act — from zero to working system',
+    labs: [
+      { title: 'LangChain core concepts', desc: 'Chains, prompts, memory, tools — what each does and why', time: '45 min', tags: ['Concept', 'LangChain'] },
+      { title: 'Build your first chain', desc: 'Connect LLM → prompt → output. Then add memory.', time: '1.5 hr', tags: ['LangChain', 'Build'] },
+      { title: 'Tools and function calling', desc: 'Give AI the ability to search, calculate, call APIs', time: '2 hr', tags: ['Agents', 'Tools'] },
+      { title: 'ReAct agent from scratch', desc: 'Reason + Act loop — the foundation of all AI agents', time: '2 hr', tags: ['Agents', 'Advanced'] },
+      { title: 'Document QA agent', desc: 'Agent that reads your documents and answers questions', time: '2.5 hr', tags: ['Real project', 'RAG'] },
+    ]
+  },
+  langgraph: {
+    name: 'LangGraph / multi-agent', icon: '🕸️',
+    desc: 'Orchestrate multiple AI agents — the most in-demand skill in 2026',
+    labs: [
+      { title: 'Why LangGraph over LangChain', desc: 'State machines vs chains — when and why LangGraph wins', time: '30 min', tags: ['Concept', 'LangGraph'] },
+      { title: 'Nodes, edges, and state', desc: 'The core building blocks of every LangGraph workflow', time: '1.5 hr', tags: ['LangGraph', 'Core'] },
+      { title: 'Build a document review agent', desc: 'Multi-step agent: fetch → analyse → validate → report', time: '3 hr', tags: ['Real project', 'Build'] },
+      { title: 'Multi-agent coordination', desc: 'Supervisor + worker agents — orchestrate parallel tasks', time: '3 hr', tags: ['Advanced', 'Multi-agent'] },
+      { title: 'LangGraph + FastAPI deployment', desc: 'Deploy your agent as a real API — production pattern', time: '2.5 hr', tags: ['MLOps', 'Deployment'] },
+    ]
+  },
+  mlops: {
+    name: 'MLOps + deployment', icon: '⚙️',
+    desc: 'Get AI systems running in production — not just on your laptop',
+    labs: [
+      { title: 'FastAPI for AI — patterns that work', desc: 'Structure, streaming, async endpoints for LLM APIs', time: '2 hr', tags: ['FastAPI', 'Practical'] },
+      { title: 'Docker for AI apps', desc: 'Containerise your RAG or agent app the right way', time: '1.5 hr', tags: ['Docker', 'DevOps'] },
+      { title: 'Deploy to Azure (free tier)', desc: 'Azure Container Apps — push your AI app live today', time: '2 hr', tags: ['Azure', 'Cloud'] },
+      { title: 'Monitoring AI in production', desc: 'Log inputs/outputs, track latency, catch failures', time: '1.5 hr', tags: ['Monitoring', 'Advanced'] },
+    ]
   }
-  // Check if it's a rate limit day cap
-throw new Error('All models at capacity. Free tier allows 200 requests/day. Try again tomorrow or switch model in Settings.');
-}
+};
 
-async function aiSearch(topic){
-  // OpenRouter doesn't have native search — we use the model's knowledge + explicit instruction
-  return ai(`Search context: Today is ${new Date().toDateString()}. Topic: ${topic}\n\nProvide factual, current information. If you are uncertain about specific current data (job listings, exact salaries, recent news), explicitly say "Based on recent trends as of mid-2026" rather than stating uncertain facts as definitive. Do not fabricate specific company names, job URLs, or salary figures you are not certain about.`);
-}
+const PROJECTS = {
+  banking: { name: 'Banking AI systems', prompt: 'Generate 6 real-world AI project ideas for banking and financial services that a developer could build and showcase in 2026. Include: loan processing, fraud detection, document intelligence, regulatory compliance, customer service. For each project: title, what it does, tech stack (Python + specific AI libraries), why employers value it, estimated build time, and a starter architecture. Make these genuinely buildable, not vague ideas.' },
+  trending: { name: 'Trending in 2026', prompt: 'What are the 8 most in-demand AI engineering projects developers are building in mid-2026? Based on actual job postings and GitHub trends. For each: project name, what problem it solves, exact tech stack with version numbers, why it is trending now, which companies/domains are paying for this skill, estimated build time, and a one-paragraph starter guide. Be specific and current.' },
+  portfolio: { name: 'Portfolio projects', prompt: 'Suggest 5 portfolio projects for someone transitioning from IBM BAW/BPM developer to AI/Agentic AI engineer in 2026. Projects should: use their workflow automation background as an advantage, be completable in 2-4 weekends, be impressive to AI hiring managers, use current tools (LangGraph, FastAPI, ChromaDB, Ollama). For each: project title, problem it solves, tech stack, what makes it stand out, GitHub README structure, and demo talking points for interviews.' }
+};
 
-function sysPrompt(){
-  return`You are CareerOS — a strict, no-hallucination career intelligence system for ${C.name||'Tarun'}.
+// ─── API CALL ──────────────────────────────────────────────────────────────
+async function callClaude(prompt, targetEl, statusEl) {
+  if (statusEl) statusEl.textContent = 'Generating...';
+  targetEl.innerHTML = '<div style="display:flex;align-items:center;gap:12px;padding:10px 0"><div class="spinner"></div><span style="color:var(--text3)">Generating with current 2026 tools and context...</span></div>';
 
-PROFILE:
-- Name: ${C.name||'Tarun'}
-- Current: ${C.role||'Senior IBM BAW Developer'}, ${C.exp||'6+'}yrs experience
-- Target: ${C.target||'AI Security Engineer / LLM Engineer'}  
-- Skills: ${C.skills||'IBM BAW/BPM, Python, FastAPI, LLM, AI Security, FileNet, Java EE, Azure, LangChain'}
-- Location: ${C.loc||'Hyderabad, India'}
-- Career horizon: 6 months to promotion-ready
+  const systemPrompt = `You are an expert AI engineering instructor and hands-on lab creator. Today is June 2026.
 
-RULES — NON-NEGOTIABLE:
-1. NEVER fabricate job URLs, company names, salary figures, or statistics you are not certain about
-2. If unsure about specific data, say "based on current market trends" not invented specifics
-3. Be direct, specific, actionable — no generic career advice
-4. Focus on long-term market trends: AI Security, LLM Engineering, Agentic AI, Python
-5. BAW is background strength only — not the career focus
-6. Communication feedback must quote the user's actual words and rewrite them specifically
-7. Every recommendation must connect to the user's actual background and target role`;
-}
+RULES:
+- Always use current 2026 tool versions and syntax
+- Write real, runnable code — not pseudocode or placeholders
+- Every code block must have a comment explaining what it does
+- After every major code block, include "Expected output:" showing what the developer should see
+- Include real package install commands (pip install x==version)
+- Add "Common errors:" section with actual solutions
+- Add references: official docs URL, GitHub repo, best tutorial (must be real URLs)
+- Use banking/financial domain for examples where possible
+- Keep explanations concise — developers learn by doing, not reading
 
-// ═══ SETUP ═════════════════════════════════════════════════════
-function launchApp(){
-  const k=document.getElementById('su-key').value.trim();
-  if(!k||!k.startsWith('sk-or-')){toast('OpenRouter key must start with sk-or-','var(--rd)');return}
-  C.key=k;
-  C.name=document.getElementById('su-name').value.trim()||'Tarun';
-  C.role=document.getElementById('su-role').value.trim();
-  C.target=document.getElementById('su-target').value.trim();
-  C.exp=document.getElementById('su-exp').value.trim();
-  C.skills=document.getElementById('su-skills').value.trim();
-  C.loc=document.getElementById('su-loc').value.trim();
-  C.gh=document.getElementById('su-gh').value.trim();
-  C.ght=document.getElementById('su-ght').value.trim();
-  C.repo='career-os-data';
-  C.model='google/gemma-4-31b-it:free';
-  svC();
-  document.getElementById('setup').style.display='none';
-  document.getElementById('root').style.display='flex';
-  init();
-}
+FORMAT:
+- Use clear markdown headers
+- Code blocks with language specified
+- Numbered steps for procedures
+- ✅ for success checkpoints
+- ⚠️ for important warnings
+- 🔗 for references`;
 
-// ═══ INIT ═══════════════════════════════════════════════════════
-function init(){
-  ld();
-  renderHome();
-  renderEvening();
-  loadSettings();
-  renderPortfolio();
-  loadSignal(false);
-  setInterval(()=>{if(C.ght)syncGitHub(false)},600000);
-}
-
-// ═══ HOME ═══════════════════════════════════════════════════════
-function renderHome(){
-  const h=new Date().getHours();
-  document.getElementById('h-ey').textContent=h<12?'Good morning':h<17?'Good afternoon':'Good evening';
-  document.getElementById('h-name').textContent=C.name||'Tarun';
-  document.getElementById('h-date').textContent=new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
-  document.getElementById('eve-date').textContent=new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'});
-  document.getElementById('streak-n').textContent=D.streak||0;
-
-  // progress ring
-  const start=new Date(D.startDate||tod());
-  const elapsed=Math.max(0,Math.min(180,Math.floor((new Date()-start)/86400000)));
-  const pct=Math.round(elapsed/180*100);
-  const week=Math.floor(elapsed/7)+1;
-  document.getElementById('ring-pct').textContent=pct+'%';
-  document.getElementById('ring-c').setAttribute('stroke-dashoffset',(188.5*(1-pct/100)).toFixed(1));
-  document.getElementById('week-lbl').textContent=`Week ${week} of 26`;
-  document.getElementById('phase-lbl').textContent=elapsed<60?'Phase 1 — Foundation':elapsed<120?'Phase 2 — AI Security':'Phase 3 — Visibility';
-
-  // execution rate
-  const thisWeek=Array.from({length:7},(_,i)=>{const d=new Date();d.setDate(d.getDate()-i);return d.toISOString().slice(0,10)});
-  const done=thisWeek.reduce((a,d)=>a+Object.values(D.focusDone[d]||{}).filter(Boolean).length,0);
-  const rate=Math.round(done/(7*3)*100);
-  document.getElementById('exec-rate').textContent=`${rate}% execution rate this week`;
-
-  renderFocus();
-  renderDrill();
-}
-
-function getTodayFocus(){
-  const d=doy();
-  return[FOCUS_POOL[d%FOCUS_POOL.length],FOCUS_POOL[(d+8)%FOCUS_POOL.length],FOCUS_POOL[(d+16)%FOCUS_POOL.length]];
-}
-
-function renderFocus(){
-  const foci=getTodayFocus();
-  const done=D.focusDone[tod()]||{};
-  const render=(elId)=>{
-    const el=document.getElementById(elId);if(!el)return;
-    el.innerHTML='';
-    foci.forEach((f,i)=>{
-      const isDone=!!done[i];
-      const d=document.createElement('div');
-      d.className='fi-item';
-      d.innerHTML=`<div class="fi-check${isDone?' done':''}" onclick="togFocus(${i})">${isDone?'<svg width="12" height="12" fill="none" stroke="white" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>':''}</div><div><div class="fi-text${isDone?' done':''}">${f.t}</div><div class="fi-meta"><span>${f.m}</span></div></div>`;
-      el.appendChild(d);
+  try {
+    const resp = await fetch(API, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        model: MODEL,
+        max_tokens: 4000,
+        system: systemPrompt,
+        messages: [{ role: 'user', content: prompt }]
+      })
     });
-  };
-  render('focus-list');render('eve-blocks');
-}
 
-function togFocus(i){
-  if(!D.focusDone[tod()])D.focusDone[tod()]={};
-  D.focusDone[tod()][i]=!D.focusDone[tod()][i];
-  sv();renderFocus();
-}
+    if (!resp.ok) {
+      const err = await resp.json().catch(() => ({}));
+      throw new Error(err.error?.message || `API error ${resp.status}`);
+    }
 
-function renderDrill(){
-  if(!D.commHist.length)return;
-  const last=D.commHist[D.commHist.length-1];
-  const el=document.getElementById('drill-content');
-  el.innerHTML=`<div class="drill-bad-lbl">Yesterday you wrote</div><div class="drill-bad">"${last.win}"</div><div style="font-size:13px;color:var(--t2);margin:8px 0">Rewrite this as a Senior AI Engineer would — specific outcome, active voice, measurable result.</div><textarea id="drill-in" placeholder="Your stronger version..." rows="2"></textarea><button class="btn bs" style="margin-top:8px" onclick="scoreDrill()">Score my rewrite</button><div id="drill-res"></div>`;
-}
-
-async function scoreDrill(){
-  const orig=D.commHist[D.commHist.length-1]?.win||'';
-  const attempt=document.getElementById('drill-in')?.value?.trim();
-  if(!attempt){toast('Write your rewrite first','var(--am)');return}
-  document.getElementById('drill-res').innerHTML=ldHTML();
-  try{
-    const r=await ai(`Original: "${orig}" | Rewrite attempt: "${attempt}"
-
-Score /10. One weak phrase quoted. Ideal version in 1 sentence. Under 60 words.`);
-    document.getElementById('drill-res').innerHTML=`<div class="ai-wrap" style="margin-top:9px"><div class="ai-lbl">Drill feedback</div><div class="ai-body">${fmt(r)}</div></div>`;
-  }catch(e){document.getElementById('drill-res').innerHTML=errHTML(e)}
-}
-
-// ═══ SIGNAL ═════════════════════════════════════════════════════
-async function loadSignal(force){
-  const k=tod();
-  if(!force&&D.sigCache[k]){document.getElementById('signal-txt').innerHTML=D.sigCache[k];return}
-  document.getElementById('signal-txt').innerHTML=ldHTML('Scanning market intelligence...');
-  try{
-    const r=await ai('Career signal for: '+(C.role||'Senior IBM BAW Developer')+' targeting '+(C.target||'AI Security Engineer')+'. Skills: '+C.skills+'. Give ONE specific market signal — a skill gap, niche role, or action to take today. 2 sentences max. Direct and specific. No generic advice.');
-    const sigEl=document.getElementById('signal-txt');
-    if(sigEl){sigEl.innerHTML=fmt(r);D.sigCache[k]=fmt(r);sv();}
-  }catch(e){const sigEl=document.getElementById('signal-txt');if(sigEl)sigEl.innerHTML=errHTML(e);}
-}
-
-
-
-// ═══ JOB SEARCH ═══════════════════════════════════════════════
-async function searchJobs(){
-  const q=document.getElementById('j-search').value.trim();
-  const loc=document.getElementById('j-loc').value.trim()||'India or Remote';
-  const lvl=document.getElementById('j-level').value;
-  if(!q){toast('Enter a role or skill','var(--am)');return}
-  document.getElementById('j-results').innerHTML=`<div class="card">${ldHTML('Finding opportunities...')}</div>`;
-  const encoded=encodeURIComponent(q);
-  const encodedLoc=encodeURIComponent(loc.split(',')[0].trim());
-  const links=[
-    {name:'LinkedIn',url:'https://www.linkedin.com/jobs/search/?keywords='+encoded+'&location='+encodedLoc,color:'#0077B5'},
-    {name:'Naukri',url:'https://www.naukri.com/'+q.toLowerCase().replace(/[^a-z0-9]+/g,'-')+'-jobs',color:'#FF7555'},
-    {name:'Indeed',url:'https://in.indeed.com/jobs?q='+encoded+'&l='+encodedLoc,color:'#003A9B'},
-    {name:'Glassdoor',url:'https://www.glassdoor.co.in/Job/jobs.htm?sc.keyword='+encoded,color:'#0CAA41'},
-    {name:'Wellfound',url:'https://wellfound.com/jobs?q='+encoded,color:'#EF5858'},
-  ];
-  const linkHTML='<div style="margin-bottom:14px"><div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--t2);margin-bottom:8px">Apply directly on</div><div style="display:flex;flex-wrap:wrap;gap:7px">'+links.map(function(l){return '<a href="'+l.url+'" target="_blank" style="display:inline-flex;align-items:center;gap:5px;padding:7px 12px;border-radius:var(--rs);background:'+l.color+';color:#fff;font-size:12px;font-weight:600;text-decoration:none">'+l.name+' \u2192</a>';}).join('')+'</div></div>';
-  try{
-    const r=await ai('Job: "'+q+'" | Level: '+lvl+' | Location: '+loc+'\nCandidate: '+C.exp+' exp, skills: '+C.skills+', target: '+C.target+'\n\nShort analysis (max 150 words):\n1. Match strength for this candidate (one sentence)\n2. Top 3 company types hiring for this role in '+loc+'\n3. Exact LinkedIn search string to copy-paste\n4. One skill gap to address in application\n5. Approx salary range for '+lvl+' in India\nNo fabricated URLs.');
-    document.getElementById('j-results').innerHTML='<div class="card">'+linkHTML+'<div style="border-top:1px solid var(--b1);padding-top:12px"><div class="cl">Market intelligence for &ldquo;'+q+'&rdquo;</div><div class="ai-body">'+fmt(r)+'</div></div></div>';
-  }catch(e){
-    document.getElementById('j-results').innerHTML='<div class="card">'+linkHTML+'<div style="font-size:12px;color:var(--am)">AI analysis unavailable \u2014 use links above to search directly.</div></div>';
+    const data = await resp.json();
+    const text = data.content?.[0]?.text || '';
+    if (statusEl) statusEl.textContent = 'Lab ready — generated ' + new Date().toLocaleTimeString();
+    renderMarkdown(text, targetEl);
+    addCopyButtons();
+  } catch (e) {
+    targetEl.innerHTML = `<div style="color:var(--red);padding:10px 0">
+      <strong>Error:</strong> ${e.message}<br><br>
+      <span style="color:var(--text3);font-size:12px">Make sure you have a valid Anthropic API key. This app calls Claude directly.</span>
+    </div>`;
+    if (statusEl) statusEl.textContent = 'Error — see output';
   }
 }
 
-async function analyseJD(){
-  const jd=document.getElementById('jd-text').value.trim();
-  if(!jd){toast('Paste a job description first','var(--am)');return}
-  document.getElementById('jd-out').innerHTML='<div class="card">'+ldHTML('Analysing fit...')+'</div>';
-  try{
-    const r=await ai('JD:\n'+jd+'\n\nCandidate: '+C.role+', skills: '+C.skills+', target: '+C.target+', exp: '+C.exp+'\n\nStrict fit analysis:\n1. Match score 0-100 with one-line reason\n2. Skills you HAVE that match\n3. Skills MISSING and weeks to close each\n4. Top 3 strengths to lead with\n5. One concern the interviewer might raise\nBe specific. Under 200 words.');
-    document.getElementById('jd-out').innerHTML='<div class="card card-accent"><div class="cl">Fit Analysis</div><div class="ai-body">'+fmt(r)+'</div></div>';
-  }catch(e){document.getElementById('jd-out').innerHTML=errHTML(e)}
+// ─── MARKDOWN RENDERER ───────────────────────────────────────────────────────
+function renderMarkdown(text, el) {
+  let html = text
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/```(\w+)?\n?([\s\S]*?)```/g, (_, lang, code) =>
+      `<pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code>${code.trim()}</code></pre>`)
+    .replace(/`([^`]+)`/g, '<code>$1</code>')
+    .replace(/^### (.+)$/gm, '<h3>$1</h3>')
+    .replace(/^## (.+)$/gm, '<h2>$1</h2>')
+    .replace(/^# (.+)$/gm, '<h1>$1</h1>')
+    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g, '<em>$1</em>')
+    .replace(/^---$/gm, '<hr>')
+    .replace(/^\> (.+)$/gm, '<blockquote>$1</blockquote>')
+    .replace(/^[\*\-] (.+)$/gm, '<li>$1</li>')
+    .replace(/^(\d+)\. (.+)$/gm, '<li>$2</li>')
+    .replace(/(<li>.*<\/li>\n?)+/g, s => `<ul>${s}</ul>`)
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>')
+    .replace(/\n\n/g, '</p><p>')
+    .replace(/\n/g, '<br>');
+  el.innerHTML = `<p>${html}</p>`;
 }
 
-async function prepFromJD(){
-  const jd=document.getElementById('jd-text').value.trim();
-  if(!jd){toast('Paste a job description first','var(--am)');return}
-  goTab('prep');
-  document.getElementById('p-role').value=jd;
-  await genQuestions();
-}
-
-async function loadMarketPulse(){
-  document.getElementById('market-pulse').innerHTML=ldHTML('Loading trends...');
-  try{
-    const r=await ai('Mid-2026 market. Background: '+C.skills+'. Target: '+C.target+'.\n\nTop 5 fastest-growing roles relevant to this candidate. For each: role name, trend arrow (up/stable/emerging), one reason it fits, one skill gap, India salary range. Under 150 words. Direct and specific.');
-    document.getElementById('market-pulse').innerHTML='<div class="ai-body">'+fmt(r)+'</div>';
-  }catch(e){document.getElementById('market-pulse').innerHTML=errHTML(e)}
-}
-
-// ═══ INTERVIEW PREP ════════════════════════════════════════════
-async function genQuestions(){
-  const input=document.getElementById('p-role').value.trim();
-  const type=document.getElementById('p-type').value;
-  const diff=document.getElementById('p-diff').value;
-  if(!input){toast('Enter a role or paste a JD','var(--am)');return}
-  document.getElementById('p-questions').innerHTML='<div class="card">'+ldHTML('Generating questions...')+'</div>';
-  try{
-    const r=await ai('Role/JD: '+input+'\nType: '+type+' | Panel: '+diff+'\nCandidate: '+C.role+', '+C.exp+' exp, skills: '+C.skills+'\n\nGenerate 10 interview questions a '+diff+' would ask this candidate.\nFor each: question, why they ask it, tone guide (one line), one phrase to avoid, STAR hint using candidate background.\nMake questions specific to the candidate. No generic questions. Under 400 words total.');
-    document.getElementById('p-questions').innerHTML='<div class="card"><div class="cl">10 Questions</div><div class="ai-body">'+fmt(r)+'</div></div>';
-    document.getElementById('p-practice').style.display='block';
-  }catch(e){document.getElementById('p-questions').innerHTML=errHTML(e)}
-}
-
-async function scoreAnswer(){
-  const q=document.getElementById('p-current-q').textContent;
-  const a=document.getElementById('p-answer').value.trim();
-  if(!a){toast('Write your answer first','var(--am)');return}
-  document.getElementById('p-feedback').innerHTML='<div class="card">'+ldHTML('Scoring...')+'</div>';
-  try{
-    const r=await ai('Q: '+q+'\nAnswer: '+a+'\nBackground: '+C.role+', '+C.skills+'\n\nScore /10 on: Relevance, Specific experience, STAR structure, Communication clarity, Senior impact language.\nOverall /10.\nWeakest element (quote exact phrase).\nRewrite the answer in candidate voice, senior tone, under 150 words.\nOne delivery note for speaking it aloud.\nBe strict. Under 250 words total.');
-    document.getElementById('p-feedback').innerHTML='<div class="card card-accent"><div class="cl">Score & Rewrite</div><div class="ai-body">'+fmt(r)+'</div></div>';
-  }catch(e){document.getElementById('p-feedback').innerHTML=errHTML(e)}
-}
-
-async function toneCoach(){
-  const txt=document.getElementById('tone-input').value.trim();
-  if(!txt){toast('Paste your answer first','var(--am)');return}
-  document.getElementById('tone-out').innerHTML=ldHTML('Analysing...');
-  try{
-    const r=await ai('Analyse interview answer tone:\n"'+txt+'"\n\nCheck: confidence level, passive vs active voice (quote examples), hedging language ("kind of","I think"), pace notes for speaking, opening strength, closing strength.\nRewrite opening 2 sentences stronger.\nUnder 150 words.');
-    document.getElementById('tone-out').innerHTML='<div class="ai-wrap" style="margin-top:10px"><div class="ai-lbl">Tone Analysis</div><div class="ai-body">'+fmt(r)+'</div></div>';
-  }catch(e){document.getElementById('tone-out').innerHTML=errHTML(e)}
-}
-
-// ═══ RESUME ════════════════════════════════════════════════════
-async function handleResume(e){
-  const file=e.target.files[0];if(!file)return;
-  if(file.type==='application/pdf'){
-    const reader=new FileReader();
-    reader.onload=function(ev){
-      const arr=new Uint8Array(ev.target.result);
-      let str='';for(let i=0;i<arr.length;i++)if(arr[i]>31&&arr[i]<127)str+=String.fromCharCode(arr[i]);
-      const chunks=str.match(/[A-Za-z][A-Za-z0-9 ,.\-:()\n]{15,}/g)||[];
-      document.getElementById('r-text').value=chunks.join('\n').slice(0,4000)||'PDF extraction limited. Please paste your resume text manually.';
-      toast('PDF processed \u2014 verify text and analyse');
-    };
-    reader.readAsArrayBuffer(file);
-  }else{
-    const reader=new FileReader();
-    reader.onload=function(ev){document.getElementById('r-text').value=ev.target.result;toast('File loaded')};
-    reader.readAsText(file);
-  }
-}
-
-async function analyseResume(){
-  const txt=document.getElementById('r-text').value.trim();
-  const target=document.getElementById('r-target').value.trim()||C.target||'AI Security Engineer';
-  const depth=document.getElementById('r-depth').value;
-  if(!txt){toast('Upload or paste your resume first','var(--am)');return}
-  document.getElementById('r-out').innerHTML='<div class="card">'+ldHTML('Analysing resume...')+'</div>';
-  try{
-    let prompt='Resume:\n'+txt.slice(0,3000)+'\n\nTarget: '+target+'\nMarket: 2026, AI Security / LLM Engineering\n\n';
-    if(depth==='full')prompt+='Full audit:\n1. Score /100 (Content 30, Clarity 20, Metrics 20, ATS 15, Positioning 15)\n2. Top 3 strengths\n3. Top 5 weaknesses (quote exact line, rewrite stronger)\n4. Missing ATS keywords for '+target+'\n5. Rewrite professional summary in one paragraph\n6. One structural change for higher callback rate\nUnder 300 words.';
-    else if(depth==='quick')prompt+='Quick scan: top 5 issues only. Quote the problem and fix for each. Under 150 words.';
-    else if(depth==='ats')prompt+='ATS audit only: list keyword gaps for '+target+'. Group: Must-have missing, Nice-to-have missing, Present. Under 100 words.';
-    else prompt+='Rewrite professional summary only for '+target+'. Use candidate background: '+C.skills+'. Under 60 words. No clichés.';
-    const r=await ai(prompt);
-    document.getElementById('r-out').innerHTML='<div class="card card-accent"><div class="cl">Resume Analysis</div><div class="ai-body">'+fmt(r)+'</div></div>';
-  }catch(e){document.getElementById('r-out').innerHTML=errHTML(e)}
-}
-
-// ═══ AI COACH CHAT ══════════════════════════════════════════════
-async function sendChat(){
-  const inp=document.getElementById('chat-in');
-  const msg=inp.value.trim();if(!msg)return;
-  inp.value='';
-  appendChat('user',msg);
-  chatHistory.push({role:'user',content:msg});
-  const thinkEl=appendChat('ai','...',true);
-  try{
-    const r=await ai(msg,null,true);
-    thinkEl.querySelector('.ai-body').innerHTML=fmt(r);
-    chatHistory.push({role:'assistant',content:r});
-    if(chatHistory.length>20)chatHistory=chatHistory.slice(-20);
-    D.chatHist=chatHistory;sv();
-  }catch(e){thinkEl.querySelector('.ai-body').innerHTML='<span style="color:var(--rd)">'+e.message+'</span>'}
-}
-
-function quickAsk(q){
-  document.getElementById('chat-in').value=q;
-  goTab('coach');
-  sendChat();
-}
-
-function appendChat(role,text,isLoading){
-  const box=document.getElementById('chat-box');
-  const el=document.createElement('div');
-  if(role==='user'){
-    el.className='user-wrap';
-    el.innerHTML=`<div class="user-body">${text}</div>`;
-  }else{
-    el.className='ai-wrap';
-    el.innerHTML=`<div class="ai-lbl">CareerOS</div><div class="ai-body">${isLoading?ldHTML():fmt(text)}</div>`;
-  }
-  box.appendChild(el);
-  box.scrollTop=box.scrollHeight;
-  return el;
-}
-
-// ═══ PORTFOLIO ════════════════════════════════════════════════════
-function addPortfolioWin(){
-  const title=document.getElementById('pf-title').value.trim();
-  const outcome=document.getElementById('pf-outcome').value.trim();
-  const skills=document.getElementById('pf-skills').value.trim();
-  if(!title||!outcome){toast('Fill in title and outcome','var(--am)');return}
-  D.portfolio.unshift({date:tod(),title,outcome,skills});
-  if(D.portfolio.length>50)D.portfolio.pop();
-  sv();renderPortfolio();
-  document.getElementById('pf-title').value='';
-  document.getElementById('pf-outcome').value='';
-  document.getElementById('pf-skills').value='';
-  toast('Portfolio win added ✓');
-}
-
-function renderPortfolio(){
-  const el=document.getElementById('pf-list');if(!el)return;
-  if(!D.portfolio.length){el.innerHTML='<div style="font-size:13px;color:var(--t3)">No wins logged yet. Add your first portfolio entry above.</div>';return}
-  el.innerHTML=D.portfolio.slice(0,10).map(p=>`<div class="pf-item"><div class="pf-date">${p.date}</div><div class="pf-title">${p.title}</div><div class="pf-desc">${p.outcome}</div>${p.skills?`<div class="tags" style="margin-top:5px">${p.skills.split(',').map(s=>`<span class="badge bg-bl">${s.trim()}</span>`).join('')}</div>`:''}</div>`).join('');
-}
-
-// ═══ EVENING ════════════════════════════════════════════════════
-function setMood(i){document.querySelectorAll('.mood-btn').forEach((b,j)=>b.classList.toggle('sel',j===i));D.todayMood=i}
-
-async function saveEvening(){
-  const win=document.getElementById('e-win').value.trim();
-  const imp=document.getElementById('e-imp').value.trim();
-  const know=document.getElementById('e-know').value.trim();
-  if(!win){toast('Log at least one win','var(--am)');return}
-  D.eLog[tod()]={win,imp,know,mood:D.todayMood,focus:D.focusDone[tod()]||{}};
-  D.commHist.push({date:tod(),win,imp,know});
-  if(D.commHist.length>90)D.commHist=D.commHist.slice(-90);
-  updStreak();sv();toast('Day closed. Streak updated ✓');
-  renderDrill();
-  analyseCommAsync(win,imp);
-  if(new Date().getDay()===0)generateWeeklyReport();
-  if(C.ght)syncGitHub(false);
-}
-
-async function analyseCommAsync(win,imp){
-  try{
-    const r=await ai(`Analyse these two evening reflection entries for communication quality:\n\nWin: "${win}"\nImprovement: "${imp}"\n\nCheck strictly:\n1. Does the win statement use passive voice? (flag it)\n2. Is there a specific, measurable outcome? (or is it vague?)\n3. Does the person own their actions with "I"?\n4. Is the improvement statement concrete and behavioural?\n\nProvide: ONE specific rewrite of the win statement in stronger form. Under 50 words. Quote what was weak. No praise.`);
-    document.getElementById('comm-out').innerHTML=`<div class="ai-body">${fmt(r)}</div>`;
-    document.getElementById('comm-analysis').style.display='block';
-  }catch(e){}
-}
-
-async function generateWeeklyReport(){
-  const logs=Object.entries(D.eLog).slice(-7);
-  if(logs.length<3)return;
-  const summary=logs.map(([date,v])=>`${date}: Win="${v.win}" | Mood=${v.mood>=2?'Good':'Low'}`).join('\n');
-  const thisWeek=Array.from({length:7},(_,i)=>{const d=new Date();d.setDate(d.getDate()-i);return d.toISOString().slice(0,10)});
-  const focusDone=thisWeek.reduce((a,d)=>a+Object.values(D.focusDone[d]||{}).filter(Boolean).length,0);
-  try{
-    const r=await ai(`Weekly data:\n${summary}\nFocus blocks completed: ${focusDone}/21\n\nGenerate a strict weekly performance report:\n1. EXECUTION RATE: ${focusDone}/21 blocks — what this means\n2. COMMUNICATION PATTERN: one specific pattern observed across the win statements\n3. SKILL GAP SIGNAL: what the reflections reveal about where growth is needed\n4. MOOD TREND: what the mood data suggests\n5. NEXT WEEK PRIORITY: one specific focus — not generic\n\nBe direct, factual, no encouragement. Results only.`);
-    document.getElementById('wr-content').innerHTML=`<div class="ai-body">${fmt(r)}</div>`;
-    document.getElementById('weekly-report').style.display='block';
-  }catch(e){}
-}
-
-function renderEvening(){
-  const foci=getTodayFocus();
-  const done=D.focusDone[tod()]||{};
-  const el=document.getElementById('eve-blocks');if(!el)return;
-  el.innerHTML='';
-  foci.forEach((f,i)=>{
-    const isDone=!!done[i];
-    const d=document.createElement('div');
-    d.className='fi-item';
-    d.innerHTML=`<div class="fi-check${isDone?' done':''}">${isDone?'<svg width="12" height="12" fill="none" stroke="white" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>':''}</div><div><div class="fi-text${isDone?' done':''}">${f.t}</div></div>`;
-    el.appendChild(d);
+function addCopyButtons() {}
+function copyCode(btn) {
+  const code = btn.nextElementSibling.textContent;
+  navigator.clipboard.writeText(code).then(() => {
+    btn.textContent = 'Copied!';
+    setTimeout(() => btn.textContent = 'Copy', 2000);
   });
 }
 
-// ═══ SETTINGS ════════════════════════════════════════════════════
-function loadSettings(){
-  document.getElementById('s-key').value=C.key||'';
-  document.getElementById('s-model').value=C.model||MODELS_FALLBACK[0];
-  document.getElementById('s-name').value=C.name||'';
-  document.getElementById('s-role').value=C.role||'';
-  document.getElementById('s-target').value=C.target||'';
-  document.getElementById('s-exp').value=C.exp||'6+';
-  document.getElementById('s-skills').value=C.skills||'';
-  document.getElementById('s-loc').value=C.loc||'';
-  document.getElementById('s-gh').value=C.gh||'TarunTangella';
-  document.getElementById('s-ght').value=C.ght||'';
-  document.getElementById('s-repo').value=C.repo||'career-os-data';
-  document.getElementById('s-jloc').value=C.jloc||'';
+// ─── NAV ─────────────────────────────────────────────────────────────────────
+function setActive(fn) {
+  document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
 }
 
-function saveSettings(){
-  const k=document.getElementById('s-key').value.trim();
-  if(k&&!k.startsWith('sk-or-')){toast('OpenRouter key must start with sk-or-','var(--rd)');return}
-  if(k)C.key=k;
-  C.model=document.getElementById('s-model').value;
-  C.name=document.getElementById('s-name').value.trim();
-  C.role=document.getElementById('s-role').value.trim();
-  C.target=document.getElementById('s-target').value.trim();
-  C.exp=document.getElementById('s-exp').value.trim();
-  C.skills=document.getElementById('s-skills').value.trim();
-  C.loc=document.getElementById('s-loc').value.trim();
-  C.gh=document.getElementById('s-gh').value.trim();
-  C.ght=document.getElementById('s-ght').value.trim();
-  C.repo=document.getElementById('s-repo').value.trim();
-  C.jloc=document.getElementById('s-jloc').value.trim();
-  svC();toast('Settings saved ✓');
-  renderHome();
+function showHome() {
+  hideAll();
+  document.getElementById('home-section').style.display = '';
+  document.getElementById('topbar-title').textContent = 'Dashboard';
+  document.getElementById('topbar-tag').textContent = 'AI Engineering Lab';
+  currentSection = 'home';
+  updateNavActive('home');
 }
 
-function exportData(){
-  const blob=new Blob([JSON.stringify({config:{...C,key:'[REDACTED]',ght:'[REDACTED]'},data:D},null,2)],{type:'application/json'});
-  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=`careeros-backup-${tod()}.json`;a.click();
+function hideAll() {
+  document.getElementById('home-section').style.display = 'none';
+  document.getElementById('lab-section').style.display = 'none';
+  document.getElementById('track-section').style.display = 'none';
+  document.getElementById('custom-section').style.display = 'none';
 }
 
-// ═══ GITHUB SYNC ══════════════════════════════════════════════════
-async function syncGitHub(manual){
-  if(!C.ght||!C.gh||!C.repo){if(manual)toast('Configure GitHub token in Settings first','var(--am)');return}
-  try{
-    const content=btoa(unescape(encodeURIComponent(JSON.stringify(D,null,2))));
-    let sha='';
-    try{const r=await fetch(`https://api.github.com/repos/${C.gh}/${C.repo}/contents/data.json`,{headers:{Authorization:`token ${C.ght}`,'User-Agent':'CareerOS'}});if(r.ok){const d=await r.json();sha=d.sha}}catch(e){}
-    const body={message:`CareerOS sync ${tod()}`,content};
-    if(sha)body.sha=sha;
-    const res=await fetch(`https://api.github.com/repos/${C.gh}/${C.repo}/contents/data.json`,{method:'PUT',headers:{Authorization:`token ${C.ght}`,'Content-Type':'application/json','User-Agent':'CareerOS'},body:JSON.stringify(body)});
-    if(manual)toast(res.ok?'Synced to GitHub ✓':'Sync failed — check token','var(--am)');
-  }catch(e){if(manual)toast('Sync error: '+e.message,'var(--rd)')}
+function updateNavActive(id) {
+  document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
 }
 
-// ═══ NAV ══════════════════════════════════════════════════════════
-function goTab(name,btn){
-  document.querySelectorAll('.sc').forEach(s=>s.classList.remove('on'));
-  document.querySelectorAll('.nb').forEach(b=>b.classList.remove('on'));
-  const sc=document.getElementById('sc-'+name);
-  const nb=document.getElementById('nb-'+name);
-  if(sc)sc.classList.add('on');
-  if(nb)nb.classList.add('on');
-  else if(btn)btn.classList.add('on');
+// ─── TRACK VIEW ──────────────────────────────────────────────────────────────
+function showTrack(trackId) {
+  currentTrack = trackId;
+  const track = TRACKS[trackId];
+  hideAll();
+  const s = document.getElementById('track-section');
+  s.style.display = '';
+  document.getElementById('topbar-title').textContent = track.name;
+  document.getElementById('topbar-tag').textContent = track.icon + ' ' + track.name;
+  document.getElementById('bc-track2').textContent = track.name;
+  document.getElementById('track-title').textContent = track.icon + ' ' + track.name;
+  document.getElementById('track-desc').textContent = track.desc;
+  currentSection = 'track';
+
+  // Build lab list
+  const body = document.getElementById('ai-output2-body');
+  const header = document.getElementById('ai-output2-header');
+  header.querySelector('span').textContent = track.name + ' — ' + track.labs.length + ' labs';
+
+  let html = '<div style="margin-bottom:8px;font-size:12px;color:var(--text3)">Click a lab to generate it with current 2026 tools and real code.</div>';
+  track.labs.forEach((lab, i) => {
+    const done = completedLabs.includes(trackId + '_' + i);
+    html += `<div class="lab-item ${done ? 'li-done' : ''}" onclick="openLab('${trackId}',${i})">
+      <div class="li-num">Lab ${i+1}</div>
+      <div class="li-info">
+        <div class="li-title">${done ? '✅ ' : ''}${lab.title}</div>
+        <div class="li-desc">${lab.desc}</div>
+      </div>
+      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
+        ${lab.tags.map(t => `<span class="tag tag-blue" style="font-size:10px;padding:2px 7px">${t}</span>`).join('')}
+        <span class="li-time">${lab.time}</span>
+      </div>
+    </div>`;
+  });
+  body.innerHTML = html;
 }
 
-// ═══ HELPERS ══════════════════════════════════════════════════════
-function ldHTML(m='Loading...'){return`<div class="ld"><div class="ld-dot"></div><div class="ld-dot"></div><div class="ld-dot"></div><span>${m}</span></div>`}
-function errHTML(e){return`<div class="card" style="border-color:var(--rd);margin-top:8px"><div style="font-size:13px;color:var(--rd);font-weight:500">Error: ${e.message||'Something went wrong'}</div><div style="font-size:12px;color:var(--t2);margin-top:5px">Check your OpenRouter key in Settings. Make sure it starts with sk-or-v1-</div></div>`}
-function fmt(t){
-  return t
-    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-    .replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>')
-    .replace(/\*(.*?)\*/g,'<em>$1</em>')
-    .replace(/`(.*?)`/g,'<code style="background:var(--s3);padding:1px 5px;border-radius:4px;font-size:13px">$1</code>')
-    .replace(/\n\n/g,'</p><p style="margin-top:8px">')
-    .replace(/\n/g,'<br>')
-    .replace(/^/,'<p>').replace(/$/,'</p>');
+// ─── LAB VIEW ─────────────────────────────────────────────────────────────────
+function openLab(trackId, labIdx) {
+  const track = TRACKS[trackId];
+  const lab = track.labs[labIdx];
+  currentTrack = trackId;
+  currentLabIdx = labIdx;
+  currentSection = 'lab';
+
+  hideAll();
+  document.getElementById('lab-section').style.display = '';
+  document.getElementById('topbar-title').textContent = lab.title;
+  document.getElementById('bc-track').textContent = track.name;
+  document.getElementById('bc-lab').textContent = lab.title;
+  document.getElementById('lab-title').textContent = lab.title;
+  document.getElementById('lab-desc').textContent = lab.desc;
+  document.getElementById('lab-meta').innerHTML = lab.tags.map(t =>
+    `<span class="tag tag-blue">${t}</span>`).join('') + `<span class="tag tag-amber">${lab.time}</span>`;
+
+  const prompt = `Generate a complete hands-on lab for: "${lab.title}"
+
+Context: ${lab.desc}
+Track: ${track.name}
+Time budget: ${lab.time}
+
+Structure the lab as:
+## What you'll build
+(One paragraph — specific deliverable the developer will have at the end)
+
+## Prerequisites
+(Exact packages to install with versions, e.g. pip install langchain==0.3.x)
+
+## Concept in 2 minutes
+(Core idea explained simply with a real analogy — not textbook definition)
+
+## Step-by-step lab
+
+### Step 1: [name]
+(Code + what to run + expected output)
+
+### Step 2: [name]
+...continue until complete
+
+## Real-world variation
+(Show how this is used in banking/financial services or an enterprise context)
+
+## Common errors and fixes
+(The 3 most common mistakes developers make in this lab)
+
+## What to build next
+(One specific next project that uses this skill)
+
+## References
+- Official docs: [real URL]
+- Best tutorial: [real URL]  
+- GitHub example: [real URL]
+
+Make every code example runnable. Use Python 3.11+. Include actual version numbers for all packages. Banking domain for examples where applicable.`;
+
+  const body = document.getElementById('ai-output-body');
+  const status = document.getElementById('ai-status');
+  body.className = 'loading';
+  callClaude(prompt, body, status).then(() => { body.className = ''; });
 }
 
-// ═══ CONNECTION TEST ══════════════════════════════════════════════
-async function testConnection(){
-  const k=document.getElementById('s-key').value.trim()||C.key;
-  if(!k){toast('Enter your OpenRouter key first','var(--am)');return}
-  toast('Testing connection...','var(--ac)');
-  try{
-    const model=document.getElementById('s-model').value||'google/gemma-4-31b-it:free';
-    const r=await fetch('https://openrouter.ai/api/v1/chat/completions',{
-      method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':`Bearer ${k}`,'HTTP-Referer':'https://taruntangella.github.io/career-os','X-Title':'CareerOS'},
-      body:JSON.stringify({model,messages:[{role:'user',content:'Reply with exactly: CONNECTION OK'}],max_tokens:20})
-    });
-    const d=await r.json();
-    if(d.choices?.[0]?.message?.content){
-      toast('✓ Connected! Model: '+model.split('/')[1].split(':')[0],'var(--gr)');
-    } else if(d.error){
-      toast('Error: '+d.error.message.slice(0,60),'var(--rd)');
-    } else {
-      toast('Unexpected response — check console','var(--am)');
-    }
-  }catch(e){
-    if(e.message.includes('fetch')){toast('Network error — check internet connection','var(--rd)');}
-    else{toast('Failed: '+e.message.slice(0,60),'var(--rd)');}
+function refreshCurrentLab() {
+  if (currentSection === 'lab') openLab(currentTrack, currentLabIdx);
+  else if (currentSection === 'track') showTrack(currentTrack);
+  else if (currentSection === 'custom') runCustomLab();
+  else if (currentSection === 'project') showProject(currentProject);
+}
+
+function generateNextLab() {
+  const track = TRACKS[currentTrack];
+  if (!track) return;
+  const next = currentLabIdx + 1;
+  if (next < track.labs.length) openLab(currentTrack, next);
+  else showTrack(currentTrack);
+}
+
+function markDone() {
+  const key = currentTrack + '_' + currentLabIdx;
+  if (!completedLabs.includes(key)) {
+    completedLabs.push(key);
+    localStorage.setItem('ai_lab_done', JSON.stringify(completedLabs));
+    updateProgress();
   }
+  document.querySelector('.btn-primary').textContent = '✅ Done!';
+  setTimeout(() => { document.querySelector('.btn-primary').textContent = '✓ Mark complete'; }, 2000);
 }
 
-// ═══ BOOT ══════════════════════════════════════════════════════════
-window.addEventListener('load',()=>{
-  if(ldC()&&C.key&&C.key.startsWith('sk-or-')){
-    document.getElementById('setup').style.display='none';
-    document.getElementById('root').style.display='flex';
-    // restore chat history
-    ld();chatHistory=D.chatHist||[];
-    init();
-  }
-});
+// ─── PROJECTS ─────────────────────────────────────────────────────────────────
+let currentProject = null;
+function showProject(projId) {
+  currentProject = projId;
+  const proj = PROJECTS[projId];
+  hideAll();
+  const s = document.getElementById('track-section');
+  s.style.display = '';
+  document.getElementById('topbar-title').textContent = proj.name;
+  document.getElementById('bc-track2').textContent = proj.name;
+  document.getElementById('track-title').textContent = proj.name;
+  document.getElementById('track-desc').textContent = 'AI-generated on demand — refreshes with current market trends';
+  currentSection = 'project';
+
+  const body = document.getElementById('ai-output2-body');
+  const header = document.getElementById('ai-output2-header');
+  header.querySelector('span').textContent = 'Generating current projects...';
+  body.innerHTML = '';
+  callClaude(proj.prompt, body, header.querySelector('span'));
+}
+
+// ─── CUSTOM LAB ──────────────────────────────────────────────────────────────
+function showCustomLab() {
+  hideAll();
+  document.getElementById('custom-section').style.display = '';
+  document.getElementById('topbar-title').textContent = 'Ask anything';
+  currentSection = 'custom';
+}
+
+function runCustomLab() {
+  const topic = document.getElementById('custom-input').value.trim();
+  if (!topic) { alert('Please enter a topic first.'); return; }
+
+  document.getElementById('custom-output').style.display = '';
+  const body = document.getElementById('ai-output3-body');
+  const status = document.getElementById('custom-status');
+
+  const prompt = `Generate a complete hands-on lab for this topic: "${topic}"
+
+Make it:
+- Fully runnable with real code (not pseudocode)
+- Current tools as of mid-2026 with exact version numbers
+- Practical — something that could be part of a real project
+- Include install commands, step-by-step code, expected output, common errors, and real reference links
+
+Format with clear markdown headers. Banking or enterprise context preferred where applicable.`;
+
+  callClaude(prompt, body, status);
+}
+
+function suggestTopics() {
+  const body = document.getElementById('ai-output3-body');
+  document.getElementById('custom-output').style.display = '';
+  const prompt = `Suggest 10 specific hands-on AI engineering lab topics for mid-2026 that are:
+1. In high demand based on current job postings
+2. Buildable in 1-3 hours
+3. Relevant to someone from an IBM BAW/enterprise workflow background moving into AI
+
+Format as a numbered list with: topic name, why it matters now, estimated time. Be specific — no vague suggestions.`;
+  callClaude(prompt, body, document.getElementById('custom-status'));
+}
+
+// ─── PROGRESS ────────────────────────────────────────────────────────────────
+function updateProgress() {
+  const total = Object.values(TRACKS).reduce((s, t) => s + t.labs.length, 0);
+  const done = completedLabs.length;
+  document.getElementById('prog-count').textContent = done;
+  document.getElementById('s-done').textContent = done;
+  document.getElementById('s-labs').textContent = total;
+  document.getElementById('prog-fill').style.width = Math.round(done/total*100) + '%';
+}
+
+// ─── INIT ─────────────────────────────────────────────────────────────────────
+updateProgress();
 </script>
 </body>
 </html>
