@@ -638,14 +638,16 @@ select option{background:var(--s2);color:var(--tx)}
     <div class="fi"><label>OpenRouter API Key</label><input type="password" id="s-key" placeholder="sk-or-v1-..."></div>
     <div class="fi"><label>AI Model</label>
       <select id="s-model">
-        <option value="google/gemini-2.0-flash-exp:free">Gemini 2.0 Flash (Free)</option>
-        <option value="google/gemini-2.5-flash-preview:thinking">Gemini 2.5 Flash Thinking (Free)</option>
-        <option value="meta-llama/llama-3.3-70b-instruct:free">Llama 3.3 70B (Free)</option>
-        <option value="deepseek/deepseek-r1:free">DeepSeek R1 (Free)</option>
-        <option value="qwen/qwen-2.5-72b-instruct:free">Qwen 2.5 72B (Free)</option>
+        <option value="deepseek/deepseek-r1:free">DeepSeek R1 — Best reasoning (Free)</option>
+        <option value="meta-llama/llama-3.3-70b-instruct:free">Llama 3.3 70B — Balanced (Free)</option>
+        <option value="deepseek/deepseek-v3:free">DeepSeek V3 — Fast (Free)</option>
+        <option value="qwen/qwen3-8b:free">Qwen 3 8B — Lightweight (Free)</option>
+        <option value="microsoft/phi-4:free">Microsoft Phi-4 — Efficient (Free)</option>
+        <option value="google/gemma-3-27b-it:free">Google Gemma 3 27B (Free)</option>
         <option value="mistralai/mistral-7b-instruct:free">Mistral 7B (Free)</option>
         <option value="anthropic/claude-3.5-sonnet">Claude 3.5 Sonnet (Paid)</option>
         <option value="openai/gpt-4o-mini">GPT-4o Mini (Paid)</option>
+        <option value="openai/gpt-4o">GPT-4o (Paid)</option>
       </select>
     </div>
     <div class="setup-note" style="margin-bottom:10px">Free models have no cost. Paid models require OpenRouter credits.</div>
@@ -677,6 +679,7 @@ select option{background:var(--s2);color:var(--tx)}
   </div>
 
   <button class="btn bp" onclick="saveSettings()" style="margin-bottom:10px">Save Settings</button>
+  <button class="btn bs" onclick="testConnection()" style="margin-bottom:10px">Test API Connection</button>
   <button class="btn bs" onclick="exportData()" style="margin-bottom:10px">Export Data (JSON backup)</button>
   <button class="btn bs" onclick="syncGitHub(true)" style="margin-bottom:10px">Sync to GitHub Now</button>
   <div class="divider"></div>
@@ -723,11 +726,13 @@ let D={};   // data
 let chatHistory=[];
 
 const MODELS_FALLBACK=[
-  'google/gemini-2.0-flash-exp:free',
-  'google/gemini-2.5-flash-preview:thinking',
+  'deepseek/deepseek-r1:free',
   'meta-llama/llama-3.3-70b-instruct:free',
-  'qwen/qwen-2.5-72b-instruct:free',
-  'deepseek/deepseek-r1:free'
+  'deepseek/deepseek-v3:free',
+  'qwen/qwen3-8b:free',
+  'microsoft/phi-4:free',
+  'google/gemma-3-27b-it:free',
+  'mistralai/mistral-7b-instruct:free'
 ];
 
 const FOCUS_POOL=[
@@ -798,7 +803,8 @@ async function ai(prompt,sys,isChat){
       if(txt)return txt;
     }catch(e){if(e.message?.includes('fetch')||e.message?.includes('network'))throw e;continue}
   }
-  throw new Error('All models failed. Check your OpenRouter key in Settings.');
+  // Check if it's a rate limit day cap
+throw new Error('All models at capacity. Free tier allows 200 requests/day. Try again tomorrow or switch model in Settings.');
 }
 
 async function aiSearch(topic){
@@ -841,7 +847,7 @@ function launchApp(){
   C.gh=document.getElementById('su-gh').value.trim();
   C.ght=document.getElementById('su-ght').value.trim();
   C.repo='career-os-data';
-  C.model=MODELS_FALLBACK[0];
+  C.model='deepseek/deepseek-r1:free';
   svC();
   document.getElementById('setup').style.display='none';
   document.getElementById('root').style.display='flex';
@@ -943,7 +949,7 @@ async function loadSignal(force){
     const r=await ai(`Today is ${new Date().toDateString()}.\n\nGenerate ONE specific, actionable career intelligence signal for someone with this profile:\n- Current: ${C.role||'Senior IBM BAW Developer'}\n- Target: ${C.target||'AI Security Engineer'}\n- Skills: ${C.skills}\n\nThe signal must be ONE of:\n(a) A specific skill gap the market is paying premium for RIGHT NOW that this person is close to having\n(b) A specific emerging role intersection (e.g. "Banking + AI Red Teaming") with near-zero competition\n(c) A concrete action this person can take TODAY that will move them toward their target\n\nBe specific to this person's background. 2-3 sentences max. No generic advice. No fabricated statistics.`);
     D.sigCache[k]=fmt(r);sv();
     document.getElementById('signal-txt').innerHTML=D.sigCache[k];
-  }catch(e){document.getElementById('signal-txt').innerHTML=`<span style="color:var(--am)">Signal unavailable.</span> Check your OpenRouter key in Settings → try Refresh.`}
+  }catch(e){document.getElementById('signal-txt').innerHTML=`<span style="color:var(--am)">Signal unavailable.</span> Possible causes: (1) Free model daily limit reached (200/day) — try again tomorrow, (2) Check key in Settings starts with sk-or-v1-, (3) Try switching model in Settings to DeepSeek R1 or Llama 3.3.`}
 }
 
 // ═══ MORNING ════════════════════════════════════════════════════
@@ -1262,6 +1268,32 @@ function fmt(t){
     .replace(/\n\n/g,'</p><p style="margin-top:8px">')
     .replace(/\n/g,'<br>')
     .replace(/^/,'<p>').replace(/$/,'</p>');
+}
+
+// ═══ CONNECTION TEST ══════════════════════════════════════════════
+async function testConnection(){
+  const k=document.getElementById('s-key').value.trim()||C.key;
+  if(!k){toast('Enter your OpenRouter key first','var(--am)');return}
+  toast('Testing connection...','var(--ac)');
+  try{
+    const model=document.getElementById('s-model').value||'meta-llama/llama-3.3-70b-instruct:free';
+    const r=await fetch('https://openrouter.ai/api/v1/chat/completions',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':`Bearer ${k}`,'HTTP-Referer':'https://taruntangella.github.io/career-os','X-Title':'CareerOS'},
+      body:JSON.stringify({model,messages:[{role:'user',content:'Reply with exactly: CONNECTION OK'}],max_tokens:20})
+    });
+    const d=await r.json();
+    if(d.choices?.[0]?.message?.content){
+      toast('✓ Connected! Model: '+model.split('/')[1].split(':')[0],'var(--gr)');
+    } else if(d.error){
+      toast('Error: '+d.error.message.slice(0,60),'var(--rd)');
+    } else {
+      toast('Unexpected response — check console','var(--am)');
+    }
+  }catch(e){
+    if(e.message.includes('fetch')){toast('Network error — check internet connection','var(--rd)');}
+    else{toast('Failed: '+e.message.slice(0,60),'var(--rd)');}
+  }
 }
 
 // ═══ BOOT ══════════════════════════════════════════════════════════
