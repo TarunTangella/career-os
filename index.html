@@ -631,21 +631,42 @@ function saveSetup(){
 function loadCFG(){try{const c=localStorage.getItem('careerOS_cfg');if(c){CFG=JSON.parse(c);return true}}catch(e){}return false}
 
 // ── GEMINI ─────────────────────────────────────────────────────
-async function gemini(prompt,systemPrompt){
-  const sys=systemPrompt||buildSystemPrompt();
-  const messages=[{role:'user',parts:[{text:prompt}]}];
-  const body={contents:messages,systemInstruction:{parts:[{text:sys}]},generationConfig:{temperature:0.4,maxOutputTokens:1200}};
-  const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${CFG.geminiKey}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
-  if(!res.ok){const e=await res.json();throw new Error(e.error?.message||'API error')}
+const MODELS=['gemini-2.0-flash','gemini-1.5-flash','gemini-1.5-flash-latest','gemini-pro'];
+async function callGemini(model,body){
+  const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${CFG.geminiKey}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+  if(res.status===429){throw new Error('RATE_LIMIT')}
+  if(!res.ok){const e=await res.json();throw new Error(e.error?.message||`HTTP ${res.status}`)}
   const d=await res.json();
   return d.candidates?.[0]?.content?.parts?.[0]?.text||'';
 }
+async function gemini(prompt,systemPrompt){
+  const sys=systemPrompt||buildSystemPrompt();
+  const body={contents:[{role:'user',parts:[{text:prompt}]}],systemInstruction:{parts:[{text:sys}]},generationConfig:{temperature:0.4,maxOutputTokens:1200}};
+  for(const model of MODELS){
+    try{return await callGemini(model,body)}
+    catch(e){
+      if(e.message==='RATE_LIMIT'||e.message.includes('not found')||e.message.includes('404')){
+        await new Promise(r=>setTimeout(r,1500));continue;
+      }
+      throw e;
+    }
+  }
+  throw new Error('All models failed — check your API key at aistudio.google.com');
+}
 async function geminiSearch(prompt){
-  const body={contents:[{role:'user',parts:[{text:prompt}]}],tools:[{googleSearch:{}}],generationConfig:{temperature:0.2,maxOutputTokens:1500}};
-  const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${CFG.geminiKey}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
-  if(!res.ok){const e=await res.json();throw new Error(e.error?.message||'API error')}
-  const d=await res.json();
-  return d.candidates?.[0]?.content?.parts?.[0]?.text||'';
+  // Try with search grounding first, fall back to plain if unsupported
+  const bodySearch={contents:[{role:'user',parts:[{text:prompt}]}],tools:[{googleSearch:{}}],generationConfig:{temperature:0.2,maxOutputTokens:1500}};
+  const bodyPlain={contents:[{role:'user',parts:[{text:prompt}]}],generationConfig:{temperature:0.2,maxOutputTokens:1500}};
+  for(const model of MODELS){
+    try{return await callGemini(model,bodySearch)}
+    catch(e){
+      if(e.message==='RATE_LIMIT'){await new Promise(r=>setTimeout(r,1500));continue;}
+      // Search grounding may not be supported on this model, try plain
+      try{return await callGemini(model,bodyPlain)}
+      catch(e2){if(e2.message==='RATE_LIMIT'){await new Promise(r=>setTimeout(r,1500));continue;}continue;}
+    }
+  }
+  throw new Error('All models failed — check your API key');
 }
 function buildSystemPrompt(){
   return`You are a strict, result-oriented career intelligence system for ${CFG.name||'the user'}.
@@ -763,7 +784,7 @@ async function loadSignal(force){
     DATA.signalCache[cacheKey]=clean;
     save();
     document.getElementById('signal-text').innerHTML=formatAI(clean);
-  }catch(e){document.getElementById('signal-text').textContent='Could not load signal — check your API key in Settings.'}
+  }catch(e){document.getElementById('signal-text').innerHTML='<span style="color:var(--amber)">Could not load signal.</span> Go to <strong>Settings</strong> and verify your Gemini key starts with <strong>AIzaSy</strong>. If correct, wait 5 minutes for the key to activate, then tap Refresh Signal.'}
 }
 
 // ── MORNING SAVE ───────────────────────────────────────────────
