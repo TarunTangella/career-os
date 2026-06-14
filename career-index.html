@@ -1,0 +1,1020 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Career OS">
+<meta name="theme-color" content="#0A0F1E">
+<title>Career Intelligence OS — Tarun Tangella</title>
+<style>
+:root {
+  --bg: #0A0F1E;
+  --surface: #111827;
+  --surface2: #1a2235;
+  --border: rgba(255,255,255,0.08);
+  --border2: rgba(255,255,255,0.14);
+  --text: #F0F4FF;
+  --muted: #8892A4;
+  --accent: #4F8EF7;
+  --accent2: #7C5CFC;
+  --green: #22C55E;
+  --amber: #F59E0B;
+  --red: #EF4444;
+  --gold: #F0B429;
+  --radius: 14px;
+  --radius-sm: 8px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.5;overflow:hidden}
+#app{display:flex;flex-direction:column;height:100vh;max-width:430px;margin:0 auto;position:relative}
+
+/* NAV */
+#nav{display:flex;background:var(--surface);border-top:1px solid var(--border);padding:8px 4px calc(8px + env(safe-area-inset-bottom));flex-shrink:0;order:2}
+.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 2px;border:none;background:transparent;color:var(--muted);font-size:10px;font-weight:500;cursor:pointer;border-radius:var(--radius-sm);transition:color .15s}
+.nav-btn.active{color:var(--accent)}
+.nav-btn svg{width:22px;height:22px;stroke-width:1.8}
+
+/* SCREENS */
+#screens{flex:1;overflow:hidden;order:1;position:relative}
+.screen{position:absolute;inset:0;overflow-y:auto;padding:16px 16px calc(16px + env(safe-area-inset-bottom));display:none;-webkit-overflow-scrolling:touch}
+.screen.active{display:block}
+
+/* HEADER */
+.page-header{margin-bottom:20px}
+.page-eyebrow{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:4px}
+.page-title{font-size:24px;font-weight:700;color:var(--text);letter-spacing:-.02em}
+.page-sub{font-size:13px;color:var(--muted);margin-top:3px}
+
+/* CARDS */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:12px}
+.card-label{font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.card-label svg{width:14px;height:14px;opacity:.7}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:11px 18px;border-radius:var(--radius-sm);font-size:14px;font-weight:600;cursor:pointer;border:none;transition:all .15s;width:100%}
+.btn-primary{background:var(--accent);color:#fff}
+.btn-primary:hover{opacity:.88}
+.btn-secondary{background:var(--surface2);color:var(--text);border:1px solid var(--border2)}
+.btn-secondary:hover{border-color:var(--accent)}
+.btn-sm{padding:8px 14px;font-size:13px;width:auto}
+.btn-ghost{background:transparent;color:var(--accent);border:1px solid var(--accent);width:auto;padding:7px 14px;font-size:13px}
+
+/* INPUTS */
+input,textarea,select{background:var(--surface2);border:1px solid var(--border2);border-radius:var(--radius-sm);color:var(--text);font-size:14px;padding:10px 12px;width:100%;font-family:inherit;outline:none;transition:border .15s}
+input:focus,textarea:focus,select:focus{border-color:var(--accent)}
+textarea{resize:none;min-height:80px;line-height:1.6}
+input::placeholder,textarea::placeholder{color:var(--muted)}
+label{font-size:12px;font-weight:500;color:var(--muted);display:block;margin-bottom:5px}
+.field{margin-bottom:14px}
+
+/* BADGES */
+.badge{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:600;padding:3px 8px;border-radius:100px}
+.badge-green{background:rgba(34,197,94,.15);color:#22C55E}
+.badge-amber{background:rgba(245,158,11,.15);color:#F59E0B}
+.badge-red{background:rgba(239,68,68,.15);color:#EF4444}
+.badge-blue{background:rgba(79,142,247,.15);color:#4F8EF7}
+.badge-purple{background:rgba(124,92,252,.15);color:#7C5CFC}
+
+/* STREAK */
+.streak-row{display:flex;align-items:center;gap:12px;background:linear-gradient(135deg,rgba(79,142,247,.12),rgba(124,92,252,.08));border:1px solid rgba(79,142,247,.2);border-radius:var(--radius);padding:14px 16px;margin-bottom:12px}
+.streak-num{font-size:36px;font-weight:800;color:var(--accent);letter-spacing:-.03em;line-height:1}
+.streak-info{flex:1}
+.streak-label{font-size:12px;color:var(--muted);margin-top:2px}
+
+/* FOCUS BLOCKS */
+.focus-item{display:flex;gap:12px;padding:11px 0;border-bottom:1px solid var(--border)}
+.focus-item:last-child{border-bottom:none;padding-bottom:0}
+.focus-check{width:22px;height:22px;border-radius:6px;border:1.5px solid var(--border2);flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .15s;margin-top:1px}
+.focus-check.done{background:var(--green);border-color:var(--green)}
+.focus-text{font-size:14px;color:var(--text);line-height:1.4}
+.focus-text.done{color:var(--muted);text-decoration:line-through}
+.focus-meta{font-size:11px;color:var(--muted);margin-top:3px}
+
+/* PROGRESS RING */
+.ring-wrap{position:relative;width:80px;height:80px;flex-shrink:0}
+.ring-wrap svg{position:absolute;inset:0}
+.ring-center{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center}
+.ring-pct{font-size:18px;font-weight:800;color:var(--text)}
+.ring-sub{font-size:9px;color:var(--muted);font-weight:500}
+
+/* PHASE */
+.phase-block{border-left:2px solid var(--border2);padding-left:14px;margin-bottom:16px}
+.phase-block.active{border-left-color:var(--accent)}
+.phase-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:2px}
+.phase-dates{font-size:11px;color:var(--muted);margin-bottom:6px}
+.phase-desc{font-size:13px;color:var(--muted);line-height:1.6}
+
+/* JOB CARD */
+.job-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:10px;cursor:pointer;transition:border-color .15s}
+.job-card:hover{border-color:var(--accent)}
+.job-title{font-size:14px;font-weight:600;color:var(--text);margin-bottom:2px}
+.job-company{font-size:12px;color:var(--muted);margin-bottom:8px}
+.job-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px}
+.job-actions{display:flex;gap:8px}
+
+/* AI BUBBLE */
+.ai-msg{background:var(--surface2);border:1px solid var(--border);border-radius:12px 12px 12px 3px;padding:12px 14px;margin-bottom:10px;font-size:14px;line-height:1.7;color:var(--text)}
+.user-msg{background:rgba(79,142,247,.15);border:1px solid rgba(79,142,247,.2);border-radius:12px 12px 3px 12px;padding:12px 14px;margin-bottom:10px;font-size:14px;line-height:1.7;color:var(--text);margin-left:20px}
+.ai-label{font-size:10px;font-weight:600;letter-spacing:.06em;color:var(--accent);text-transform:uppercase;margin-bottom:5px}
+#chat-messages{min-height:200px;margin-bottom:12px}
+.chat-input-row{display:flex;gap:8px;align-items:flex-end}
+.chat-input-row textarea{min-height:44px;max-height:120px}
+.chat-send{background:var(--accent);border:none;border-radius:var(--radius-sm);width:44px;height:44px;cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.chat-send svg{width:18px;height:18px;stroke:white;stroke-width:2}
+
+/* INTERVIEW */
+.q-block{background:var(--surface2);border-left:3px solid var(--accent);border-radius:0 var(--radius-sm) var(--radius-sm) 0;padding:12px 14px;margin-bottom:10px}
+.q-num{font-size:10px;font-weight:700;letter-spacing:.06em;color:var(--accent);text-transform:uppercase;margin-bottom:4px}
+.q-text{font-size:14px;color:var(--text);line-height:1.5;font-weight:500}
+
+/* COMM DRILL */
+.drill-original{background:rgba(239,68,68,.08);border:1px solid rgba(239,68,68,.2);border-radius:var(--radius-sm);padding:12px;margin-bottom:10px;font-size:13px;color:var(--text);line-height:1.6}
+.drill-label{font-size:10px;font-weight:700;letter-spacing:.06em;color:var(--red);text-transform:uppercase;margin-bottom:5px}
+.drill-good{background:rgba(34,197,94,.08);border:1px solid rgba(34,197,94,.2);border-radius:var(--radius-sm);padding:12px;font-size:13px;color:var(--text);line-height:1.6}
+.drill-good-label{font-size:10px;font-weight:700;letter-spacing:.06em;color:var(--green);text-transform:uppercase;margin-bottom:5px}
+
+/* SETTINGS */
+.settings-section{margin-bottom:20px}
+.settings-title{font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--accent);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border)}
+
+/* TOAST */
+#toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--surface);border:1px solid var(--green);color:var(--green);font-size:13px;font-weight:600;padding:10px 20px;border-radius:100px;opacity:0;transition:all .3s;pointer-events:none;z-index:999;white-space:nowrap}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* LOADING */
+.loading{display:flex;align-items:center;gap:8px;color:var(--muted);font-size:13px;padding:12px 0}
+.dot{width:6px;height:6px;border-radius:50%;background:var(--accent);animation:pulse 1.2s ease-in-out infinite}
+.dot:nth-child(2){animation-delay:.2s}
+.dot:nth-child(3){animation-delay:.4s}
+@keyframes pulse{0%,100%{opacity:.3;transform:scale(.8)}50%{opacity:1;transform:scale(1)}}
+
+/* RESUME */
+.upload-zone{border:2px dashed var(--border2);border-radius:var(--radius);padding:32px 20px;text-align:center;cursor:pointer;transition:border-color .15s;margin-bottom:12px}
+.upload-zone:hover{border-color:var(--accent)}
+.upload-zone input{display:none}
+.upload-icon{width:36px;height:36px;margin:0 auto 10px;opacity:.4}
+.upload-text{font-size:14px;color:var(--muted)}
+.upload-sub{font-size:12px;color:var(--muted);opacity:.6;margin-top:4px}
+
+/* SCORE BAR */
+.score-row{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.score-label{font-size:12px;color:var(--muted);width:130px;flex-shrink:0}
+.score-bar{flex:1;height:5px;background:var(--surface2);border-radius:100px;overflow:hidden}
+.score-fill{height:100%;border-radius:100px;transition:width .6s ease}
+.score-val{font-size:12px;font-weight:600;width:32px;text-align:right;flex-shrink:0}
+
+/* MARKET SIGNAL */
+.signal-card{background:linear-gradient(135deg,rgba(79,142,247,.1),rgba(124,92,252,.06));border:1px solid rgba(79,142,247,.18);border-radius:var(--radius);padding:14px;margin-bottom:12px}
+.signal-tag{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:6px}
+.signal-text{font-size:14px;color:var(--text);line-height:1.6}
+
+/* TREND ROW */
+.trend-row{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border)}
+.trend-row:last-child{border-bottom:none}
+.trend-rank{font-size:13px;font-weight:700;color:var(--muted);width:24px}
+.trend-name{flex:1;font-size:14px;color:var(--text)}
+.trend-arrow{font-size:18px}
+
+/* WEEKLY REPORT */
+.report-stat{display:flex;justify-content:space-between;align-items:center;padding:9px 0;border-bottom:1px solid var(--border)}
+.report-stat:last-child{border-bottom:none}
+.report-stat-label{font-size:13px;color:var(--muted)}
+.report-stat-val{font-size:14px;font-weight:700;color:var(--text)}
+
+/* SETUP SCREEN */
+#setup-screen{position:fixed;inset:0;background:var(--bg);z-index:100;display:flex;flex-direction:column;padding:40px 24px 32px;overflow-y:auto}
+.setup-logo{font-size:28px;font-weight:800;letter-spacing:-.03em;color:var(--text);margin-bottom:6px}
+.setup-logo span{color:var(--accent)}
+.setup-sub{font-size:14px;color:var(--muted);margin-bottom:32px;line-height:1.6}
+.setup-step{margin-bottom:20px}
+.setup-step-label{font-size:12px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--accent);margin-bottom:6px}
+
+/* SCROLLBAR */
+::-webkit-scrollbar{width:3px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--border2);border-radius:100px}
+
+/* DIVIDER */
+.divider{height:1px;background:var(--border);margin:12px 0}
+
+/* MOOD */
+.mood-row{display:flex;gap:8px;margin-bottom:12px}
+.mood-btn{flex:1;padding:10px 4px;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);font-size:20px;cursor:pointer;text-align:center;transition:all .15s}
+.mood-btn.sel{border-color:var(--accent);background:rgba(79,142,247,.12)}
+
+@media(prefers-color-scheme:light){
+  :root{--bg:#F4F6FA;--surface:#FFFFFF;--surface2:#F0F2F7;--border:rgba(0,0,0,.08);--border2:rgba(0,0,0,.13);--text:#0D1117;--muted:#6B7280}
+  .ai-msg{color:#0D1117}
+  .user-msg{color:#0D1117}
+}
+</style>
+</head>
+<body>
+
+<!-- SETUP SCREEN -->
+<div id="setup-screen">
+  <div class="setup-logo">Career<span>OS</span></div>
+  <div class="setup-sub">Your personal career intelligence platform. Market-driven. Long-term focused. Result oriented.</div>
+
+  <div class="setup-step">
+    <div class="setup-step-label">Gemini API Key</div>
+    <div class="field">
+      <input type="password" id="setup-gemini" placeholder="AIzaSy..." autocomplete="off">
+    </div>
+    <div style="font-size:12px;color:var(--muted);line-height:1.6">Get a free key at <strong style="color:var(--accent)">aistudio.google.com</strong> → Get API Key → Create. No credit card needed.</div>
+  </div>
+
+  <div class="setup-step">
+    <div class="setup-step-label">Your Name</div>
+    <div class="field">
+      <input type="text" id="setup-name" placeholder="Tarun" value="Tarun">
+    </div>
+  </div>
+
+  <div class="setup-step">
+    <div class="setup-step-label">Current Role Title</div>
+    <div class="field">
+      <input type="text" id="setup-role" placeholder="e.g. Senior IBM BAW Developer" value="Senior IBM BAW Developer">
+    </div>
+  </div>
+
+  <div class="setup-step">
+    <div class="setup-step-label">Target Role</div>
+    <div class="field">
+      <input type="text" id="setup-target" placeholder="e.g. AI Security Engineer" value="AI Security Engineer / LLM Engineer">
+    </div>
+  </div>
+
+  <div class="setup-step">
+    <div class="setup-step-label">Key Skills (comma separated)</div>
+    <div class="field">
+      <textarea id="setup-skills" rows="3" placeholder="IBM BAW, Python, FastAPI, LLM, FileNet, Azure...">IBM BAW/BPM, IBM FileNet, Python, FastAPI, Ollama, LLM integration, IDP pipelines, Java EE, Azure, REST APIs, LangChain, Agentic AI, AI Security</textarea>
+    </div>
+  </div>
+
+  <div class="setup-step">
+    <div class="setup-step-label">GitHub Username</div>
+    <div class="field">
+      <input type="text" id="setup-github" placeholder="TarunTangella" value="TarunTangella">
+    </div>
+  </div>
+
+  <div class="setup-step">
+    <div class="setup-step-label">GitHub Personal Access Token <span style="color:var(--muted);font-weight:400">(for data sync)</span></div>
+    <div class="field">
+      <input type="password" id="setup-ghtoken" placeholder="ghp_..." autocomplete="off">
+    </div>
+    <div style="font-size:12px;color:var(--muted);line-height:1.6;margin-top:4px">github.com → Settings → Developer Settings → Personal Access Tokens → Tokens (classic) → Generate. Select <strong style="color:var(--text)">repo</strong> scope only. <span style="color:var(--amber)">Optional — app works without it using local storage.</span></div>
+  </div>
+
+  <button class="btn btn-primary" onclick="saveSetup()" style="margin-top:8px">Launch Career OS</button>
+</div>
+
+<!-- MAIN APP -->
+<div id="app" style="display:none">
+  <div id="screens">
+
+    <!-- MORNING / HOME -->
+    <div class="screen active" id="screen-home">
+      <div class="page-header">
+        <div class="page-eyebrow" id="home-eyebrow">Good morning</div>
+        <div class="page-title" id="home-title">Tarun</div>
+        <div class="page-sub" id="home-date"></div>
+      </div>
+
+      <div class="streak-row">
+        <div>
+          <div class="streak-num" id="streak-num">0</div>
+          <div class="streak-label">day streak</div>
+        </div>
+        <div style="flex:1;padding-left:4px">
+          <div style="font-size:13px;font-weight:600;color:var(--text)" id="phase-label">Phase 1 — Foundation</div>
+          <div style="font-size:12px;color:var(--muted);margin-top:2px" id="week-label">Week 1 of 26</div>
+        </div>
+        <div class="ring-wrap">
+          <svg viewBox="0 0 80 80" fill="none">
+            <circle cx="40" cy="40" r="32" stroke="rgba(255,255,255,0.07)" stroke-width="7"/>
+            <circle cx="40" cy="40" r="32" stroke="#4F8EF7" stroke-width="7" stroke-linecap="round" stroke-dasharray="201" id="ring-dash" stroke-dashoffset="201" transform="rotate(-90 40 40)"/>
+          </svg>
+          <div class="ring-center">
+            <div class="ring-pct" id="ring-pct">0%</div>
+            <div class="ring-sub">done</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MARKET SIGNAL -->
+      <div class="signal-card" id="signal-card">
+        <div class="signal-tag">Today's Market Signal</div>
+        <div class="signal-text" id="signal-text">Loading today's opportunity signal...</div>
+        <div style="margin-top:10px">
+          <button class="btn-ghost btn-sm" onclick="loadSignal(true)">Refresh Signal</button>
+        </div>
+      </div>
+
+      <!-- FOCUS BLOCKS -->
+      <div class="card">
+        <div class="card-label">
+          <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+          Today's focus blocks
+        </div>
+        <div id="focus-list"></div>
+      </div>
+
+      <!-- COMM DRILL -->
+      <div class="card" id="comm-drill-card">
+        <div class="card-label">Communication drill</div>
+        <div id="comm-drill-content">
+          <div style="font-size:13px;color:var(--muted)">Complete your first evening check-in to unlock daily communication drills.</div>
+        </div>
+      </div>
+
+      <!-- MORNING INTENTION -->
+      <div class="card">
+        <div class="card-label">Set your intention</div>
+        <textarea id="morning-intention" placeholder="What is the one thing that matters most today?" rows="2"></textarea>
+        <button class="btn btn-primary" style="margin-top:10px" onclick="saveMorning()">Lock in my day</button>
+      </div>
+    </div>
+
+    <!-- JOBS -->
+    <div class="screen" id="screen-jobs">
+      <div class="page-header">
+        <div class="page-eyebrow">Opportunity Radar</div>
+        <div class="page-title">Job Search</div>
+        <div class="page-sub">Search by role, skill, or technology</div>
+      </div>
+
+      <div class="card">
+        <div class="field">
+          <label>Role or technology</label>
+          <input type="text" id="job-search-input" placeholder="e.g. IBM BAW, AI Security Engineer, LLM Python...">
+        </div>
+        <div class="field">
+          <label>Location preference</label>
+          <input type="text" id="job-location" placeholder="e.g. Hyderabad, Remote, UAE, Global...">
+        </div>
+        <button class="btn btn-primary" onclick="searchJobs()">Search Opportunities</button>
+      </div>
+
+      <div id="job-results"></div>
+
+      <!-- JD Analyser -->
+      <div class="card" style="margin-top:4px">
+        <div class="card-label">Paste a job description</div>
+        <div style="font-size:12px;color:var(--muted);margin-bottom:10px">Paste any JD to get instant fit analysis + interview prep</div>
+        <textarea id="jd-paste" placeholder="Paste full job description here..." rows="4"></textarea>
+        <div style="display:flex;gap:8px;margin-top:10px">
+          <button class="btn btn-secondary btn-sm" style="flex:1" onclick="analyseJD()">Analyse My Fit</button>
+          <button class="btn btn-secondary btn-sm" style="flex:1" onclick="prepFromJD()">Prep Interview</button>
+        </div>
+      </div>
+
+      <div id="jd-result"></div>
+    </div>
+
+    <!-- INTERVIEW PREP -->
+    <div class="screen" id="screen-prep">
+      <div class="page-header">
+        <div class="page-eyebrow">Interview Lab</div>
+        <div class="page-title">Prep Session</div>
+        <div class="page-sub">Questions, answers, tone coaching</div>
+      </div>
+
+      <div class="card">
+        <div class="card-label">Generate questions for a role</div>
+        <div class="field">
+          <label>Role or paste JD</label>
+          <textarea id="prep-role-input" placeholder="e.g. 'AI Security Engineer at a fintech' or paste full JD..." rows="3"></textarea>
+        </div>
+        <div class="field">
+          <label>Question focus</label>
+          <select id="prep-focus">
+            <option value="mixed">Mixed — Technical + Behavioural + Scenario</option>
+            <option value="technical">Technical deep-dive</option>
+            <option value="behavioural">Behavioural & leadership</option>
+            <option value="scenario">Scenario & problem solving</option>
+          </select>
+        </div>
+        <button class="btn btn-primary" onclick="generateQuestions()">Generate Questions</button>
+      </div>
+
+      <div id="prep-questions"></div>
+
+      <!-- Answer Practice -->
+      <div id="answer-practice" style="display:none">
+        <div class="card">
+          <div class="card-label">Practice your answer</div>
+          <div id="current-question" class="q-block" style="margin-bottom:12px"></div>
+          <textarea id="answer-input" placeholder="Write your answer here..." rows="5"></textarea>
+          <button class="btn btn-primary" style="margin-top:10px" onclick="scoreAnswer()">Score my answer</button>
+        </div>
+        <div id="answer-feedback"></div>
+      </div>
+    </div>
+
+    <!-- RESUME -->
+    <div class="screen" id="screen-resume">
+      <div class="page-header">
+        <div class="page-eyebrow">Resume Intelligence</div>
+        <div class="page-title">Resume Analyser</div>
+        <div class="page-sub">Upload or paste — get scored against market</div>
+      </div>
+
+      <div class="card">
+        <div class="upload-zone" onclick="document.getElementById('resume-file').click()">
+          <input type="file" id="resume-file" accept=".pdf,.txt,.doc,.docx" onchange="handleResumeFile(event)">
+          <svg class="upload-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+          <div class="upload-text">Tap to upload resume</div>
+          <div class="upload-sub">PDF, TXT, or paste below</div>
+        </div>
+        <div style="text-align:center;font-size:12px;color:var(--muted);margin:-4px 0 10px">or</div>
+        <textarea id="resume-paste" placeholder="Paste your resume text here..." rows="5"></textarea>
+      </div>
+
+      <div class="card">
+        <div class="card-label">Target role (optional)</div>
+        <input type="text" id="resume-target" placeholder="e.g. AI Security Engineer — leave blank for general audit">
+      </div>
+
+      <button class="btn btn-primary" onclick="analyseResume()" style="margin-bottom:12px">Analyse Resume</button>
+
+      <div id="resume-result"></div>
+    </div>
+
+    <!-- EVENING / REFLECT -->
+    <div class="screen" id="screen-evening">
+      <div class="page-header">
+        <div class="page-eyebrow">Evening Session</div>
+        <div class="page-title">Close the day</div>
+        <div class="page-sub" id="evening-date"></div>
+      </div>
+
+      <div class="card">
+        <div class="card-label">How did today feel?</div>
+        <div class="mood-row">
+          <button class="mood-btn" onclick="setMood(0)" id="mood-0">😤</button>
+          <button class="mood-btn" onclick="setMood(1)" id="mood-1">😐</button>
+          <button class="mood-btn" onclick="setMood(2)" id="mood-2">🙂</button>
+          <button class="mood-btn" onclick="setMood(3)" id="mood-3">🔥</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-label">Today's win</div>
+        <textarea id="evening-win" placeholder="One specific thing you accomplished or learned today. Be precise — not 'did good work' but what exactly." rows="3"></textarea>
+      </div>
+
+      <div class="card">
+        <div class="card-label">What I would do differently</div>
+        <textarea id="evening-improve" placeholder="One concrete behaviour to change tomorrow." rows="2"></textarea>
+      </div>
+
+      <div class="card">
+        <div class="card-label">Knowledge gained</div>
+        <textarea id="evening-knowledge" placeholder="A technical concept, market insight, or communication lesson from today." rows="2"></textarea>
+      </div>
+
+      <div id="evening-focus-review" class="card">
+        <div class="card-label">Focus blocks</div>
+        <div id="evening-blocks"></div>
+      </div>
+
+      <button class="btn btn-primary" onclick="saveEvening()" style="margin-bottom:12px">Close the day</button>
+
+      <!-- WEEKLY REPORT -->
+      <div id="weekly-report" style="display:none">
+        <div class="card">
+          <div class="card-label">Weekly Performance Report</div>
+          <div id="weekly-report-content"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- SETTINGS -->
+    <div class="screen" id="screen-settings">
+      <div class="page-header">
+        <div class="page-eyebrow">Configuration</div>
+        <div class="page-title">Settings</div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-title">API Configuration</div>
+        <div class="field"><label>Gemini API Key</label><input type="password" id="s-gemini" placeholder="AIzaSy..."></div>
+        <div class="field"><label>GitHub Username</label><input type="text" id="s-github"></div>
+        <div class="field"><label>GitHub Token (for sync)</label><input type="password" id="s-ghtoken" placeholder="ghp_..."></div>
+        <div class="field"><label>GitHub Repo Name</label><input type="text" id="s-repo" value="career-os-data"></div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-title">Career Profile</div>
+        <div class="field"><label>Your Name</label><input type="text" id="s-name"></div>
+        <div class="field"><label>Current Role</label><input type="text" id="s-role"></div>
+        <div class="field"><label>Target Role</label><input type="text" id="s-target"></div>
+        <div class="field"><label>Years of Experience</label><input type="text" id="s-exp" value="6+"></div>
+        <div class="field"><label>Key Skills</label><textarea id="s-skills" rows="3"></textarea></div>
+        <div class="field"><label>Location</label><input type="text" id="s-location" value="Hyderabad, India"></div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-title">Job Search Preferences</div>
+        <div class="field"><label>Preferred Locations</label><input type="text" id="s-jobloc" placeholder="Hyderabad, Remote, UAE..."></div>
+        <div class="field"><label>Open to Relocation?</label>
+          <select id="s-relocate"><option value="yes">Yes</option><option value="no">No</option><option value="remote-only">Remote only</option></select>
+        </div>
+      </div>
+
+      <button class="btn btn-primary" onclick="saveSettings()" style="margin-bottom:12px">Save Settings</button>
+      <button class="btn btn-secondary" onclick="exportData()" style="margin-bottom:12px">Export My Data (JSON)</button>
+      <button class="btn btn-secondary" onclick="if(confirm('Reset all data?')){localStorage.clear();location.reload()}">Reset All Data</button>
+    </div>
+
+  </div><!-- /screens -->
+
+  <!-- BOTTOM NAV -->
+  <nav id="nav">
+    <button class="nav-btn active" onclick="switchTab('home',this)">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+      Home
+    </button>
+    <button class="nav-btn" onclick="switchTab('jobs',this)">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+      Jobs
+    </button>
+    <button class="nav-btn" onclick="switchTab('prep',this)">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+      Prep
+    </button>
+    <button class="nav-btn" onclick="switchTab('resume',this)">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+      Resume
+    </button>
+    <button class="nav-btn" onclick="switchTab('evening',this)">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z"/></svg>
+      Evening
+    </button>
+    <button class="nav-btn" onclick="switchTab('settings',this)">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+      Settings
+    </button>
+  </nav>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ── STATE ──────────────────────────────────────────────────────
+let CFG = {};
+let DATA = {};
+
+const FOCUS_POOL = [
+  {text:'Study one OWASP LLM Top 10 vulnerability in depth',sub:'30 min · AI Security', cat:'security'},
+  {text:'Build a Python async function with proper error handling',sub:'20 min · Python depth', cat:'tech'},
+  {text:'Read one LangGraph stateful workflow tutorial',sub:'25 min · Agentic AI', cat:'tech'},
+  {text:'Write a LinkedIn-ready bullet point about one past project',sub:'10 min · Visibility', cat:'comm'},
+  {text:'Study prompt injection attack patterns and defences',sub:'25 min · LLM Security', cat:'security'},
+  {text:'Implement a RAG pipeline component in Python',sub:'30 min · LLM Engineering', cat:'tech'},
+  {text:'Write an Architecture Decision Record from a past project',sub:'20 min · Portfolio', cat:'comm'},
+  {text:'Read one Azure AI Security best practice doc',sub:'20 min · Cloud Security', cat:'security'},
+  {text:'Practise explaining a technical concept in plain English',sub:'10 min · Communication', cat:'comm'},
+  {text:'Study LlamaIndex vector store integration patterns',sub:'25 min · RAG', cat:'tech'},
+  {text:'Review MITRE ATLAS AI threat framework — one technique',sub:'20 min · AI Security', cat:'security'},
+  {text:'Write a cold outreach message to one person in your target field',sub:'10 min · Network', cat:'comm'},
+  {text:'Build one FastAPI endpoint with Pydantic validation',sub:'25 min · Python', cat:'tech'},
+  {text:'Study CrewAI multi-agent patterns',sub:'25 min · Agentic AI', cat:'tech'},
+  {text:'Review and improve one section of your resume',sub:'15 min · Positioning', cat:'comm'},
+  {text:'Implement a guardrail for LLM output validation',sub:'30 min · AI Security', cat:'security'},
+  {text:'Study one real AI security incident or case study',sub:'20 min · Security awareness', cat:'security'},
+  {text:'Write your personal value proposition in two sentences',sub:'10 min · Positioning', cat:'comm'},
+  {text:'Practise a STAR answer for a leadership scenario',sub:'15 min · Interview', cat:'comm'},
+  {text:'Read one paper or article on LLM red teaming',sub:'25 min · AI Security', cat:'security'},
+  {text:'Build a simple LangChain chain with tool use',sub:'30 min · LLM Engineering', cat:'tech'},
+  {text:'Study data poisoning attack vectors for ML models',sub:'20 min · Security', cat:'security'},
+  {text:'Draft a technical blog post outline on your IDP project',sub:'15 min · Thought leadership', cat:'comm'},
+];
+
+// ── STORAGE ────────────────────────────────────────────────────
+function save(){try{localStorage.setItem('careerOS_data',JSON.stringify(DATA))}catch(e){}}
+function load(){try{const d=localStorage.getItem('careerOS_data');if(d)DATA=JSON.parse(d)}catch(e){}
+  if(!DATA.streakCount)DATA.streakCount=0;
+  if(!DATA.lastCheckin)DATA.lastCheckin='';
+  if(!DATA.focusDone)DATA.focusDone={};
+  if(!DATA.morningLog)DATA.morningLog={};
+  if(!DATA.eveningLog)DATA.eveningLog={};
+  if(!DATA.signalCache)DATA.signalCache={};
+  if(!DATA.startDate)DATA.startDate=today();
+  if(!DATA.commHistory)DATA.commHistory=[];
+}
+function today(){return new Date().toISOString().slice(0,10)}
+function dayOfYear(){const n=new Date(),s=new Date(n.getFullYear(),0,0);return Math.floor((n-s)/864e5)}
+function showToast(msg,col){const t=document.getElementById('toast');t.textContent=msg;t.style.borderColor=col||'var(--green)';t.style.color=col||'var(--green)';t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2500)}
+
+// ── SETUP ──────────────────────────────────────────────────────
+function saveSetup(){
+  const key=document.getElementById('setup-gemini').value.trim();
+  if(!key){showToast('Gemini API key required','var(--red)');return}
+  CFG.geminiKey=key;
+  CFG.name=document.getElementById('setup-name').value.trim()||'Tarun';
+  CFG.role=document.getElementById('setup-role').value.trim();
+  CFG.target=document.getElementById('setup-target').value.trim();
+  CFG.skills=document.getElementById('setup-skills').value.trim();
+  CFG.github=document.getElementById('setup-github').value.trim();
+  CFG.ghtoken=document.getElementById('setup-ghtoken').value.trim();
+  CFG.repo='career-os-data';
+  localStorage.setItem('careerOS_cfg',JSON.stringify(CFG));
+  document.getElementById('setup-screen').style.display='none';
+  document.getElementById('app').style.display='flex';
+  initApp();
+}
+function loadCFG(){try{const c=localStorage.getItem('careerOS_cfg');if(c){CFG=JSON.parse(c);return true}}catch(e){}return false}
+
+// ── GEMINI ─────────────────────────────────────────────────────
+async function gemini(prompt,systemPrompt){
+  const sys=systemPrompt||buildSystemPrompt();
+  const messages=[{role:'user',parts:[{text:prompt}]}];
+  const body={contents:messages,systemInstruction:{parts:[{text:sys}]},generationConfig:{temperature:0.4,maxOutputTokens:1200}};
+  const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${CFG.geminiKey}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+  if(!res.ok){const e=await res.json();throw new Error(e.error?.message||'API error')}
+  const d=await res.json();
+  return d.candidates?.[0]?.content?.parts?.[0]?.text||'';
+}
+async function geminiSearch(prompt){
+  const body={contents:[{role:'user',parts:[{text:prompt}]}],tools:[{googleSearch:{}}],generationConfig:{temperature:0.2,maxOutputTokens:1500}};
+  const res=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${CFG.geminiKey}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+  if(!res.ok){const e=await res.json();throw new Error(e.error?.message||'API error')}
+  const d=await res.json();
+  return d.candidates?.[0]?.content?.parts?.[0]?.text||'';
+}
+function buildSystemPrompt(){
+  return`You are a strict, result-oriented career intelligence system for ${CFG.name||'the user'}.
+
+PROFILE:
+- Current role: ${CFG.role||'Senior IBM BAW Developer'}
+- Target: ${CFG.target||'AI Security Engineer / LLM Engineer'}
+- Skills: ${CFG.skills||'IBM BAW, Python, FastAPI, LLM, AI Security'}
+- Experience: 6+ years, enterprise software, banking domain
+- Location: Hyderabad, India
+
+RULES — STRICTLY ENFORCED:
+1. NEVER fabricate job listings, company names, salary figures, or URLs. Only state what you actually found via search or what is factually known.
+2. If you do not have real data, say "I could not find verified listings — try searching [specific site]" instead of inventing results.
+3. Be direct, specific, and actionable. No generic advice.
+4. Focus on long-term career growth, market trends, and result-oriented guidance.
+5. When analysing communication, give a SPECIFIC rewrite — not general feedback.
+6. Roadmap is 6 months, promotion-ready target, AI/LLM Engineering + Cybersecurity direction.`
+}
+
+// ── INIT ───────────────────────────────────────────────────────
+function initApp(){
+  load();
+  renderHome();
+  renderEvening();
+  loadSettings();
+  loadSignal(false);
+}
+
+// ── HOME ───────────────────────────────────────────────────────
+function renderHome(){
+  const h=new Date().getHours();
+  const greet=h<12?'Good morning':h<17?'Good afternoon':'Good evening';
+  document.getElementById('home-eyebrow').textContent=greet;
+  document.getElementById('home-title').textContent=CFG.name||'Tarun';
+  document.getElementById('home-date').textContent=new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+  document.getElementById('evening-date').textContent=new Date().toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long'});
+  document.getElementById('streak-num').textContent=DATA.streakCount||0;
+
+  // roadmap progress
+  const start=new Date(DATA.startDate||today());
+  const elapsed=Math.max(0,Math.min(180,Math.floor((new Date()-start)/864e5)));
+  const pct=Math.round(elapsed/180*100);
+  const week=Math.floor(elapsed/7)+1;
+  document.getElementById('ring-pct').textContent=pct+'%';
+  document.getElementById('ring-dash').setAttribute('stroke-dashoffset',(201*(1-pct/100)).toFixed(1));
+  document.getElementById('week-label').textContent=`Week ${week} of 26`;
+  const phase=elapsed<60?'Phase 1 — Foundation':elapsed<120?'Phase 2 — Expansion':'Phase 3 — Visibility';
+  document.getElementById('phase-label').textContent=phase;
+
+  renderFocusBlocks();
+  renderCommDrill();
+
+  const mi=DATA.morningLog[today()];
+  if(mi)document.getElementById('morning-intention').value=mi;
+}
+
+function getTodayFocus(){
+  const d=dayOfYear();
+  return[FOCUS_POOL[d%FOCUS_POOL.length],FOCUS_POOL[(d+7)%FOCUS_POOL.length],FOCUS_POOL[(d+14)%FOCUS_POOL.length]];
+}
+
+function renderFocusBlocks(){
+  const foci=getTodayFocus();
+  const done=DATA.focusDone[today()]||{};
+  const el=document.getElementById('focus-list');
+  el.innerHTML='';
+  foci.forEach((f,i)=>{
+    const isDone=!!done[i];
+    const d=document.createElement('div');
+    d.className='focus-item';
+    d.innerHTML=`<div class="focus-check${isDone?' done':''}" onclick="toggleFocus(${i})">${isDone?`<svg width="12" height="12" fill="none" stroke="white" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>`:''}</div><div><div class="focus-text${isDone?' done':''}">${f.text}</div><div class="focus-meta">${f.sub}</div></div>`;
+    el.appendChild(d);
+  });
+  // evening blocks
+  const eb=document.getElementById('evening-blocks');
+  if(eb){eb.innerHTML='';foci.forEach((f,i)=>{const isDone=!!(DATA.focusDone[today()]||{})[i];const d=document.createElement('div');d.className='focus-item';d.innerHTML=`<div class="focus-check${isDone?' done':''}">${isDone?`<svg width="12" height="12" fill="none" stroke="white" stroke-width="3" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>`:''}</div><div><div class="focus-text${isDone?' done':''}">${f.text}</div></div>`;eb.appendChild(d);})}
+}
+
+function toggleFocus(i){
+  if(!DATA.focusDone[today()])DATA.focusDone[today()]={};
+  DATA.focusDone[today()][i]=!DATA.focusDone[today()][i];
+  save();renderFocusBlocks();
+}
+
+function renderCommDrill(){
+  const logs=DATA.commHistory||[];
+  if(!logs.length)return;
+  const last=logs[logs.length-1];
+  const el=document.getElementById('comm-drill-content');
+  el.innerHTML=`<div class="drill-label">Yesterday you wrote</div><div class="drill-original">"${last.win}"</div><div style="font-size:13px;color:var(--muted);margin-bottom:10px">Rewrite this as a Senior AI Engineer would — specific outcome, active voice, measurable result.</div><textarea id="drill-input" placeholder="Your improved version..." rows="2"></textarea><button class="btn btn-secondary" style="margin-top:8px" onclick="scoreDrill()">Score my rewrite</button><div id="drill-result"></div>`;
+}
+
+async function scoreDrill(){
+  const orig=DATA.commHistory[DATA.commHistory.length-1]?.win||'';
+  const attempt=document.getElementById('drill-input')?.value||'';
+  if(!attempt.trim()){showToast('Write your rewrite first','var(--amber)');return}
+  document.getElementById('drill-result').innerHTML=loadingHTML();
+  try{
+    const r=await gemini(`Original: "${orig}"\nRewrite attempt: "${attempt}"\n\nScore this communication rewrite. Check: (1) Active vs passive voice, (2) Specificity — does it have a concrete outcome or number?, (3) Ownership — does it say "I" and name the action clearly?, (4) Conciseness. Give a score out of 10, identify the #1 weakness, and write the ideal version in 1-2 sentences.`);
+    document.getElementById('drill-result').innerHTML=`<div class="ai-msg" style="margin-top:10px"><div class="ai-label">Analysis</div>${formatAI(r)}</div>`;
+  }catch(e){document.getElementById('drill-result').innerHTML=errHTML(e)}
+}
+
+// ── MARKET SIGNAL ──────────────────────────────────────────────
+async function loadSignal(force){
+  const cacheKey=today();
+  if(!force&&DATA.signalCache[cacheKey]){
+    document.getElementById('signal-text').innerHTML=DATA.signalCache[cacheKey];return;
+  }
+  document.getElementById('signal-text').innerHTML='<div class="loading"><div class="dot"></div><div class="dot"></div><div class="dot"></div> Scanning market...</div>';
+  try{
+    const r=await geminiSearch(`Today ${new Date().toDateString()}: What is the single most relevant career opportunity or market trend for someone with these skills: ${CFG.skills||'IBM BAW, Python, LLM, AI Security'}? They are targeting: ${CFG.target||'AI Security Engineer'}. Give one specific, factual signal — a real trend, a real skill gap in the market, or a real emerging role — with why it matters for this profile specifically. Max 3 sentences. Do not fabricate statistics.`);
+    const clean=r.trim();
+    DATA.signalCache[cacheKey]=clean;
+    save();
+    document.getElementById('signal-text').innerHTML=formatAI(clean);
+  }catch(e){document.getElementById('signal-text').textContent='Could not load signal — check your API key in Settings.'}
+}
+
+// ── MORNING SAVE ───────────────────────────────────────────────
+function saveMorning(){
+  const v=document.getElementById('morning-intention').value.trim();
+  if(!v){showToast('Write your intention first','var(--amber)');return}
+  DATA.morningLog[today()]=v;
+  updateStreak();save();showToast('Day locked in');
+}
+
+function updateStreak(){
+  const t=today();
+  const y=new Date();y.setDate(y.getDate()-1);
+  const yStr=y.toISOString().slice(0,10);
+  if(DATA.lastCheckin===t)return;
+  DATA.streakCount=DATA.lastCheckin===yStr?(DATA.streakCount||0)+1:1;
+  DATA.lastCheckin=t;
+  document.getElementById('streak-num').textContent=DATA.streakCount;
+}
+
+// ── EVENING ────────────────────────────────────────────────────
+function setMood(i){document.querySelectorAll('.mood-btn').forEach((b,j)=>b.classList.toggle('sel',j===i));DATA.todayMood=i}
+
+async function saveEvening(){
+  const win=document.getElementById('evening-win').value.trim();
+  const improve=document.getElementById('evening-improve').value.trim();
+  const know=document.getElementById('evening-knowledge').value.trim();
+  if(!win){showToast('Log at least one win','var(--amber)');return}
+  DATA.eveningLog[today()]={win,improve,know,mood:DATA.todayMood,focus:DATA.focusDone[today()]||{}};
+  DATA.commHistory=DATA.commHistory||[];
+  DATA.commHistory.push({date:today(),win,improve,know});
+  if(DATA.commHistory.length>60)DATA.commHistory=DATA.commHistory.slice(-60);
+  updateStreak();save();
+  showToast('Day closed. Streak updated.');
+  renderCommDrill();
+
+  // weekly report on Sundays
+  if(new Date().getDay()===0)generateWeeklyReport();
+
+  // analyse communication async
+  analyseComm(win);
+}
+
+async function analyseComm(text){
+  try{
+    const r=await gemini(`Analyse this evening reflection entry for communication quality:\n"${text}"\n\nCheck ONLY: (1) Does it use passive voice? (2) Is the outcome specific and measurable? (3) Does the person own the action with "I"? Give ONE specific sentence to improve — rewrite it in the stronger form. Keep response under 60 words. Be direct, no praise.`);
+    showToast('Communication tip saved');
+    DATA.lastCommTip=r;save();
+  }catch(e){}
+}
+
+async function generateWeeklyReport(){
+  const logs=Object.entries(DATA.eveningLog).slice(-7);
+  if(logs.length<3)return;
+  const summary=logs.map(([d,v])=>`${d}: Win="${v.win}" Improve="${v.improve}"`).join('\n');
+  const focusTotal=logs.reduce((a,[,v])=>a+Object.values(v.focus||{}).filter(Boolean).length,0);
+  const focusPossible=logs.length*3;
+  try{
+    const r=await gemini(`Weekly performance data:\n${summary}\nFocus blocks completed: ${focusTotal}/${focusPossible}\n\nGenerate a strict weekly report: (1) Execution rate, (2) Top communication pattern observed — specific, (3) One skill gap evident from the reflections, (4) One priority for next week. Be direct and result-oriented. No encouragement, only facts and direction.`);
+    const el=document.getElementById('weekly-report');
+    document.getElementById('weekly-report-content').innerHTML=`<div class="ai-msg">${formatAI(r)}</div>`;
+    el.style.display='block';
+  }catch(e){}
+}
+
+// ── JOB SEARCH ─────────────────────────────────────────────────
+async function searchJobs(){
+  const query=document.getElementById('job-search-input').value.trim();
+  const loc=document.getElementById('job-location').value.trim()||'India or Remote';
+  if(!query){showToast('Enter a role or skill to search','var(--amber)');return}
+  const el=document.getElementById('job-results');
+  el.innerHTML=`<div class="card">${loadingHTML('Searching real job listings...')}</div>`;
+  try{
+    const r=await geminiSearch(`Search for current job listings today ${new Date().toDateString()} for: "${query}" in ${loc}. Profile: ${CFG.skills||'IBM BAW, Python, LLM, AI Security, 6+ years experience'}.\n\nReturn ONLY real job listings you found. For each listing include: Job Title, Company, Location, Key requirements (3-4 points), and the apply URL or job board where it was found. If you cannot find real verified listings, say exactly that — do not invent companies or URLs. Format as a numbered list. Max 5 results.`);
+    renderJobResults(r,query);
+  }catch(e){el.innerHTML=errHTML(e)}
+}
+
+function renderJobResults(text,query){
+  const el=document.getElementById('job-results');
+  el.innerHTML=`<div class="card"><div class="card-label">Results for "${query}"</div><div class="ai-msg" style="margin-bottom:12px;background:transparent;border:none;padding:0">${formatAI(text)}</div><div style="font-size:12px;color:var(--muted);margin-top:8px;padding-top:8px;border-top:1px solid var(--border)">Tip: Copy any job description and paste it in the box below to get instant fit analysis and interview prep.</div></div>`;
+}
+
+async function analyseJD(){
+  const jd=document.getElementById('jd-paste').value.trim();
+  if(!jd){showToast('Paste a job description first','var(--amber)');return}
+  const el=document.getElementById('jd-result');
+  el.innerHTML=`<div class="card">${loadingHTML('Analysing fit...')}</div>`;
+  try{
+    const r=await gemini(`Job Description:\n${jd}\n\nCandidate profile:\nRole: ${CFG.role}\nTarget: ${CFG.target}\nSkills: ${CFG.skills}\nExperience: 6+ years\n\nAnalyse fit strictly:\n1. Overall match score (0-100) with clear justification\n2. Exact skills the candidate HAS that match (list them)\n3. Exact skills MISSING — what to close and estimated weeks to close each gap\n4. Top 3 strengths to lead with in the interview\n5. One honest concern the interviewer might have\n\nBe specific and strict. No flattery.`);
+    el.innerHTML=`<div class="card"><div class="card-label">Fit Analysis</div><div class="ai-msg" style="background:transparent;border:none;padding:0">${formatAI(r)}</div></div>`;
+  }catch(e){el.innerHTML=errHTML(e)}
+}
+
+async function prepFromJD(){
+  const jd=document.getElementById('jd-paste').value.trim();
+  if(!jd){showToast('Paste a job description first','var(--amber)');return}
+  document.querySelector('[onclick="switchTab(\'prep\',this)"]').click();
+  document.getElementById('prep-role-input').value=jd;
+  await generateQuestions();
+}
+
+// ── INTERVIEW PREP ─────────────────────────────────────────────
+async function generateQuestions(){
+  const input=document.getElementById('prep-role-input').value.trim();
+  const focus=document.getElementById('prep-focus').value;
+  if(!input){showToast('Enter a role or paste a JD','var(--amber)');return}
+  const el=document.getElementById('prep-questions');
+  el.innerHTML=`<div class="card">${loadingHTML('Generating questions...')}</div>`;
+  try{
+    const r=await gemini(`Role/JD: ${input}\nQuestion type: ${focus}\nCandidate: ${CFG.role}, targeting ${CFG.target}, skills: ${CFG.skills}\n\nGenerate 10 interview questions an ETMO panel or technical hiring manager would ask THIS specific candidate for THIS specific role.\n\nFor each question include:\n- The question itself\n- Why they will ask it (the real concern behind the question)\n- Tone guidance: how to approach the answer (assertive/humble/technical/story-based)\n- One phrase to avoid\n\nFormat: Q1, Q2... numbered. Be specific to the role and candidate's background. No generic questions.`);
+    renderQuestions(r);
+  }catch(e){el.innerHTML=errHTML(e)}
+}
+
+function renderQuestions(text){
+  const el=document.getElementById('prep-questions');
+  el.innerHTML=`<div class="card"><div class="card-label">Generated questions</div><div class="ai-msg" style="background:transparent;border:none;padding:0;font-size:13px">${formatAI(text)}</div></div>`;
+  document.getElementById('answer-practice').style.display='block';
+  document.getElementById('current-question').innerHTML='<div class="q-num">Practice question</div><div class="q-text">Copy any question above and paste it here, then write your answer for AI scoring.</div>';
+}
+
+async function scoreAnswer(){
+  const q=document.getElementById('current-question').textContent;
+  const a=document.getElementById('answer-input').value.trim();
+  if(!a){showToast('Write your answer first','var(--amber)');return}
+  const el=document.getElementById('answer-feedback');
+  el.innerHTML=`<div class="card">${loadingHTML('Scoring...')}</div>`;
+  try{
+    const r=await gemini(`Question: ${q}\nCandidate answer: ${a}\nCandidate background: ${CFG.role}, ${CFG.skills}\n\nScore this interview answer strictly:\n1. Relevance to the question (0-10)\n2. Use of specific experience from their background (0-10)\n3. STAR structure completeness (0-10)\n4. Communication clarity — active voice, no hedging (0-10)\n5. Overall score (0-10)\n\nThen:\n- Identify the weakest single element\n- Rewrite the answer as the candidate should have said it — using their actual background, in a confident senior tone\n- Give one tone/delivery note for when they say this out loud\n\nBe strict. No encouragement. Only actionable improvement.`);
+    el.innerHTML=`<div class="card"><div class="card-label">Answer Score & Improvement</div><div class="ai-msg" style="background:transparent;border:none;padding:0">${formatAI(r)}</div></div>`;
+  }catch(e){el.innerHTML=errHTML(e)}
+}
+
+// ── RESUME ─────────────────────────────────────────────────────
+async function handleResumeFile(e){
+  const file=e.target.files[0];if(!file)return;
+  if(file.type==='application/pdf'){
+    // basic PDF text extraction
+    const reader=new FileReader();
+    reader.onload=async(ev)=>{
+      // Use simple text extraction for PDFs via fetch trick
+      try{
+        const arr=new Uint8Array(ev.target.result);
+        let str='';
+        for(let i=0;i<arr.length;i++){if(arr[i]>31&&arr[i]<127)str+=String.fromCharCode(arr[i]);}
+        // Extract readable text portions
+        const textChunks=str.match(/[A-Za-z][A-Za-z0-9 ,.\-:()\n]{15,}/g)||[];
+        const extracted=textChunks.join('\n').slice(0,4000);
+        document.getElementById('resume-paste').value=extracted||'Could not extract text — please paste manually.';
+        showToast('PDF processed — verify text below');
+      }catch(err){document.getElementById('resume-paste').value='PDF extraction failed. Please paste your resume text manually.'}
+    };
+    reader.readAsArrayBuffer(file);
+  } else {
+    const reader=new FileReader();
+    reader.onload=(ev)=>{document.getElementById('resume-paste').value=ev.target.result;showToast('File loaded')};
+    reader.readAsText(file);
+  }
+}
+
+async function analyseResume(){
+  const text=document.getElementById('resume-paste').value.trim();
+  const target=document.getElementById('resume-target').value.trim()||CFG.target||'AI Security Engineer';
+  if(!text){showToast('Upload or paste your resume first','var(--amber)');return}
+  const el=document.getElementById('resume-result');
+  el.innerHTML=`<div class="card">${loadingHTML('Analysing resume...')}</div>`;
+  try{
+    const r=await gemini(`Resume text:\n${text.slice(0,3500)}\n\nTarget role: ${target}\nMarket context: 2026, AI Security / LLM Engineering / Agentic AI is the high-growth area\n\nAnalyse this resume strictly and give:\n1. Overall score out of 100 with breakdown: Content (30), Clarity (20), Impact metrics (20), ATS compatibility (15), Positioning (15)\n2. Top 3 strengths in this resume\n3. Top 5 specific weaknesses — quote the exact weak line and rewrite it stronger\n4. Missing keywords for ATS systems for the target role\n5. Rewrite the professional summary section — one powerful paragraph\n6. One structural change that would increase interview callback rate\n\nBe specific. Quote actual lines from the resume. No generic advice.`);
+    el.innerHTML=`<div class="card"><div class="card-label">Resume Analysis</div><div class="ai-msg" style="background:transparent;border:none;padding:0">${formatAI(r)}</div></div>`;
+  }catch(e){el.innerHTML=errHTML(e)}
+}
+
+// ── SETTINGS ───────────────────────────────────────────────────
+function loadSettings(){
+  document.getElementById('s-gemini').value=CFG.geminiKey||'';
+  document.getElementById('s-github').value=CFG.github||'TarunTangella';
+  document.getElementById('s-ghtoken').value=CFG.ghtoken||'';
+  document.getElementById('s-repo').value=CFG.repo||'career-os-data';
+  document.getElementById('s-name').value=CFG.name||'Tarun';
+  document.getElementById('s-role').value=CFG.role||'';
+  document.getElementById('s-target').value=CFG.target||'';
+  document.getElementById('s-exp').value=CFG.exp||'6+';
+  document.getElementById('s-skills').value=CFG.skills||'';
+  document.getElementById('s-location').value=CFG.location||'Hyderabad, India';
+  document.getElementById('s-jobloc').value=CFG.jobLoc||'Hyderabad, Remote, UAE';
+}
+
+function saveSettings(){
+  CFG.geminiKey=document.getElementById('s-gemini').value.trim();
+  CFG.github=document.getElementById('s-github').value.trim();
+  CFG.ghtoken=document.getElementById('s-ghtoken').value.trim();
+  CFG.repo=document.getElementById('s-repo').value.trim();
+  CFG.name=document.getElementById('s-name').value.trim();
+  CFG.role=document.getElementById('s-role').value.trim();
+  CFG.target=document.getElementById('s-target').value.trim();
+  CFG.exp=document.getElementById('s-exp').value.trim();
+  CFG.skills=document.getElementById('s-skills').value.trim();
+  CFG.location=document.getElementById('s-location').value.trim();
+  CFG.jobLoc=document.getElementById('s-jobloc').value.trim();
+  localStorage.setItem('careerOS_cfg',JSON.stringify(CFG));
+  showToast('Settings saved');
+  renderHome();
+}
+
+function exportData(){
+  const blob=new Blob([JSON.stringify({cfg:CFG,data:DATA},null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='career-os-backup.json';a.click();
+}
+
+// ── GITHUB SYNC ────────────────────────────────────────────────
+async function syncToGitHub(){
+  if(!CFG.ghtoken||!CFG.github||!CFG.repo)return;
+  try{
+    const content=btoa(unescape(encodeURIComponent(JSON.stringify(DATA,null,2))));
+    // Get current SHA
+    let sha='';
+    try{
+      const r=await fetch(`https://api.github.com/repos/${CFG.github}/${CFG.repo}/contents/data.json`,{headers:{Authorization:`token ${CFG.ghtoken}`}});
+      if(r.ok){const d=await r.json();sha=d.sha}
+    }catch(e){}
+    const body={message:`Career OS sync ${today()}`,content};
+    if(sha)body.sha=sha;
+    await fetch(`https://api.github.com/repos/${CFG.github}/${CFG.repo}/contents/data.json`,{method:'PUT',headers:{Authorization:`token ${CFG.ghtoken}`,'Content-Type':'application/json'},body:JSON.stringify(body)});
+  }catch(e){}
+}
+
+// ── NAV ────────────────────────────────────────────────────────
+function switchTab(name,btn){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('screen-'+name).classList.add('active');
+  if(btn)btn.classList.add('active');
+  else document.querySelector(`[onclick*="'${name}'"]`)?.classList.add('active');
+}
+
+// ── HELPERS ────────────────────────────────────────────────────
+function loadingHTML(msg='Loading...'){return`<div class="loading"><div class="dot"></div><div class="dot"></div><div class="dot"></div><span>${msg}</span></div>`}
+function errHTML(e){return`<div class="card" style="border-color:var(--red)"><div style="font-size:13px;color:var(--red)">Error: ${e.message||'Something went wrong'}. Check your API key in Settings.</div></div>`}
+function formatAI(text){return text.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n\n/g,'</p><p>').replace(/\n/g,'<br>').replace(/^/,'<p>').replace(/$/,'</p>')}
+
+// ── BOOT ───────────────────────────────────────────────────────
+window.addEventListener('load',()=>{
+  if(loadCFG()&&CFG.geminiKey){
+    document.getElementById('setup-screen').style.display='none';
+    document.getElementById('app').style.display='flex';
+    initApp();
+  }
+  // sync every 10 min if GitHub configured
+  setInterval(()=>{if(CFG.ghtoken)syncToGitHub()},600000);
+});
+</script>
+</body>
+</html>
