@@ -6,463 +6,260 @@
 <title>AI Engineering Lab</title>
 <style>
   :root {
-    --bg: #0a0f1a;
-    --bg2: #111827;
-    --bg3: #1a2236;
-    --border: #1e2d45;
-    --accent: #3b82f6;
-    --accent2: #6366f1;
-    --green: #10b981;
-    --amber: #f59e0b;
-    --red: #ef4444;
-    --text: #e2e8f0;
-    --text2: #94a3b8;
-    --text3: #475569;
-    --mono: 'JetBrains Mono', 'Fira Code', 'Cascadia Code', monospace;
-    --sans: 'Inter', system-ui, sans-serif;
+    --bg: #0a0f1a; --bg2: #111827; --bg3: #1a2236; --border: #1e2d45;
+    --accent: #3b82f6; --accent2: #6366f1; --green: #10b981; --amber: #f59e0b;
+    --red: #ef4444; --text: #e2e8f0; --text2: #94a3b8; --text3: #475569;
+    --mono: 'JetBrains Mono','Fira Code',monospace; --sans: 'Inter',system-ui,sans-serif;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  html { font-size: 15px; }
   body { background: var(--bg); color: var(--text); font-family: var(--sans); min-height: 100vh; display: flex; }
 
-  /* SIDEBAR */
   #sidebar {
-    width: 260px; min-width: 260px; background: var(--bg2);
+    width: 240px; min-width: 240px; background: var(--bg2);
     border-right: 1px solid var(--border); display: flex; flex-direction: column;
     height: 100vh; position: sticky; top: 0; overflow-y: auto;
   }
-  #sidebar-logo {
-    padding: 20px 18px 14px; border-bottom: 1px solid var(--border);
-  }
-  #sidebar-logo .logo-title {
-    font-size: 15px; font-weight: 700; letter-spacing: -.3px;
-    background: linear-gradient(90deg, var(--accent), var(--accent2));
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  }
-  #sidebar-logo .logo-sub { font-size: 11px; color: var(--text3); margin-top: 2px; }
+  .logo { padding: 18px 16px 12px; border-bottom: 1px solid var(--border); }
+  .logo-title { font-size: 15px; font-weight: 700; background: linear-gradient(90deg,var(--accent),var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+  .logo-sub { font-size: 11px; color: var(--text3); margin-top: 2px; }
 
-  .nav-section { padding: 12px 10px 4px; }
-  .nav-label { font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--text3); padding: 0 8px 6px; }
-  .nav-item {
-    display: flex; align-items: center; gap: 9px; padding: 8px 10px;
-    border-radius: 7px; cursor: pointer; font-size: 13px; color: var(--text2);
-    transition: background .15s, color .15s; border: none; background: none; width: 100%; text-align: left;
-  }
-  .nav-item:hover { background: var(--bg3); color: var(--text); }
-  .nav-item.active { background: rgba(59,130,246,.15); color: var(--accent); font-weight: 500; }
-  .nav-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
-  .dot-blue { background: var(--accent); }
-  .dot-purple { background: var(--accent2); }
-  .dot-green { background: var(--green); }
-  .dot-amber { background: var(--amber); }
-  .dot-red { background: var(--red); }
+  .nav-section { padding: 10px 8px 4px; }
+  .nav-label { font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--text3); padding: 0 8px 5px; }
+  .nav-btn { display: flex; align-items: center; gap: 8px; padding: 7px 10px; border-radius: 7px; cursor: pointer; font-size: 13px; color: var(--text2); border: none; background: none; width: 100%; text-align: left; transition: all .15s; }
+  .nav-btn:hover { background: var(--bg3); color: var(--text); }
+  .nav-btn.active { background: rgba(59,130,246,.15); color: var(--accent); font-weight: 500; }
+  .dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+  .d-blue{background:var(--accent)} .d-purple{background:var(--accent2)} .d-green{background:var(--green)} .d-amber{background:var(--amber)} .d-red{background:var(--red)}
 
-  #progress-wrap { padding: 14px 18px; border-top: 1px solid var(--border); margin-top: auto; }
-  .prog-label { font-size: 11px; color: var(--text3); margin-bottom: 6px; }
+  /* API KEY SECTION */
+  #key-section { padding: 12px 14px; border-top: 1px solid var(--border); margin-top: auto; }
+  #key-section label { font-size: 10px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--text3); display: block; margin-bottom: 6px; }
+  #api-key-input { width: 100%; padding: 7px 10px; background: var(--bg3); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-size: 12px; font-family: var(--mono); outline: none; }
+  #api-key-input:focus { border-color: var(--accent); }
+  #key-save-btn { width: 100%; margin-top: 6px; padding: 7px; background: var(--accent); color: #fff; border: none; border-radius: 6px; font-size: 12px; cursor: pointer; font-family: var(--sans); font-weight: 500; }
+  #key-save-btn:hover { background: #2563eb; }
+  #key-status { font-size: 11px; margin-top: 5px; text-align: center; }
+
+  #prog-wrap { padding: 12px 14px; border-top: 1px solid var(--border); }
+  .prog-lbl { font-size: 11px; color: var(--text3); margin-bottom: 5px; }
   .prog-bar { height: 4px; background: var(--border); border-radius: 2px; }
-  .prog-fill { height: 100%; border-radius: 2px; background: linear-gradient(90deg, var(--accent), var(--accent2)); transition: width .4s; }
+  .prog-fill { height: 100%; border-radius: 2px; background: linear-gradient(90deg,var(--accent),var(--accent2)); transition: width .4s; }
 
-  /* MAIN */
   #main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
-
-  /* TOPBAR */
-  #topbar {
-    padding: 14px 28px; border-bottom: 1px solid var(--border);
-    display: flex; align-items: center; gap: 12px; background: var(--bg2); position: sticky; top: 0; z-index: 10;
-  }
-  #topbar h1 { font-size: 15px; font-weight: 600; flex: 1; }
-  .tag { font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 20px; letter-spacing: .04em; }
+  #topbar { padding: 13px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; background: var(--bg2); position: sticky; top: 0; z-index: 10; }
+  #topbar h1 { font-size: 14px; font-weight: 600; flex: 1; }
+  .tag { font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 20px; }
   .tag-blue { background: rgba(59,130,246,.15); color: var(--accent); }
   .tag-green { background: rgba(16,185,129,.15); color: var(--green); }
   .tag-amber { background: rgba(245,158,11,.15); color: var(--amber); }
-  #refresh-btn {
-    padding: 7px 14px; border-radius: 7px; border: 1px solid var(--border);
-    background: var(--bg3); color: var(--text2); font-size: 12px; cursor: pointer;
-    display: flex; align-items: center; gap: 6px; transition: all .15s; font-family: var(--sans);
-  }
+  #refresh-btn { padding: 6px 13px; border-radius: 7px; border: 1px solid var(--border); background: var(--bg3); color: var(--text2); font-size: 12px; cursor: pointer; font-family: var(--sans); transition: all .15s; }
   #refresh-btn:hover { border-color: var(--accent); color: var(--accent); }
 
-  /* CONTENT */
-  #content { flex: 1; overflow-y: auto; padding: 28px; max-width: 900px; width: 100%; }
+  #content { flex: 1; overflow-y: auto; padding: 24px; }
 
   /* HOME */
-  .home-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-bottom: 28px; }
-  .stat-card {
-    background: var(--bg2); border: 1px solid var(--border); border-radius: 10px;
-    padding: 18px; display: flex; flex-direction: column; gap: 4px;
-  }
-  .stat-card .stat-val { font-size: 28px; font-weight: 700; letter-spacing: -1px; }
-  .stat-card .stat-lbl { font-size: 12px; color: var(--text3); }
-  .blue-val { color: var(--accent); }
-  .green-val { color: var(--green); }
-  .amber-val { color: var(--amber); }
-  .purple-val { color: var(--accent2); }
+  .stat-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 24px; }
+  .stat-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+  .stat-val { font-size: 26px; font-weight: 700; letter-spacing: -1px; }
+  .stat-lbl { font-size: 11px; color: var(--text3); margin-top: 2px; }
 
-  /* TRACK CARDS */
-  .track-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
-  .track-card {
-    background: var(--bg2); border: 1px solid var(--border); border-radius: 10px;
-    padding: 18px; cursor: pointer; transition: border-color .15s, transform .1s;
-  }
+  .track-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; }
+  .track-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 16px; cursor: pointer; transition: border-color .15s, transform .1s; }
   .track-card:hover { border-color: var(--accent); transform: translateY(-1px); }
-  .track-card .tc-icon { font-size: 22px; margin-bottom: 10px; }
-  .track-card .tc-title { font-size: 14px; font-weight: 600; margin-bottom: 4px; }
-  .track-card .tc-desc { font-size: 12px; color: var(--text2); line-height: 1.5; }
-  .track-card .tc-level { font-size: 11px; margin-top: 10px; font-weight: 600; }
+  .tc-icon { font-size: 22px; margin-bottom: 8px; }
+  .tc-title { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
+  .tc-desc { font-size: 12px; color: var(--text2); line-height: 1.5; }
+  .tc-badge { display: inline-block; margin-top: 8px; }
 
-  /* LAB SECTION */
-  #lab-section { display: none; }
-  .lab-header { margin-bottom: 22px; }
-  .lab-header h2 { font-size: 20px; font-weight: 700; letter-spacing: -.4px; margin-bottom: 6px; }
-  .lab-header p { font-size: 13px; color: var(--text2); line-height: 1.6; }
-  .lab-meta { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+  /* OUTPUT */
+  .out-wrap { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; min-height: 200px; }
+  .out-header { padding: 11px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px; background: var(--bg3); }
+  .pulse { width: 8px; height: 8px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1}50%{opacity:.3} }
+  .out-status { font-size: 12px; color: var(--text2); flex: 1; }
+  .out-body { padding: 20px 22px; font-size: 13.5px; line-height: 1.8; color: var(--text); }
 
-  /* AI OUTPUT */
-  #ai-output {
-    background: var(--bg2); border: 1px solid var(--border); border-radius: 10px;
-    padding: 0; overflow: hidden; min-height: 300px;
-  }
-  #ai-output-header {
-    padding: 12px 18px; border-bottom: 1px solid var(--border);
-    display: flex; align-items: center; gap: 10px; background: var(--bg3);
-  }
-  #ai-output-header .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
-  #ai-output-header span { font-size: 12px; color: var(--text2); }
-  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.4} }
-  #ai-output-body { padding: 22px 24px; font-size: 13.5px; line-height: 1.8; color: var(--text); }
-  #ai-output-body.loading { color: var(--text3); font-style: italic; }
-
-  /* MARKDOWN STYLES */
-  #ai-output-body h1,h2,h3 { color: var(--text); margin: 20px 0 8px; font-weight: 600; }
-  #ai-output-body h1 { font-size: 17px; }
-  #ai-output-body h2 { font-size: 15px; border-bottom: 1px solid var(--border); padding-bottom: 6px; }
-  #ai-output-body h3 { font-size: 14px; color: var(--accent); }
-  #ai-output-body p { margin-bottom: 12px; }
-  #ai-output-body ul, #ai-output-body ol { margin: 10px 0 12px 20px; }
-  #ai-output-body li { margin-bottom: 5px; }
-  #ai-output-body strong { color: var(--text); font-weight: 600; }
-  #ai-output-body em { color: var(--text2); }
-  #ai-output-body a { color: var(--accent); text-decoration: none; }
-  #ai-output-body a:hover { text-decoration: underline; }
-  #ai-output-body hr { border: none; border-top: 1px solid var(--border); margin: 18px 0; }
-  #ai-output-body blockquote {
-    border-left: 3px solid var(--accent2); padding-left: 14px;
-    color: var(--text2); margin: 14px 0; font-style: italic;
-  }
-
-  /* CODE BLOCKS */
-  #ai-output-body pre {
-    background: var(--bg); border: 1px solid var(--border); border-radius: 8px;
-    padding: 16px; margin: 14px 0; overflow-x: auto; font-family: var(--mono);
-    font-size: 12.5px; line-height: 1.7; position: relative;
-  }
-  #ai-output-body code:not(pre code) {
-    background: rgba(59,130,246,.1); color: #93c5fd;
-    padding: 2px 6px; border-radius: 4px; font-family: var(--mono); font-size: 12px;
-  }
-  #ai-output-body pre code { color: #a8d8a8; background: none; padding: 0; }
-
-  /* COPY BUTTON */
-  .copy-btn {
-    position: absolute; top: 10px; right: 10px; padding: 4px 10px;
-    background: var(--bg2); border: 1px solid var(--border); border-radius: 5px;
-    color: var(--text3); font-size: 11px; cursor: pointer; font-family: var(--sans);
-  }
-  .copy-btn:hover { color: var(--text); border-color: var(--accent); }
-
-  /* ACTION BUTTONS */
-  .action-row { display: flex; gap: 10px; margin-top: 18px; flex-wrap: wrap; }
-  .btn {
-    padding: 9px 18px; border-radius: 8px; font-size: 13px; font-weight: 500;
-    cursor: pointer; border: none; font-family: var(--sans); transition: all .15s; display: flex; align-items: center; gap: 7px;
-  }
-  .btn-primary { background: var(--accent); color: #fff; }
-  .btn-primary:hover { background: #2563eb; }
-  .btn-secondary { background: var(--bg3); color: var(--text); border: 1px solid var(--border); }
-  .btn-secondary:hover { border-color: var(--accent); color: var(--accent); }
-  .btn-ghost { background: transparent; color: var(--text2); border: 1px solid var(--border); }
-  .btn-ghost:hover { color: var(--text); }
-
-  /* BREADCRUMB */
-  .breadcrumb { font-size: 12px; color: var(--text3); margin-bottom: 16px; display: flex; align-items: center; gap: 6px; }
-  .breadcrumb span { cursor: pointer; } .breadcrumb span:hover { color: var(--accent); }
-
-  /* LOADING SPINNER */
-  .spinner { width: 20px; height: 20px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin .7s linear infinite; }
-  @keyframes spin { to { transform: rotate(360deg); } }
+  /* MARKDOWN */
+  .out-body h1 { font-size: 17px; font-weight: 700; margin: 18px 0 8px; }
+  .out-body h2 { font-size: 15px; font-weight: 600; margin: 16px 0 7px; border-bottom: 1px solid var(--border); padding-bottom: 5px; }
+  .out-body h3 { font-size: 14px; font-weight: 600; color: var(--accent); margin: 14px 0 6px; }
+  .out-body p { margin-bottom: 10px; }
+  .out-body ul,ol { margin: 8px 0 10px 20px; }
+  .out-body li { margin-bottom: 4px; }
+  .out-body strong { color: var(--text); font-weight: 600; }
+  .out-body a { color: var(--accent); text-decoration: none; }
+  .out-body a:hover { text-decoration: underline; }
+  .out-body hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
+  .out-body blockquote { border-left: 3px solid var(--accent2); padding-left: 12px; color: var(--text2); margin: 12px 0; }
+  .out-body pre { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 14px; margin: 12px 0; overflow-x: auto; font-family: var(--mono); font-size: 12.5px; line-height: 1.7; position: relative; }
+  .out-body code:not(pre code) { background: rgba(59,130,246,.1); color: #93c5fd; padding: 2px 6px; border-radius: 4px; font-family: var(--mono); font-size: 12px; }
+  .out-body pre code { color: #a8d8a8; background: none; padding: 0; font-family: var(--mono); }
+  .copy-btn { position: absolute; top: 8px; right: 8px; padding: 3px 9px; background: var(--bg2); border: 1px solid var(--border); border-radius: 4px; color: var(--text3); font-size: 11px; cursor: pointer; font-family: var(--sans); }
+  .copy-btn:hover { color: var(--text); }
 
   /* LABS LIST */
-  .labs-list { display: flex; flex-direction: column; gap: 10px; margin-top: 16px; }
-  .lab-item {
-    background: var(--bg2); border: 1px solid var(--border); border-radius: 9px;
-    padding: 14px 18px; cursor: pointer; display: flex; align-items: center; gap: 14px;
-    transition: border-color .15s;
-  }
+  .lab-item { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 13px 16px; cursor: pointer; display: flex; align-items: center; gap: 12px; margin-bottom: 8px; transition: border-color .15s; }
   .lab-item:hover { border-color: var(--accent); }
-  .lab-item .li-num { font-size: 12px; font-weight: 700; color: var(--text3); font-family: var(--mono); width: 28px; flex-shrink: 0; }
-  .lab-item .li-info { flex: 1; }
-  .lab-item .li-title { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
-  .lab-item .li-desc { font-size: 12px; color: var(--text2); }
-  .lab-item .li-time { font-size: 11px; color: var(--text3); flex-shrink: 0; }
-  .li-done { border-left: 3px solid var(--green) !important; }
+  .lab-num { font-size: 11px; font-weight: 700; color: var(--text3); font-family: var(--mono); width: 26px; flex-shrink: 0; }
+  .lab-info { flex: 1; }
+  .lab-title { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
+  .lab-desc { font-size: 12px; color: var(--text2); }
+  .lab-done { border-left: 3px solid var(--green) !important; }
+  .lab-tags { display: flex; flex-direction: column; align-items: flex-end; gap: 3px; }
 
-  /* SEARCH BOX */
-  .search-wrap { position: relative; margin-bottom: 18px; }
-  .search-wrap input {
-    width: 100%; padding: 10px 14px 10px 38px; background: var(--bg2);
-    border: 1px solid var(--border); border-radius: 8px; color: var(--text);
-    font-size: 13px; font-family: var(--sans); outline: none; transition: border-color .15s;
-  }
-  .search-wrap input:focus { border-color: var(--accent); }
-  .search-wrap .si { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--text3); font-size: 15px; }
+  /* BREADCRUMB */
+  .bc { font-size: 12px; color: var(--text3); margin-bottom: 14px; display: flex; align-items: center; gap: 5px; }
+  .bc span { cursor: pointer; } .bc span:hover { color: var(--accent); }
 
-  /* CUSTOM TOPIC */
-  #custom-form { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 20px; margin-top: 16px; }
-  #custom-form textarea {
-    width: 100%; background: var(--bg3); border: 1px solid var(--border); border-radius: 7px;
-    padding: 12px; color: var(--text); font-size: 13px; font-family: var(--sans);
-    resize: vertical; min-height: 80px; outline: none; transition: border-color .15s;
-  }
-  #custom-form textarea:focus { border-color: var(--accent); }
-  #custom-form label { font-size: 12px; color: var(--text2); display: block; margin-bottom: 7px; font-weight: 500; }
+  /* BTNS */
+  .btn-row { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
+  .btn { padding: 8px 16px; border-radius: 7px; font-size: 13px; font-weight: 500; cursor: pointer; border: none; font-family: var(--sans); display: flex; align-items: center; gap: 6px; transition: all .15s; }
+  .btn-p { background: var(--accent); color: #fff; } .btn-p:hover { background: #2563eb; }
+  .btn-s { background: var(--bg3); color: var(--text); border: 1px solid var(--border); } .btn-s:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-g { background: transparent; color: var(--text2); border: 1px solid var(--border); } .btn-g:hover { color: var(--text); }
 
-  /* TOOLTIP */
-  .tooltip { position: relative; }
-  .tooltip-text {
-    display: none; position: absolute; bottom: 120%; left: 50%; transform: translateX(-50%);
-    background: var(--bg3); border: 1px solid var(--border); border-radius: 6px;
-    padding: 6px 10px; font-size: 11px; color: var(--text2); white-space: nowrap; z-index: 100;
-  }
-  .tooltip:hover .tooltip-text { display: block; }
+  /* CUSTOM */
+  .custom-box { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 18px; margin-bottom: 16px; }
+  .custom-box label { font-size: 12px; color: var(--text2); display: block; margin-bottom: 7px; font-weight: 500; }
+  .custom-box textarea { width: 100%; background: var(--bg3); border: 1px solid var(--border); border-radius: 7px; padding: 12px; color: var(--text); font-size: 13px; font-family: var(--sans); resize: vertical; min-height: 90px; outline: none; transition: border-color .15s; }
+  .custom-box textarea:focus { border-color: var(--accent); }
+
+  .spinner { width: 18px; height: 18px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin .7s linear infinite; flex-shrink: 0; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  .sec { display: none; }
+  .sec.on { display: block; }
 
   @media (max-width: 700px) {
     #sidebar { display: none; }
-    .home-grid, .track-grid { grid-template-columns: 1fr; }
-    #content { padding: 16px; }
+    .stat-grid { grid-template-columns: repeat(2,1fr); }
+    .track-grid { grid-template-columns: 1fr; }
   }
 </style>
 </head>
 <body>
 
-<!-- SIDEBAR -->
 <nav id="sidebar">
-  <div id="sidebar-logo">
+  <div class="logo">
     <div class="logo-title">⚡ AI Lab</div>
     <div class="logo-sub">Living AI Engineering Runbook</div>
   </div>
-
   <div class="nav-section">
     <div class="nav-label">Start here</div>
-    <button class="nav-item active" onclick="showHome()">
-      <span class="nav-dot dot-blue"></span> Dashboard
-    </button>
-    <button class="nav-item" onclick="showCustomLab()">
-      <span class="nav-dot dot-purple"></span> Ask anything
-    </button>
+    <button class="nav-btn active" id="nav-home" onclick="show('home')"><span class="dot d-blue"></span>Dashboard</button>
+    <button class="nav-btn" id="nav-custom" onclick="show('custom')"><span class="dot d-purple"></span>Ask anything</button>
   </div>
-
   <div class="nav-section">
     <div class="nav-label">Learning tracks</div>
-    <button class="nav-item" onclick="showTrack('python')">
-      <span class="nav-dot dot-amber"></span> Python for AI
-    </button>
-    <button class="nav-item" onclick="showTrack('rag')">
-      <span class="nav-dot dot-blue"></span> RAG from scratch
-    </button>
-    <button class="nav-item" onclick="showTrack('vectordb')">
-      <span class="nav-dot dot-green"></span> Vector databases
-    </button>
-    <button class="nav-item" onclick="showTrack('langchain')">
-      <span class="nav-dot dot-purple"></span> LangChain / agents
-    </button>
-    <button class="nav-item" onclick="showTrack('langgraph')">
-      <span class="nav-dot dot-red"></span> LangGraph / multi-agent
-    </button>
-    <button class="nav-item" onclick="showTrack('mlops')">
-      <span class="nav-dot dot-amber"></span> MLOps + deployment
-    </button>
+    <button class="nav-btn" onclick="showTrack('python')"><span class="dot d-amber"></span>Python for AI</button>
+    <button class="nav-btn" onclick="showTrack('rag')"><span class="dot d-blue"></span>RAG from scratch</button>
+    <button class="nav-btn" onclick="showTrack('vectordb')"><span class="dot d-green"></span>Vector databases</button>
+    <button class="nav-btn" onclick="showTrack('langchain')"><span class="dot d-purple"></span>LangChain / agents</button>
+    <button class="nav-btn" onclick="showTrack('langgraph')"><span class="dot d-red"></span>LangGraph / multi-agent</button>
+    <button class="nav-btn" onclick="showTrack('mlops')"><span class="dot d-amber"></span>MLOps + deployment</button>
   </div>
-
   <div class="nav-section">
     <div class="nav-label">Real projects</div>
-    <button class="nav-item" onclick="showProject('banking')">
-      <span class="nav-dot dot-green"></span> Banking AI systems
-    </button>
-    <button class="nav-item" onclick="showProject('trending')">
-      <span class="nav-dot dot-blue"></span> Trending in 2026
-    </button>
-    <button class="nav-item" onclick="showProject('portfolio')">
-      <span class="nav-dot dot-purple"></span> Portfolio projects
-    </button>
+    <button class="nav-btn" onclick="showProject('banking')"><span class="dot d-green"></span>Banking AI systems</button>
+    <button class="nav-btn" onclick="showProject('trending')"><span class="dot d-blue"></span>Trending in 2026</button>
+    <button class="nav-btn" onclick="showProject('portfolio')"><span class="dot d-purple"></span>Portfolio projects</button>
   </div>
-
-  <div id="progress-wrap">
-    <div class="prog-label">Labs completed · <span id="prog-count">0</span></div>
+  <div id="key-section">
+    <label>Anthropic API Key</label>
+    <input type="password" id="api-key-input" placeholder="sk-ant-..." />
+    <button id="key-save-btn" onclick="saveKey()">Save key</button>
+    <div id="key-status"></div>
+  </div>
+  <div id="prog-wrap">
+    <div class="prog-lbl">Labs done · <span id="prog-n">0</span></div>
     <div class="prog-bar"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
   </div>
 </nav>
 
-<!-- MAIN -->
 <div id="main">
   <div id="topbar">
-    <h1 id="topbar-title">Dashboard</h1>
-    <span class="tag tag-blue" id="topbar-tag">AI Engineering Lab</span>
-    <div class="tooltip">
-      <button id="refresh-btn" onclick="refreshCurrentLab()">
-        ↻ Refresh lab
-      </button>
-      <span class="tooltip-text">Regenerate with latest tools &amp; trends</span>
-    </div>
+    <h1 id="tb-title">Dashboard</h1>
+    <span class="tag tag-blue" id="tb-tag">AI Engineering Lab</span>
+    <button id="refresh-btn" onclick="refreshCurrent()">↻ Refresh</button>
   </div>
 
   <div id="content">
 
     <!-- HOME -->
-    <div id="home-section">
-      <div class="home-grid">
-        <div class="stat-card">
-          <div class="stat-val blue-val" id="s-labs">18</div>
-          <div class="stat-lbl">Total labs available</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-val green-val" id="s-done">0</div>
-          <div class="stat-lbl">Completed by you</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-val amber-val">2026</div>
-          <div class="stat-lbl">Tools updated for</div>
-        </div>
-        <div class="stat-card">
-          <div class="stat-val purple-val">AI</div>
-          <div class="stat-lbl">Generated on demand</div>
-        </div>
+    <div class="sec on" id="sec-home">
+      <div class="stat-grid">
+        <div class="stat-card"><div class="stat-val" style="color:var(--accent)" id="s-total">28</div><div class="stat-lbl">Total labs</div></div>
+        <div class="stat-card"><div class="stat-val" style="color:var(--green)" id="s-done">0</div><div class="stat-lbl">Completed</div></div>
+        <div class="stat-card"><div class="stat-val" style="color:var(--amber)">2026</div><div class="stat-lbl">Tools updated for</div></div>
+        <div class="stat-card"><div class="stat-val" style="color:var(--accent2)">AI</div><div class="stat-lbl">Generated live</div></div>
       </div>
-
-      <div style="margin-bottom:16px">
-        <div style="font-size:13px;font-weight:600;margin-bottom:12px;color:var(--text2);text-transform:uppercase;letter-spacing:.06em;font-size:11px">Choose a learning track</div>
-        <div class="track-grid">
-          <div class="track-card" onclick="showTrack('python')">
-            <div class="tc-icon">🐍</div>
-            <div class="tc-title">Python for AI</div>
-            <div class="tc-desc">Practical Python — data structures, APIs, file handling, and AI libraries. No theory, only what you need.</div>
-            <div class="tc-level tag tag-green" style="display:inline-block">Start here</div>
-          </div>
-          <div class="track-card" onclick="showTrack('rag')">
-            <div class="tc-icon">🔍</div>
-            <div class="tc-title">RAG from scratch</div>
-            <div class="tc-desc">Build a Retrieval Augmented Generation system step by step. Understand every component, not just run it.</div>
-            <div class="tc-level tag tag-blue" style="display:inline-block">Core concept</div>
-          </div>
-          <div class="track-card" onclick="showTrack('vectordb')">
-            <div class="tc-icon">🗄️</div>
-            <div class="tc-title">Vector databases</div>
-            <div class="tc-desc">What embeddings are, how vector search works, and hands-on labs with ChromaDB, Qdrant, and Pinecone.</div>
-            <div class="tc-level tag tag-green" style="display:inline-block">Core concept</div>
-          </div>
-          <div class="track-card" onclick="showTrack('langchain')">
-            <div class="tc-icon">🔗</div>
-            <div class="tc-title">LangChain / agents</div>
-            <div class="tc-desc">Build AI agents that can reason, use tools, and take actions. Real chains, not tutorial hello-worlds.</div>
-            <div class="tc-level tag tag-amber" style="display:inline-block">Intermediate</div>
-          </div>
-          <div class="track-card" onclick="showTrack('langgraph')">
-            <div class="tc-icon">🕸️</div>
-            <div class="tc-title">LangGraph / multi-agent</div>
-            <div class="tc-desc">Orchestrate multiple AI agents working together. The most in-demand skill in 2026 agentic AI roles.</div>
-            <div class="tc-level tag tag-amber" style="display:inline-block">Advanced</div>
-          </div>
-          <div class="track-card" onclick="showProject('trending')">
-            <div class="tc-icon">🚀</div>
-            <div class="tc-title">Trending projects 2026</div>
-            <div class="tc-desc">AI-generated list of what the market actually wants built. Updated on demand with current trends.</div>
-            <div class="tc-level tag tag-blue" style="display:inline-block">Market-driven</div>
-          </div>
-        </div>
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin-bottom:12px">Choose a track</div>
+      <div class="track-grid">
+        <div class="track-card" onclick="showTrack('python')"><div class="tc-icon">🐍</div><div class="tc-title">Python for AI</div><div class="tc-desc">Practical Python — data, APIs, files, AI libraries. No theory.</div><span class="tag tag-green tc-badge">Start here</span></div>
+        <div class="track-card" onclick="showTrack('rag')"><div class="tc-icon">🔍</div><div class="tc-title">RAG from scratch</div><div class="tc-desc">Build Retrieval Augmented Generation end-to-end. Understand every component.</div><span class="tag tag-blue tc-badge">Core</span></div>
+        <div class="track-card" onclick="showTrack('vectordb')"><div class="tc-icon">🗄️</div><div class="tc-title">Vector databases</div><div class="tc-desc">ChromaDB, Qdrant, Pinecone — hands-on with real semantic search.</div><span class="tag tag-green tc-badge">Core</span></div>
+        <div class="track-card" onclick="showTrack('langchain')"><div class="tc-icon">🔗</div><div class="tc-title">LangChain / agents</div><div class="tc-desc">Build AI agents that reason and use tools. Real chains, not tutorials.</div><span class="tag tag-amber tc-badge">Intermediate</span></div>
+        <div class="track-card" onclick="showTrack('langgraph')"><div class="tc-icon">🕸️</div><div class="tc-title">LangGraph / multi-agent</div><div class="tc-desc">Orchestrate multiple AI agents. Most in-demand skill in 2026.</div><span class="tag tag-amber tc-badge">Advanced</span></div>
+        <div class="track-card" onclick="showProject('trending')"><div class="tc-icon">🚀</div><div class="tc-title">Trending projects 2026</div><div class="tc-desc">AI-generated list of what the market wants built right now.</div><span class="tag tag-blue tc-badge">Market-driven</span></div>
       </div>
     </div>
 
-    <!-- LAB SECTION -->
-    <div id="lab-section">
-      <div class="breadcrumb">
-        <span onclick="showHome()">Dashboard</span>
-        <span style="color:var(--text3)">›</span>
-        <span id="bc-track" style="color:var(--text2)"></span>
-        <span style="color:var(--text3)">›</span>
-        <span id="bc-lab" style="color:var(--accent)"></span>
-      </div>
+    <!-- TRACK -->
+    <div class="sec" id="sec-track">
+      <div class="bc"><span onclick="show('home')">Dashboard</span><span style="color:var(--text3)">›</span><span id="bc-track" style="color:var(--accent)"></span></div>
+      <div style="font-size:18px;font-weight:700;margin-bottom:4px" id="track-title"></div>
+      <div style="font-size:13px;color:var(--text2);margin-bottom:16px" id="track-desc"></div>
+      <div id="labs-list"></div>
+    </div>
 
-      <div class="lab-header">
-        <h2 id="lab-title"></h2>
-        <p id="lab-desc"></p>
-        <div class="lab-meta" id="lab-meta"></div>
+    <!-- LAB -->
+    <div class="sec" id="sec-lab">
+      <div class="bc"><span onclick="show('home')">Dashboard</span><span style="color:var(--text3)">›</span><span id="bc-t" style="cursor:pointer;color:var(--text2)" onclick="goBackToTrack()"></span><span style="color:var(--text3)">›</span><span id="bc-l" style="color:var(--accent)"></span></div>
+      <div style="font-size:18px;font-weight:700;margin-bottom:4px" id="lab-title2"></div>
+      <div style="font-size:13px;color:var(--text2);margin-bottom:14px" id="lab-desc2"></div>
+      <div id="lab-meta2" style="display:flex;gap:7px;margin-bottom:16px;flex-wrap:wrap"></div>
+      <div class="out-wrap" id="lab-out">
+        <div class="out-header"><div class="pulse"></div><span class="out-status" id="lab-status">Generating...</span></div>
+        <div class="out-body" id="lab-body"></div>
       </div>
-
-      <div id="ai-output">
-        <div id="ai-output-header">
-          <div class="dot"></div>
-          <span id="ai-status">Generating lab...</span>
-        </div>
-        <div id="ai-output-body" class="loading">
-          <div style="display:flex;align-items:center;gap:12px;padding:20px 0">
-            <div class="spinner"></div>
-            <span>Generating your lab with current 2026 tools and real-world context...</span>
-          </div>
-        </div>
-      </div>
-
-      <div class="action-row">
-        <button class="btn btn-primary" onclick="markDone()">✓ Mark complete</button>
-        <button class="btn btn-secondary" onclick="refreshCurrentLab()">↻ Regenerate</button>
-        <button class="btn btn-ghost" onclick="generateNextLab()">Next lab →</button>
+      <div class="btn-row">
+        <button class="btn btn-p" onclick="markDone()">✓ Mark complete</button>
+        <button class="btn btn-s" onclick="refreshCurrent()">↻ Regenerate</button>
+        <button class="btn btn-g" onclick="nextLab()">Next lab →</button>
       </div>
     </div>
 
-    <!-- TRACK LAB LIST -->
-    <div id="track-section" style="display:none">
-      <div class="breadcrumb">
-        <span onclick="showHome()">Dashboard</span>
-        <span style="color:var(--text3)">›</span>
-        <span id="bc-track2" style="color:var(--accent)"></span>
+    <!-- PROJECT -->
+    <div class="sec" id="sec-project">
+      <div class="bc"><span onclick="show('home')">Dashboard</span><span style="color:var(--text3)">›</span><span id="bc-proj" style="color:var(--accent)"></span></div>
+      <div style="font-size:18px;font-weight:700;margin-bottom:4px" id="proj-title"></div>
+      <div style="font-size:13px;color:var(--text2);margin-bottom:16px">AI-generated on demand · refreshes with current market data</div>
+      <div class="out-wrap" id="proj-out">
+        <div class="out-header"><div class="pulse"></div><span class="out-status" id="proj-status">Generating...</span></div>
+        <div class="out-body" id="proj-body"></div>
       </div>
-      <div style="font-size:20px;font-weight:700;margin-bottom:6px" id="track-title"></div>
-      <div style="font-size:13px;color:var(--text2);margin-bottom:18px" id="track-desc"></div>
-      <div id="ai-output2" style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden;min-height:200px">
-        <div id="ai-output2-header" style="padding:12px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;background:var(--bg3)">
-          <div class="dot"></div>
-          <span style="font-size:12px;color:var(--text2)">Generating track overview...</span>
-        </div>
-        <div id="ai-output2-body" style="padding:22px 24px;font-size:13.5px;line-height:1.8;color:var(--text)"></div>
-      </div>
+      <div class="btn-row"><button class="btn btn-s" onclick="refreshCurrent()">↻ Regenerate</button></div>
     </div>
 
-    <!-- CUSTOM TOPIC -->
-    <div id="custom-section" style="display:none">
-      <div class="breadcrumb">
-        <span onclick="showHome()">Dashboard</span>
-        <span style="color:var(--text3)">›</span>
-        <span style="color:var(--accent)">Ask anything</span>
-      </div>
-      <div style="font-size:20px;font-weight:700;margin-bottom:6px">Ask anything</div>
-      <div style="font-size:13px;color:var(--text2);margin-bottom:18px">Ask about any AI concept, tool, or project. Get a hands-on lab generated instantly.</div>
-      <div id="custom-form">
+    <!-- CUSTOM -->
+    <div class="sec" id="sec-custom">
+      <div class="bc"><span onclick="show('home')">Dashboard</span><span style="color:var(--text3)">›</span><span style="color:var(--accent)">Ask anything</span></div>
+      <div style="font-size:18px;font-weight:700;margin-bottom:4px">Ask anything</div>
+      <div style="font-size:13px;color:var(--text2);margin-bottom:16px">Type any AI concept, tool, or project. Get a hands-on lab generated instantly.</div>
+      <div class="custom-box">
         <label>What do you want to learn or build?</label>
-        <textarea id="custom-input" placeholder="e.g. Build a document classifier using sentence transformers and FAISS&#10;e.g. How does attention mechanism work with code example&#10;e.g. Build a loan risk scoring agent with LangGraph&#10;e.g. Deploy a FastAPI + LLM app to Azure"></textarea>
-        <div class="action-row" style="margin-top:12px">
-          <button class="btn btn-primary" onclick="runCustomLab()">Generate lab →</button>
-          <button class="btn btn-ghost" onclick="suggestTopics()">Suggest topics for me</button>
+        <textarea id="custom-in" placeholder="e.g. How does RAG work — build one from scratch&#10;e.g. Build a document classifier with sentence-transformers&#10;e.g. Deploy a FastAPI + Ollama app to Azure&#10;e.g. LangGraph multi-agent for loan document review"></textarea>
+        <div class="btn-row" style="margin-top:10px">
+          <button class="btn btn-p" onclick="runCustom()">Generate lab →</button>
+          <button class="btn btn-g" onclick="suggestTopics()">Suggest topics for me</button>
         </div>
       </div>
-      <div id="custom-output" style="margin-top:18px;display:none">
-        <div id="ai-output3" style="background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden">
-          <div style="padding:12px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;background:var(--bg3)">
-            <div class="dot"></div>
-            <span style="font-size:12px;color:var(--text2)" id="custom-status">Generating...</span>
-          </div>
-          <div id="ai-output3-body" style="padding:22px 24px;font-size:13.5px;line-height:1.8;color:var(--text)"></div>
+      <div id="custom-out-wrap" style="display:none">
+        <div class="out-wrap">
+          <div class="out-header"><div class="pulse"></div><span class="out-status" id="custom-status">Generating...</span></div>
+          <div class="out-body" id="custom-body"></div>
         </div>
-        <div class="action-row">
-          <button class="btn btn-secondary" onclick="runCustomLab()">↻ Regenerate</button>
-        </div>
+        <div class="btn-row"><button class="btn btn-s" onclick="runCustom()">↻ Regenerate</button></div>
       </div>
     </div>
 
@@ -470,405 +267,323 @@
 </div>
 
 <script>
-const API = 'https://api.anthropic.com/v1/messages';
-const MODEL = 'claude-sonnet-4-6';
+// ── API KEY MANAGEMENT ────────────────────────────────────────────────────────
+let API_KEY = localStorage.getItem('ai_lab_key') || '';
+function saveKey() {
+  const v = document.getElementById('api-key-input').value.trim();
+  if (!v) { setKeyStatus('Enter a key first', '#ef4444'); return; }
+  API_KEY = v;
+  localStorage.setItem('ai_lab_key', v);
+  setKeyStatus('✓ Saved', '#10b981');
+  setTimeout(() => setKeyStatus('', ''), 2000);
+}
+function setKeyStatus(msg, color) {
+  const el = document.getElementById('key-status');
+  el.textContent = msg; el.style.color = color;
+}
+// Pre-fill saved key (masked)
+if (API_KEY) {
+  document.getElementById('api-key-input').placeholder = '✓ Key saved';
+  setKeyStatus('✓ Key loaded', '#10b981');
+}
 
-// ─── STATE ───────────────────────────────────────────────────────────────────
-let currentTrack = null;
-let currentLabIdx = 0;
-let completedLabs = JSON.parse(localStorage.getItem('ai_lab_done') || '[]');
-let currentSection = 'home';
+// ── STATE ────────────────────────────────────────────────────────────────────
+let curSection = 'home', curTrack = null, curLabIdx = 0, curProject = null;
+let done = JSON.parse(localStorage.getItem('ai_lab_done') || '[]');
 
-// ─── TRACK DATA ──────────────────────────────────────────────────────────────
+// ── TRACKS ───────────────────────────────────────────────────────────────────
 const TRACKS = {
-  python: {
-    name: 'Python for AI', icon: '🐍',
-    desc: 'Practical Python — only what you need for AI engineering',
-    labs: [
-      { title: 'Python data structures for AI', desc: 'Lists, dicts, sets — how AI pipelines actually use them', time: '45 min', tags: ['Python', 'Beginner'] },
-      { title: 'Working with files and APIs', desc: 'Read PDFs, call REST APIs, handle JSON — the real workflow', time: '1 hr', tags: ['Python', 'Practical'] },
-      { title: 'Python for data with pandas', desc: 'Load, filter, transform data — preparation for AI models', time: '1.5 hr', tags: ['pandas', 'Data'] },
-      { title: 'Calling LLM APIs from Python', desc: 'OpenAI, Anthropic, Ollama — make your first real AI call', time: '1 hr', tags: ['LLM', 'APIs'] },
-      { title: 'Async Python for AI pipelines', desc: 'async/await, concurrent requests, streaming responses', time: '1.5 hr', tags: ['Advanced', 'Python'] },
-    ]
-  },
-  rag: {
-    name: 'RAG from scratch', icon: '🔍',
-    desc: 'Build a production-ready Retrieval Augmented Generation system step by step',
-    labs: [
-      { title: 'What RAG is and why it matters', desc: 'The concept, the architecture, and when to use it — with diagrams', time: '30 min', tags: ['Concept', 'Beginner'] },
-      { title: 'Document loading and chunking', desc: 'Load PDFs, split into chunks intelligently, handle edge cases', time: '1 hr', tags: ['Python', 'Practical'] },
-      { title: 'Text embeddings explained + built', desc: 'What embeddings are, how to generate them, compare models', time: '1.5 hr', tags: ['Embeddings', 'Core'] },
-      { title: 'Build a simple RAG pipeline', desc: 'End-to-end: load → embed → store → retrieve → answer', time: '2 hr', tags: ['RAG', 'Build'] },
-      { title: 'RAG for document Q&A — banking use case', desc: 'Apply RAG to loan documents, extract answers from policy PDFs', time: '2.5 hr', tags: ['Real project', 'Banking'] },
-      { title: 'Evaluate and improve RAG quality', desc: 'Measure retrieval accuracy, reduce hallucinations, tune chunks', time: '2 hr', tags: ['Advanced', 'MLOps'] },
-    ]
-  },
-  vectordb: {
-    name: 'Vector databases', icon: '🗄️',
-    desc: 'Understand vector search and build hands-on with real databases',
-    labs: [
-      { title: 'Vector databases explained clearly', desc: 'What vectors are, why semantic search beats keyword search', time: '30 min', tags: ['Concept', 'Beginner'] },
-      { title: 'ChromaDB hands-on', desc: 'Local vector DB — set up, insert, query, filter. Fastest to start.', time: '1 hr', tags: ['ChromaDB', 'Practical'] },
-      { title: 'Qdrant for production', desc: 'Cloud-ready vector DB with filtering, payloads, and collections', time: '1.5 hr', tags: ['Qdrant', 'Production'] },
-      { title: 'Pinecone serverless', desc: 'Managed vector DB — scale without infrastructure', time: '1 hr', tags: ['Pinecone', 'Cloud'] },
-      { title: 'Hybrid search: vector + keyword', desc: 'Combine semantic and exact matching for better results', time: '2 hr', tags: ['Advanced', 'Real project'] },
-    ]
-  },
-  langchain: {
-    name: 'LangChain / agents', icon: '🔗',
-    desc: 'Build AI agents that reason and act — from zero to working system',
-    labs: [
-      { title: 'LangChain core concepts', desc: 'Chains, prompts, memory, tools — what each does and why', time: '45 min', tags: ['Concept', 'LangChain'] },
-      { title: 'Build your first chain', desc: 'Connect LLM → prompt → output. Then add memory.', time: '1.5 hr', tags: ['LangChain', 'Build'] },
-      { title: 'Tools and function calling', desc: 'Give AI the ability to search, calculate, call APIs', time: '2 hr', tags: ['Agents', 'Tools'] },
-      { title: 'ReAct agent from scratch', desc: 'Reason + Act loop — the foundation of all AI agents', time: '2 hr', tags: ['Agents', 'Advanced'] },
-      { title: 'Document QA agent', desc: 'Agent that reads your documents and answers questions', time: '2.5 hr', tags: ['Real project', 'RAG'] },
-    ]
-  },
-  langgraph: {
-    name: 'LangGraph / multi-agent', icon: '🕸️',
-    desc: 'Orchestrate multiple AI agents — the most in-demand skill in 2026',
-    labs: [
-      { title: 'Why LangGraph over LangChain', desc: 'State machines vs chains — when and why LangGraph wins', time: '30 min', tags: ['Concept', 'LangGraph'] },
-      { title: 'Nodes, edges, and state', desc: 'The core building blocks of every LangGraph workflow', time: '1.5 hr', tags: ['LangGraph', 'Core'] },
-      { title: 'Build a document review agent', desc: 'Multi-step agent: fetch → analyse → validate → report', time: '3 hr', tags: ['Real project', 'Build'] },
-      { title: 'Multi-agent coordination', desc: 'Supervisor + worker agents — orchestrate parallel tasks', time: '3 hr', tags: ['Advanced', 'Multi-agent'] },
-      { title: 'LangGraph + FastAPI deployment', desc: 'Deploy your agent as a real API — production pattern', time: '2.5 hr', tags: ['MLOps', 'Deployment'] },
-    ]
-  },
-  mlops: {
-    name: 'MLOps + deployment', icon: '⚙️',
-    desc: 'Get AI systems running in production — not just on your laptop',
-    labs: [
-      { title: 'FastAPI for AI — patterns that work', desc: 'Structure, streaming, async endpoints for LLM APIs', time: '2 hr', tags: ['FastAPI', 'Practical'] },
-      { title: 'Docker for AI apps', desc: 'Containerise your RAG or agent app the right way', time: '1.5 hr', tags: ['Docker', 'DevOps'] },
-      { title: 'Deploy to Azure (free tier)', desc: 'Azure Container Apps — push your AI app live today', time: '2 hr', tags: ['Azure', 'Cloud'] },
-      { title: 'Monitoring AI in production', desc: 'Log inputs/outputs, track latency, catch failures', time: '1.5 hr', tags: ['Monitoring', 'Advanced'] },
-    ]
-  }
+  python: { name:'Python for AI', icon:'🐍', desc:'Practical Python — only what you need for AI engineering. Real code, real output.',
+    labs:[
+      {title:'Python data structures for AI', desc:'Lists, dicts, sets — how AI pipelines use them', time:'45 min', tags:['Python','Beginner']},
+      {title:'Working with files and APIs', desc:'Read PDFs, call REST APIs, handle JSON — real workflow', time:'1 hr', tags:['Python','Practical']},
+      {title:'Python for data with pandas', desc:'Load, filter, transform — preparation for AI models', time:'1.5 hr', tags:['pandas','Data']},
+      {title:'Calling LLM APIs from Python', desc:'OpenAI, Anthropic, Ollama — your first real AI call', time:'1 hr', tags:['LLM','APIs']},
+      {title:'Async Python for AI pipelines', desc:'async/await, concurrent requests, streaming responses', time:'1.5 hr', tags:['Advanced','Python']},
+    ]},
+  rag: { name:'RAG from scratch', icon:'🔍', desc:'Build a production-ready Retrieval Augmented Generation system step by step.',
+    labs:[
+      {title:'What RAG is and why it matters', desc:'The concept, the architecture, and when to use it', time:'30 min', tags:['Concept','Beginner']},
+      {title:'Document loading and chunking', desc:'Load PDFs, split intelligently, handle edge cases', time:'1 hr', tags:['Python','Practical']},
+      {title:'Text embeddings — built from scratch', desc:'What embeddings are, how to generate them, compare models', time:'1.5 hr', tags:['Embeddings','Core']},
+      {title:'Build a simple RAG pipeline', desc:'End-to-end: load → embed → store → retrieve → answer', time:'2 hr', tags:['RAG','Build']},
+      {title:'RAG for document Q&A — banking use case', desc:'Apply RAG to loan docs, extract answers from policy PDFs', time:'2.5 hr', tags:['Real project','Banking']},
+      {title:'Evaluate and improve RAG quality', desc:'Measure retrieval accuracy, reduce hallucinations', time:'2 hr', tags:['Advanced','MLOps']},
+    ]},
+  vectordb: { name:'Vector databases', icon:'🗄️', desc:'Understand vector search and build hands-on with real databases.',
+    labs:[
+      {title:'Vector databases explained clearly', desc:'What vectors are, why semantic search beats keyword', time:'30 min', tags:['Concept','Beginner']},
+      {title:'ChromaDB hands-on', desc:'Local vector DB — set up, insert, query, filter', time:'1 hr', tags:['ChromaDB','Practical']},
+      {title:'Qdrant for production', desc:'Cloud-ready vector DB with filtering and collections', time:'1.5 hr', tags:['Qdrant','Production']},
+      {title:'Pinecone serverless', desc:'Managed vector DB — scale without infrastructure', time:'1 hr', tags:['Pinecone','Cloud']},
+      {title:'Hybrid search: vector + keyword', desc:'Combine semantic and exact matching for better results', time:'2 hr', tags:['Advanced','Real project']},
+    ]},
+  langchain: { name:'LangChain / agents', icon:'🔗', desc:'Build AI agents that reason and act — from zero to working system.',
+    labs:[
+      {title:'LangChain core concepts', desc:'Chains, prompts, memory, tools — what each does', time:'45 min', tags:['Concept','LangChain']},
+      {title:'Build your first chain', desc:'Connect LLM → prompt → output, then add memory', time:'1.5 hr', tags:['LangChain','Build']},
+      {title:'Tools and function calling', desc:'Give AI the ability to search, calculate, call APIs', time:'2 hr', tags:['Agents','Tools']},
+      {title:'ReAct agent from scratch', desc:'Reason + Act loop — foundation of all AI agents', time:'2 hr', tags:['Agents','Advanced']},
+      {title:'Document QA agent', desc:'Agent that reads your documents and answers questions', time:'2.5 hr', tags:['Real project','RAG']},
+    ]},
+  langgraph: { name:'LangGraph / multi-agent', icon:'🕸️', desc:'Orchestrate multiple AI agents — the most in-demand skill in 2026.',
+    labs:[
+      {title:'Why LangGraph over LangChain', desc:'State machines vs chains — when LangGraph wins', time:'30 min', tags:['Concept','LangGraph']},
+      {title:'Nodes, edges, and state', desc:'Core building blocks of every LangGraph workflow', time:'1.5 hr', tags:['LangGraph','Core']},
+      {title:'Build a document review agent', desc:'Multi-step: fetch → analyse → validate → report', time:'3 hr', tags:['Real project','Build']},
+      {title:'Multi-agent coordination', desc:'Supervisor + worker agents — orchestrate parallel tasks', time:'3 hr', tags:['Advanced','Multi-agent']},
+      {title:'LangGraph + FastAPI deployment', desc:'Deploy your agent as a real API — production pattern', time:'2.5 hr', tags:['MLOps','Deployment']},
+    ]},
+  mlops: { name:'MLOps + deployment', icon:'⚙️', desc:'Get AI systems running in production — not just on your laptop.',
+    labs:[
+      {title:'FastAPI for AI — patterns that work', desc:'Structure, streaming, async endpoints for LLM APIs', time:'2 hr', tags:['FastAPI','Practical']},
+      {title:'Docker for AI apps', desc:'Containerise your RAG or agent app the right way', time:'1.5 hr', tags:['Docker','DevOps']},
+      {title:'Deploy to Azure (free tier)', desc:'Azure Container Apps — push your AI app live today', time:'2 hr', tags:['Azure','Cloud']},
+      {title:'Monitoring AI in production', desc:'Log inputs/outputs, track latency, catch failures', time:'1.5 hr', tags:['Monitoring','Advanced']},
+    ]},
 };
 
 const PROJECTS = {
-  banking: { name: 'Banking AI systems', prompt: 'Generate 6 real-world AI project ideas for banking and financial services that a developer could build and showcase in 2026. Include: loan processing, fraud detection, document intelligence, regulatory compliance, customer service. For each project: title, what it does, tech stack (Python + specific AI libraries), why employers value it, estimated build time, and a starter architecture. Make these genuinely buildable, not vague ideas.' },
-  trending: { name: 'Trending in 2026', prompt: 'What are the 8 most in-demand AI engineering projects developers are building in mid-2026? Based on actual job postings and GitHub trends. For each: project name, what problem it solves, exact tech stack with version numbers, why it is trending now, which companies/domains are paying for this skill, estimated build time, and a one-paragraph starter guide. Be specific and current.' },
-  portfolio: { name: 'Portfolio projects', prompt: 'Suggest 5 portfolio projects for someone transitioning from IBM BAW/BPM developer to AI/Agentic AI engineer in 2026. Projects should: use their workflow automation background as an advantage, be completable in 2-4 weekends, be impressive to AI hiring managers, use current tools (LangGraph, FastAPI, ChromaDB, Ollama). For each: project title, problem it solves, tech stack, what makes it stand out, GitHub README structure, and demo talking points for interviews.' }
+  banking: {name:'Banking AI systems', prompt:`Generate 6 real-world AI project ideas for banking/financial services that a developer can build and showcase in 2026. For each: title, what it does, tech stack with versions, why employers value it, build time, starter architecture diagram (ASCII). Make them genuinely buildable.`},
+  trending: {name:'Trending in 2026', prompt:`What are the 8 most in-demand AI engineering projects in mid-2026 based on job postings and GitHub trends? For each: project name, problem it solves, exact tech stack with versions, why it is trending, which domains pay for it, build time, one-paragraph starter guide. Be specific and current.`},
+  portfolio: {name:'Portfolio projects', prompt:`Suggest 5 portfolio projects for someone moving from IBM BAW/BPM developer to Agentic AI engineer in 2026. Projects should: use workflow automation background as advantage, be completable in 2-4 weekends, impress AI hiring managers, use current tools (LangGraph, FastAPI, ChromaDB, Ollama). For each: title, problem, tech stack, what makes it stand out, GitHub README structure, demo talking points.`},
 };
 
-// ─── API CALL ──────────────────────────────────────────────────────────────
-async function callClaude(prompt, targetEl, statusEl) {
-  if (statusEl) statusEl.textContent = 'Generating...';
-  targetEl.innerHTML = '<div style="display:flex;align-items:center;gap:12px;padding:10px 0"><div class="spinner"></div><span style="color:var(--text3)">Generating with current 2026 tools and context...</span></div>';
-
-  const systemPrompt = `You are an expert AI engineering instructor and hands-on lab creator. Today is June 2026.
+// ── API CALL ─────────────────────────────────────────────────────────────────
+const SYSTEM = `You are an expert AI engineering instructor and hands-on lab creator. Today is June 2026.
 
 RULES:
-- Always use current 2026 tool versions and syntax
-- Write real, runnable code — not pseudocode or placeholders
-- Every code block must have a comment explaining what it does
-- After every major code block, include "Expected output:" showing what the developer should see
-- Include real package install commands (pip install x==version)
-- Add "Common errors:" section with actual solutions
-- Add references: official docs URL, GitHub repo, best tutorial (must be real URLs)
+- Use current 2026 tool versions and real syntax
+- Every code block must be runnable — no pseudocode, no placeholders
+- Include exact pip install commands with version numbers
+- After every code block show "Expected output:" with what the developer will see
+- Add "Common errors:" section with real fixes
+- Add "References:" with real URLs — official docs, best tutorial, GitHub example
 - Use banking/financial domain for examples where possible
-- Keep explanations concise — developers learn by doing, not reading
+- Be direct — developers learn by doing
 
-FORMAT:
-- Use clear markdown headers
-- Code blocks with language specified
-- Numbered steps for procedures
-- ✅ for success checkpoints
-- ⚠️ for important warnings
-- 🔗 for references`;
+FORMAT: Clear markdown headers. Code blocks with language. ✅ for checkpoints. ⚠️ for warnings. 🔗 for links.`;
+
+async function callAI(prompt, bodyEl, statusEl) {
+  if (!API_KEY) {
+    bodyEl.innerHTML = '<div style="color:var(--amber);padding:10px 0"><strong>⚠️ API key required</strong><br><br>Enter your Anthropic API key in the sidebar to generate labs.<br><br><span style="color:var(--text3);font-size:12px">Get a key at console.anthropic.com — free credits available on signup.</span></div>';
+    if (statusEl) statusEl.textContent = 'API key required';
+    return;
+  }
+  if (statusEl) statusEl.textContent = 'Generating...';
+  bodyEl.innerHTML = '<div style="display:flex;align-items:center;gap:10px;padding:8px 0"><div class="spinner"></div><span style="color:var(--text3)">Generating with current 2026 tools...</span></div>';
 
   try {
-    const resp = await fetch(API, {
+    const res = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': API_KEY,
+        'anthropic-version': '2023-06-01',
+        'anthropic-dangerous-direct-browser-access': 'true'
+      },
       body: JSON.stringify({
-        model: MODEL,
+        model: 'claude-sonnet-4-6',
         max_tokens: 4000,
-        system: systemPrompt,
+        system: SYSTEM,
         messages: [{ role: 'user', content: prompt }]
       })
     });
 
-    if (!resp.ok) {
-      const err = await resp.json().catch(() => ({}));
-      throw new Error(err.error?.message || `API error ${resp.status}`);
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error?.message || 'API error ' + res.status);
     }
-
-    const data = await resp.json();
+    const data = await res.json();
     const text = data.content?.[0]?.text || '';
-    if (statusEl) statusEl.textContent = 'Lab ready — generated ' + new Date().toLocaleTimeString();
-    renderMarkdown(text, targetEl);
-    addCopyButtons();
+    if (statusEl) statusEl.textContent = 'Ready · ' + new Date().toLocaleTimeString();
+    renderMD(text, bodyEl);
   } catch (e) {
-    targetEl.innerHTML = `<div style="color:var(--red);padding:10px 0">
-      <strong>Error:</strong> ${e.message}<br><br>
-      <span style="color:var(--text3);font-size:12px">Make sure you have a valid Anthropic API key. This app calls Claude directly.</span>
-    </div>`;
-    if (statusEl) statusEl.textContent = 'Error — see output';
+    const msg = e.message.includes('Failed to fetch') || e.message.includes('ERR_NAME_NOT_RESOLVED')
+      ? 'Network error — run from localhost or GitHub Pages (not file://). Try: python -m http.server 8080'
+      : e.message;
+    bodyEl.innerHTML = '<div style="color:var(--red);padding:8px 0"><strong>Error:</strong> ' + msg + '</div>';
+    if (statusEl) statusEl.textContent = 'Error';
   }
 }
 
-// ─── MARKDOWN RENDERER ───────────────────────────────────────────────────────
-function renderMarkdown(text, el) {
-  let html = text
+// ── MARKDOWN ─────────────────────────────────────────────────────────────────
+function renderMD(text, el) {
+  let h = text
     .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
-    .replace(/```(\w+)?\n?([\s\S]*?)```/g, (_, lang, code) =>
-      `<pre><button class="copy-btn" onclick="copyCode(this)">Copy</button><code>${code.trim()}</code></pre>`)
-    .replace(/`([^`]+)`/g, '<code>$1</code>')
-    .replace(/^### (.+)$/gm, '<h3>$1</h3>')
-    .replace(/^## (.+)$/gm, '<h2>$1</h2>')
-    .replace(/^# (.+)$/gm, '<h1>$1</h1>')
-    .replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>')
-    .replace(/\*(.+?)\*/g, '<em>$1</em>')
-    .replace(/^---$/gm, '<hr>')
-    .replace(/^\> (.+)$/gm, '<blockquote>$1</blockquote>')
-    .replace(/^[\*\-] (.+)$/gm, '<li>$1</li>')
-    .replace(/^(\d+)\. (.+)$/gm, '<li>$2</li>')
-    .replace(/(<li>.*<\/li>\n?)+/g, s => `<ul>${s}</ul>`)
-    .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>')
-    .replace(/\n\n/g, '</p><p>')
-    .replace(/\n/g, '<br>');
-  el.innerHTML = `<p>${html}</p>`;
+    .replace(/```(\w+)?\n?([\s\S]*?)```/g,(_,lang,code)=>`<pre><button class="copy-btn" onclick="cpCode(this)">Copy</button><code>${code.trim()}</code></pre>`)
+    .replace(/`([^`]+)`/g,'<code>$1</code>')
+    .replace(/^### (.+)$/gm,'<h3>$1</h3>')
+    .replace(/^## (.+)$/gm,'<h2>$1</h2>')
+    .replace(/^# (.+)$/gm,'<h1>$1</h1>')
+    .replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>')
+    .replace(/\*(.+?)\*/g,'<em>$1</em>')
+    .replace(/^---$/gm,'<hr>')
+    .replace(/^> (.+)$/gm,'<blockquote>$1</blockquote>')
+    .replace(/^\- (.+)$/gm,'<li>$1</li>')
+    .replace(/^\d+\. (.+)$/gm,'<li>$1</li>')
+    .replace(/(<li>[\s\S]*?<\/li>)/g,'<ul>$1</ul>')
+    .replace(/\[([^\]]+)\]\(([^)]+)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>')
+    .replace(/\n\n/g,'</p><p>').replace(/\n/g,'<br>');
+  el.innerHTML = '<p>' + h + '</p>';
+}
+function cpCode(btn) {
+  navigator.clipboard.writeText(btn.nextElementSibling.textContent);
+  btn.textContent = 'Copied!';
+  setTimeout(()=>btn.textContent='Copy', 2000);
 }
 
-function addCopyButtons() {}
-function copyCode(btn) {
-  const code = btn.nextElementSibling.textContent;
-  navigator.clipboard.writeText(code).then(() => {
-    btn.textContent = 'Copied!';
-    setTimeout(() => btn.textContent = 'Copy', 2000);
+// ── NAVIGATION ───────────────────────────────────────────────────────────────
+function show(id) {
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('on'));
+  document.getElementById('sec-'+id).classList.add('on');
+  curSection = id;
+}
+
+function showTrack(tid) {
+  curTrack = tid;
+  const T = TRACKS[tid];
+  show('track');
+  document.getElementById('bc-track').textContent = T.name;
+  document.getElementById('track-title').textContent = T.icon + ' ' + T.name;
+  document.getElementById('track-desc').textContent = T.desc;
+  document.getElementById('tb-title').textContent = T.name;
+
+  const list = document.getElementById('labs-list');
+  list.innerHTML = '<div style="font-size:12px;color:var(--text3);margin-bottom:12px">Click a lab to generate a complete hands-on guide with current 2026 tools.</div>';
+  T.labs.forEach((lab, i) => {
+    const isDone = done.includes(tid+'_'+i);
+    const div = document.createElement('div');
+    div.className = 'lab-item' + (isDone ? ' lab-done' : '');
+    div.onclick = () => openLab(tid, i);
+    div.innerHTML = `<div class="lab-num">Lab ${i+1}</div>
+      <div class="lab-info"><div class="lab-title">${isDone?'✅ ':''}${lab.title}</div><div class="lab-desc">${lab.desc}</div></div>
+      <div class="lab-tags">${lab.tags.map(t=>`<span class="tag tag-blue" style="font-size:10px;padding:2px 6px">${t}</span>`).join('')}<span style="font-size:11px;color:var(--text3)">${lab.time}</span></div>`;
+    list.appendChild(div);
   });
 }
 
-// ─── NAV ─────────────────────────────────────────────────────────────────────
-function setActive(fn) {
-  document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
-}
-
-function showHome() {
-  hideAll();
-  document.getElementById('home-section').style.display = '';
-  document.getElementById('topbar-title').textContent = 'Dashboard';
-  document.getElementById('topbar-tag').textContent = 'AI Engineering Lab';
-  currentSection = 'home';
-  updateNavActive('home');
-}
-
-function hideAll() {
-  document.getElementById('home-section').style.display = 'none';
-  document.getElementById('lab-section').style.display = 'none';
-  document.getElementById('track-section').style.display = 'none';
-  document.getElementById('custom-section').style.display = 'none';
-}
-
-function updateNavActive(id) {
-  document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
-}
-
-// ─── TRACK VIEW ──────────────────────────────────────────────────────────────
-function showTrack(trackId) {
-  currentTrack = trackId;
-  const track = TRACKS[trackId];
-  hideAll();
-  const s = document.getElementById('track-section');
-  s.style.display = '';
-  document.getElementById('topbar-title').textContent = track.name;
-  document.getElementById('topbar-tag').textContent = track.icon + ' ' + track.name;
-  document.getElementById('bc-track2').textContent = track.name;
-  document.getElementById('track-title').textContent = track.icon + ' ' + track.name;
-  document.getElementById('track-desc').textContent = track.desc;
-  currentSection = 'track';
-
-  // Build lab list
-  const body = document.getElementById('ai-output2-body');
-  const header = document.getElementById('ai-output2-header');
-  header.querySelector('span').textContent = track.name + ' — ' + track.labs.length + ' labs';
-
-  let html = '<div style="margin-bottom:8px;font-size:12px;color:var(--text3)">Click a lab to generate it with current 2026 tools and real code.</div>';
-  track.labs.forEach((lab, i) => {
-    const done = completedLabs.includes(trackId + '_' + i);
-    html += `<div class="lab-item ${done ? 'li-done' : ''}" onclick="openLab('${trackId}',${i})">
-      <div class="li-num">Lab ${i+1}</div>
-      <div class="li-info">
-        <div class="li-title">${done ? '✅ ' : ''}${lab.title}</div>
-        <div class="li-desc">${lab.desc}</div>
-      </div>
-      <div style="display:flex;flex-direction:column;align-items:flex-end;gap:4px">
-        ${lab.tags.map(t => `<span class="tag tag-blue" style="font-size:10px;padding:2px 7px">${t}</span>`).join('')}
-        <span class="li-time">${lab.time}</span>
-      </div>
-    </div>`;
-  });
-  body.innerHTML = html;
-}
-
-// ─── LAB VIEW ─────────────────────────────────────────────────────────────────
-function openLab(trackId, labIdx) {
-  const track = TRACKS[trackId];
-  const lab = track.labs[labIdx];
-  currentTrack = trackId;
-  currentLabIdx = labIdx;
-  currentSection = 'lab';
-
-  hideAll();
-  document.getElementById('lab-section').style.display = '';
-  document.getElementById('topbar-title').textContent = lab.title;
-  document.getElementById('bc-track').textContent = track.name;
-  document.getElementById('bc-lab').textContent = lab.title;
-  document.getElementById('lab-title').textContent = lab.title;
-  document.getElementById('lab-desc').textContent = lab.desc;
-  document.getElementById('lab-meta').innerHTML = lab.tags.map(t =>
-    `<span class="tag tag-blue">${t}</span>`).join('') + `<span class="tag tag-amber">${lab.time}</span>`;
+function openLab(tid, idx) {
+  curTrack = tid; curLabIdx = idx;
+  const T = TRACKS[tid]; const lab = T.labs[idx];
+  show('lab');
+  document.getElementById('bc-t').textContent = T.name;
+  document.getElementById('bc-l').textContent = lab.title;
+  document.getElementById('lab-title2').textContent = lab.title;
+  document.getElementById('lab-desc2').textContent = lab.desc;
+  document.getElementById('lab-meta2').innerHTML = lab.tags.map(t=>`<span class="tag tag-blue">${t}</span>`).join('') + `<span class="tag tag-amber">${lab.time}</span>`;
+  document.getElementById('tb-title').textContent = lab.title;
 
   const prompt = `Generate a complete hands-on lab for: "${lab.title}"
+Context: ${lab.desc} | Track: ${T.name} | Time: ${lab.time}
 
-Context: ${lab.desc}
-Track: ${track.name}
-Time budget: ${lab.time}
-
-Structure the lab as:
+Structure:
 ## What you'll build
-(One paragraph — specific deliverable the developer will have at the end)
+(Specific deliverable — one paragraph)
 
-## Prerequisites
-(Exact packages to install with versions, e.g. pip install langchain==0.3.x)
+## Prerequisites  
+(Exact packages with versions: pip install x==y)
 
 ## Concept in 2 minutes
-(Core idea explained simply with a real analogy — not textbook definition)
+(Core idea with a real analogy — not textbook)
 
 ## Step-by-step lab
-
 ### Step 1: [name]
-(Code + what to run + expected output)
-
-### Step 2: [name]
-...continue until complete
+[code + expected output]
+### Step 2...
+(Continue until complete)
 
 ## Real-world variation
-(Show how this is used in banking/financial services or an enterprise context)
+(Banking or enterprise context)
 
 ## Common errors and fixes
-(The 3 most common mistakes developers make in this lab)
+(Top 3 mistakes + solutions)
 
 ## What to build next
-(One specific next project that uses this skill)
+(One specific follow-on project)
 
 ## References
 - Official docs: [real URL]
-- Best tutorial: [real URL]  
+- Best tutorial: [real URL]
 - GitHub example: [real URL]
 
-Make every code example runnable. Use Python 3.11+. Include actual version numbers for all packages. Banking domain for examples where applicable.`;
+Use Python 3.11+. Real version numbers. Banking domain examples where applicable.`;
 
-  const body = document.getElementById('ai-output-body');
-  const status = document.getElementById('ai-status');
-  body.className = 'loading';
-  callClaude(prompt, body, status).then(() => { body.className = ''; });
+  callAI(prompt, document.getElementById('lab-body'), document.getElementById('lab-status'));
 }
 
-function refreshCurrentLab() {
-  if (currentSection === 'lab') openLab(currentTrack, currentLabIdx);
-  else if (currentSection === 'track') showTrack(currentTrack);
-  else if (currentSection === 'custom') runCustomLab();
-  else if (currentSection === 'project') showProject(currentProject);
-}
-
-function generateNextLab() {
-  const track = TRACKS[currentTrack];
-  if (!track) return;
-  const next = currentLabIdx + 1;
-  if (next < track.labs.length) openLab(currentTrack, next);
-  else showTrack(currentTrack);
-}
+function goBackToTrack() { if (curTrack) showTrack(curTrack); }
 
 function markDone() {
-  const key = currentTrack + '_' + currentLabIdx;
-  if (!completedLabs.includes(key)) {
-    completedLabs.push(key);
-    localStorage.setItem('ai_lab_done', JSON.stringify(completedLabs));
-    updateProgress();
-  }
-  document.querySelector('.btn-primary').textContent = '✅ Done!';
-  setTimeout(() => { document.querySelector('.btn-primary').textContent = '✓ Mark complete'; }, 2000);
+  const key = curTrack + '_' + curLabIdx;
+  if (!done.includes(key)) { done.push(key); localStorage.setItem('ai_lab_done', JSON.stringify(done)); }
+  updateProgress();
+  const btn = document.querySelector('.btn-p');
+  btn.textContent = '✅ Done!';
+  setTimeout(()=>btn.textContent='✓ Mark complete', 2000);
 }
 
-// ─── PROJECTS ─────────────────────────────────────────────────────────────────
-let currentProject = null;
-function showProject(projId) {
-  currentProject = projId;
-  const proj = PROJECTS[projId];
-  hideAll();
-  const s = document.getElementById('track-section');
-  s.style.display = '';
-  document.getElementById('topbar-title').textContent = proj.name;
-  document.getElementById('bc-track2').textContent = proj.name;
-  document.getElementById('track-title').textContent = proj.name;
-  document.getElementById('track-desc').textContent = 'AI-generated on demand — refreshes with current market trends';
-  currentSection = 'project';
-
-  const body = document.getElementById('ai-output2-body');
-  const header = document.getElementById('ai-output2-header');
-  header.querySelector('span').textContent = 'Generating current projects...';
-  body.innerHTML = '';
-  callClaude(proj.prompt, body, header.querySelector('span'));
+function nextLab() {
+  const T = TRACKS[curTrack];
+  if (!T) return;
+  if (curLabIdx + 1 < T.labs.length) openLab(curTrack, curLabIdx + 1);
+  else showTrack(curTrack);
 }
 
-// ─── CUSTOM LAB ──────────────────────────────────────────────────────────────
-function showCustomLab() {
-  hideAll();
-  document.getElementById('custom-section').style.display = '';
-  document.getElementById('topbar-title').textContent = 'Ask anything';
-  currentSection = 'custom';
+function showProject(pid) {
+  curProject = pid;
+  const P = PROJECTS[pid];
+  show('project');
+  document.getElementById('bc-proj').textContent = P.name;
+  document.getElementById('proj-title').textContent = P.name;
+  document.getElementById('tb-title').textContent = P.name;
+  callAI(P.prompt, document.getElementById('proj-body'), document.getElementById('proj-status'));
 }
 
-function runCustomLab() {
-  const topic = document.getElementById('custom-input').value.trim();
-  if (!topic) { alert('Please enter a topic first.'); return; }
+function refreshCurrent() {
+  if (curSection === 'lab') openLab(curTrack, curLabIdx);
+  else if (curSection === 'project') showProject(curProject);
+  else if (curSection === 'custom') runCustom();
+}
 
-  document.getElementById('custom-output').style.display = '';
-  const body = document.getElementById('ai-output3-body');
-  const status = document.getElementById('custom-status');
-
-  const prompt = `Generate a complete hands-on lab for this topic: "${topic}"
+function runCustom() {
+  const q = document.getElementById('custom-in').value.trim();
+  if (!q) { alert('Enter a topic first.'); return; }
+  document.getElementById('custom-out-wrap').style.display = '';
+  const prompt = `Generate a complete hands-on lab for: "${q}"
 
 Make it:
-- Fully runnable with real code (not pseudocode)
-- Current tools as of mid-2026 with exact version numbers
-- Practical — something that could be part of a real project
-- Include install commands, step-by-step code, expected output, common errors, and real reference links
+- Fully runnable with real code (no pseudocode)
+- Current 2026 tools with exact version numbers
+- Step-by-step with expected output at each step
+- Include install commands, common errors, real reference URLs
+- Banking/enterprise context preferred
 
-Format with clear markdown headers. Banking or enterprise context preferred where applicable.`;
-
-  callClaude(prompt, body, status);
+Format with clear markdown headers. Be practical, not theoretical.`;
+  callAI(prompt, document.getElementById('custom-body'), document.getElementById('custom-status'));
+  curSection = 'custom';
 }
 
 function suggestTopics() {
-  const body = document.getElementById('ai-output3-body');
-  document.getElementById('custom-output').style.display = '';
+  document.getElementById('custom-out-wrap').style.display = '';
   const prompt = `Suggest 10 specific hands-on AI engineering lab topics for mid-2026 that are:
-1. In high demand based on current job postings
-2. Buildable in 1-3 hours
-3. Relevant to someone from an IBM BAW/enterprise workflow background moving into AI
+1. In high demand (cite what job postings are asking for)
+2. Buildable in 1-3 hours by a developer
+3. Useful for someone from IBM BAW/enterprise workflow background moving to AI roles
 
-Format as a numbered list with: topic name, why it matters now, estimated time. Be specific — no vague suggestions.`;
-  callClaude(prompt, body, document.getElementById('custom-status'));
+Format as a numbered list: topic name | why it matters now | estimated time. Be specific, no vague suggestions.`;
+  callAI(prompt, document.getElementById('custom-body'), document.getElementById('custom-status'));
+  curSection = 'custom';
 }
 
-// ─── PROGRESS ────────────────────────────────────────────────────────────────
+// ── PROGRESS ─────────────────────────────────────────────────────────────────
 function updateProgress() {
-  const total = Object.values(TRACKS).reduce((s, t) => s + t.labs.length, 0);
-  const done = completedLabs.length;
-  document.getElementById('prog-count').textContent = done;
-  document.getElementById('s-done').textContent = done;
-  document.getElementById('s-labs').textContent = total;
-  document.getElementById('prog-fill').style.width = Math.round(done/total*100) + '%';
+  const total = Object.values(TRACKS).reduce((s,t)=>s+t.labs.length,0);
+  document.getElementById('prog-n').textContent = done.length;
+  document.getElementById('s-done').textContent = done.length;
+  document.getElementById('s-total').textContent = total;
+  document.getElementById('prog-fill').style.width = Math.round(done.length/total*100)+'%';
 }
-
-// ─── INIT ─────────────────────────────────────────────────────────────────────
 updateProgress();
 </script>
 </body>
