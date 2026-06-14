@@ -638,16 +638,18 @@ select option{background:var(--s2);color:var(--tx)}
     <div class="fi"><label>OpenRouter API Key</label><input type="password" id="s-key" placeholder="sk-or-v1-..."></div>
     <div class="fi"><label>AI Model</label>
       <select id="s-model">
-        <option value="deepseek/deepseek-r1:free">DeepSeek R1 — Best reasoning (Free)</option>
-        <option value="meta-llama/llama-3.3-70b-instruct:free">Llama 3.3 70B — Balanced (Free)</option>
-        <option value="deepseek/deepseek-v3:free">DeepSeek V3 — Fast (Free)</option>
-        <option value="qwen/qwen3-8b:free">Qwen 3 8B — Lightweight (Free)</option>
-        <option value="microsoft/phi-4:free">Microsoft Phi-4 — Efficient (Free)</option>
-        <option value="google/gemma-3-27b-it:free">Google Gemma 3 27B (Free)</option>
-        <option value="mistralai/mistral-7b-instruct:free">Mistral 7B (Free)</option>
-        <option value="anthropic/claude-3.5-sonnet">Claude 3.5 Sonnet (Paid)</option>
+        <option value="google/gemma-4-31b-it:free">Google Gemma 4 31B — Best free (intelligence 39.2)</option>
+        <option value="nvidia/nemotron-3-ultra-550b-a55b:free">NVIDIA Nemotron 3 Ultra 550B — Powerful (Free)</option>
+        <option value="google/gemma-4-26b-a4b-it:free">Google Gemma 4 26B — Fast (Free)</option>
+        <option value="openai/gpt-oss-120b:free">OpenAI GPT OSS 120B — Capable (Free)</option>
+        <option value="nvidia/nemotron-3-super-120b-a12b:free">NVIDIA Nemotron 3 Super 120B (Free)</option>
+        <option value="qwen/qwen3-coder:free">Qwen3 Coder 480B — Best for code (Free)</option>
+        <option value="meta-llama/llama-3.3-70b-instruct:free">Llama 3.3 70B — Reliable (Free)</option>
+        <option value="qwen/qwen3-next-80b-a3b-instruct:free">Qwen3 Next 80B (Free)</option>
+        <option value="anthropic/claude-sonnet-4.6">Claude Sonnet 4.6 (Paid)</option>
+        <option value="anthropic/claude-haiku-4.5">Claude Haiku 4.5 (Paid — fastest)</option>
         <option value="openai/gpt-4o-mini">GPT-4o Mini (Paid)</option>
-        <option value="openai/gpt-4o">GPT-4o (Paid)</option>
+        <option value="google/gemini-2.5-flash">Gemini 2.5 Flash (Paid)</option>
       </select>
     </div>
     <div class="setup-note" style="margin-bottom:10px">Free models have no cost. Paid models require OpenRouter credits.</div>
@@ -726,13 +728,14 @@ let D={};   // data
 let chatHistory=[];
 
 const MODELS_FALLBACK=[
-  'deepseek/deepseek-r1:free',
+  'google/gemma-4-31b-it:free',
+  'nvidia/nemotron-3-ultra-550b-a55b:free',
+  'google/gemma-4-26b-a4b-it:free',
+  'openai/gpt-oss-120b:free',
+  'nvidia/nemotron-3-super-120b-a12b:free',
+  'qwen/qwen3-coder:free',
   'meta-llama/llama-3.3-70b-instruct:free',
-  'deepseek/deepseek-v3:free',
-  'qwen/qwen3-8b:free',
-  'microsoft/phi-4:free',
-  'google/gemma-3-27b-it:free',
-  'mistralai/mistral-7b-instruct:free'
+  'qwen/qwen3-next-80b-a3b-instruct:free'
 ];
 
 const FOCUS_POOL=[
@@ -796,8 +799,13 @@ async function ai(prompt,sys,isChat){
         headers:{'Content-Type':'application/json','Authorization':`Bearer ${C.key}`,'HTTP-Referer':'https://taruntangella.github.io/career-os','X-Title':'CareerOS'},
         body:JSON.stringify(body)
       });
-      if(r.status===429||r.status===503){await new Promise(x=>setTimeout(x,1500));continue}
-      if(!r.ok){const e=await r.json();if(e.error?.message?.includes('model'))continue;throw new Error(e.error?.message||`HTTP ${r.status}`)}
+      if(r.status===429||r.status===503){
+        const e=await r.json().catch(()=>({}));
+        const wait=(e.error?.metadata?.retry_after_seconds||3)*1000;
+        await new Promise(x=>setTimeout(x,Math.min(wait,5000)));
+        continue;
+      }
+      if(!r.ok){const e=await r.json().catch(()=>({}));const msg=e.error?.message||`HTTP ${r.status}`;if(msg.includes('model')||msg.includes('not found')||r.status===404)continue;throw new Error(msg)}
       const d=await r.json();
       const txt=d.choices?.[0]?.message?.content||'';
       if(txt)return txt;
@@ -847,7 +855,7 @@ function launchApp(){
   C.gh=document.getElementById('su-gh').value.trim();
   C.ght=document.getElementById('su-ght').value.trim();
   C.repo='career-os-data';
-  C.model='deepseek/deepseek-r1:free';
+  C.model='google/gemma-4-31b-it:free';
   svC();
   document.getElementById('setup').style.display='none';
   document.getElementById('root').style.display='flex';
@@ -1276,7 +1284,7 @@ async function testConnection(){
   if(!k){toast('Enter your OpenRouter key first','var(--am)');return}
   toast('Testing connection...','var(--ac)');
   try{
-    const model=document.getElementById('s-model').value||'meta-llama/llama-3.3-70b-instruct:free';
+    const model=document.getElementById('s-model').value||'google/gemma-4-31b-it:free';
     const r=await fetch('https://openrouter.ai/api/v1/chat/completions',{
       method:'POST',
       headers:{'Content-Type':'application/json','Authorization':`Bearer ${k}`,'HTTP-Referer':'https://taruntangella.github.io/career-os','X-Title':'CareerOS'},
