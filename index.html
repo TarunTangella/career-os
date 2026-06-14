@@ -728,14 +728,14 @@ let D={};   // data
 let chatHistory=[];
 
 const MODELS_FALLBACK=[
-  'google/gemma-4-31b-it:free',
-  'nvidia/nemotron-3-ultra-550b-a55b:free',
   'google/gemma-4-26b-a4b-it:free',
-  'openai/gpt-oss-120b:free',
-  'nvidia/nemotron-3-super-120b-a12b:free',
-  'qwen/qwen3-coder:free',
+  'google/gemma-4-31b-it:free',
+  'qwen/qwen3-next-80b-a3b-instruct:free',
+  'openai/gpt-oss-20b:free',
   'meta-llama/llama-3.3-70b-instruct:free',
-  'qwen/qwen3-next-80b-a3b-instruct:free'
+  'nvidia/nemotron-3-nano-30b-a3b:free',
+  'nvidia/nemotron-nano-9b-v2:free',
+  'openai/gpt-oss-120b:free'
 ];
 
 const FOCUS_POOL=[
@@ -786,7 +786,7 @@ function toast(m,col){const t=document.getElementById('toast');t.textContent=m;t
 async function ai(prompt,sys,isChat){
   const model=C.model||MODELS_FALLBACK[0];
   const messages=isChat?[...chatHistory,{role:'user',content:prompt}]:[{role:'user',content:prompt}];
-  const body={model,messages:[...(sys?[{role:'system',content:sys}]:[]),{role:'system',content:sysPrompt()},...messages],max_tokens:1500,temperature:0.4};
+  const body={model,messages:[...(sys?[{role:'system',content:sys}]:[]),{role:'system',content:sysPrompt()},...messages],max_tokens:800,temperature:0.4};
   
   // Try selected model first, then fallbacks
   const tryModels=[model,...MODELS_FALLBACK.filter(m=>m!==model)];
@@ -943,7 +943,9 @@ async function scoreDrill(){
   if(!attempt){toast('Write your rewrite first','var(--am)');return}
   document.getElementById('drill-res').innerHTML=ldHTML();
   try{
-    const r=await ai(`Original statement: "${orig}"\nRewrite attempt: "${attempt}"\n\nScore this communication rewrite strictly:\n1. Active vs passive voice (is the person owning the action?)\n2. Specificity (is there a concrete outcome, number, or named technology?)\n3. Professional seniority signal (does it sound senior?)\n4. Score out of 10\n\nThen write the ideal version in 1-2 sentences. Quote exactly what was weak in the attempt. Under 80 words total.`);
+    const r=await ai(`Original: "${orig}" | Rewrite attempt: "${attempt}"
+
+Score /10. One weak phrase quoted. Ideal version in 1 sentence. Under 60 words.`);
     document.getElementById('drill-res').innerHTML=`<div class="ai-wrap" style="margin-top:9px"><div class="ai-lbl">Drill feedback</div><div class="ai-body">${fmt(r)}</div></div>`;
   }catch(e){document.getElementById('drill-res').innerHTML=errHTML(e)}
 }
@@ -954,146 +956,7 @@ async function loadSignal(force){
   if(!force&&D.sigCache[k]){document.getElementById('signal-txt').innerHTML=D.sigCache[k];return}
   document.getElementById('signal-txt').innerHTML=ldHTML('Scanning market intelligence...');
   try{
-    const r=await ai(`Today is ${new Date().toDateString()}.\n\nGenerate ONE specific, actionable career intelligence signal for someone with this profile:\n- Current: ${C.role||'Senior IBM BAW Developer'}\n- Target: ${C.target||'AI Security Engineer'}\n- Skills: ${C.skills}\n\nThe signal must be ONE of:\n(a) A specific skill gap the market is paying premium for RIGHT NOW that this person is close to having\n(b) A specific emerging role intersection (e.g. "Banking + AI Red Teaming") with near-zero competition\n(c) A concrete action this person can take TODAY that will move them toward their target\n\nBe specific to this person's background. 2-3 sentences max. No generic advice. No fabricated statistics.`);
-    D.sigCache[k]=fmt(r);sv();
-    document.getElementById('signal-txt').innerHTML=D.sigCache[k];
-  }catch(e){document.getElementById('signal-txt').innerHTML=`<span style="color:var(--am)">Signal unavailable.</span> Possible causes: (1) Free model daily limit reached (200/day) — try again tomorrow, (2) Check key in Settings starts with sk-or-v1-, (3) Try switching model in Settings to DeepSeek R1 or Llama 3.3.`}
-}
-
-// ═══ MORNING ════════════════════════════════════════════════════
-function saveMorning(){
-  const v=document.getElementById('m-intent').value.trim();
-  if(!v){toast('Write your intention first','var(--am)');return}
-  D.mLog[tod()]=v;updStreak();sv();toast('Day locked in ✓');
-}
-
-function updStreak(){
-  const t=tod();
-  const y=new Date();y.setDate(y.getDate()-1);const ys=y.toISOString().slice(0,10);
-  if(D.lastIn===t)return;
-  D.streak=D.lastIn===ys?(D.streak||0)+1:1;
-  D.lastIn=t;
-  document.getElementById('streak-n').textContent=D.streak;
-}
-
-// ═══ JOBS ════════════════════════════════════════════════════════
-async function searchJobs(){
-  const q=document.getElementById('j-search').value.trim();
-  const loc=document.getElementById('j-loc').value.trim()||C.loc||'India or Remote';
-  const lvl=document.getElementById('j-level').value;
-  if(!q){toast('Enter a role or skill','var(--am)');return}
-  document.getElementById('j-results').innerHTML=`<div class="card">${ldHTML('Searching opportunities...')}</div>`;
-  try{
-    const r=await ai(`Find current job opportunities for: "${q}" | Level: ${lvl} | Location: ${loc}\nCandidate profile: ${C.skills}, ${C.exp} experience, targeting ${C.target}\n\nReturn a structured list of:\n1. REAL job categories/roles that are currently in demand for this search (not fabricated individual listings)\n2. For each: typical company types hiring, salary range (if known from public data), key requirements, and where to search (LinkedIn, Naukri, Indeed, specific job boards)\n3. How this candidate's background maps to each opportunity\n4. One specific search query string to use on LinkedIn/Naukri for best results\n\nIMPORTANT: Do not invent specific job posting URLs or guarantee specific listings exist. Focus on real patterns and search guidance.`);
-    document.getElementById('j-results').innerHTML=`<div class="card"><div class="cl">Opportunities for "${q}"</div><div class="ai-body">${fmt(r)}</div><div style="margin-top:12px;padding-top:10px;border-top:1px solid var(--b1);font-size:12px;color:var(--t3)">Tip: Copy any requirement list and paste it in the JD analyser below for a personalised fit report.</div></div>`;
-  }catch(e){document.getElementById('j-results').innerHTML=errHTML(e)}
-}
-
-async function analyseJD(){
-  const jd=document.getElementById('jd-text').value.trim();
-  if(!jd){toast('Paste a job description first','var(--am)');return}
-  document.getElementById('jd-out').innerHTML=`<div class="card">${ldHTML('Analysing fit...')}</div>`;
-  try{
-    const r=await ai(`JOB DESCRIPTION:\n${jd}\n\nCANDIDATE:\nRole: ${C.role} | Skills: ${C.skills} | Target: ${C.target} | Exp: ${C.exp}\n\nStrict fit analysis:\n1. MATCH SCORE (0-100) with one-line justification\n2. SKILLS YOU HAVE that directly match (list exact matches)\n3. SKILL GAPS — what is missing and realistic weeks to close each\n4. STRENGTHS to lead with in the interview (3 specific points)\n5. RISK — one honest concern the interviewer might raise\n6. RECOMMENDED ANSWER ANGLE — how to frame your background for this specific role\n\nBe specific and strict. No flattery.`);
-    document.getElementById('jd-out').innerHTML=`<div class="card card-accent"><div class="cl">Fit Analysis</div><div class="ai-body">${fmt(r)}</div></div>`;
-  }catch(e){document.getElementById('jd-out').innerHTML=errHTML(e)}
-}
-
-async function prepFromJD(){
-  const jd=document.getElementById('jd-text').value.trim();
-  if(!jd){toast('Paste a job description first','var(--am)');return}
-  goTab('prep');
-  document.getElementById('p-role').value=jd;
-  await genQuestions();
-}
-
-async function loadMarketPulse(){
-  document.getElementById('market-pulse').innerHTML=ldHTML('Loading market trends...');
-  try{
-    const r=await ai(`Today is ${new Date().toDateString()}. Based on current market trends as of mid-2026:\n\nList the top 8 fastest-growing tech roles RIGHT NOW that are relevant to someone with this background: ${C.skills}.\n\nFor each role:\n- Role name\n- Growth trend (up/stable/emerging)\n- Why it's relevant to this candidate specifically\n- One skill they need to add to qualify\n- Salary range (India market, approximate)\n\nFocus on AI Security, LLM Engineering, Agentic AI, Cloud AI. Be specific to the candidate's background. Flag if any data is approximate.`);
-    document.getElementById('market-pulse').innerHTML=`<div class="ai-body">${fmt(r)}</div>`;
-  }catch(e){document.getElementById('market-pulse').innerHTML=errHTML(e)}
-}
-
-// ═══ INTERVIEW PREP ══════════════════════════════════════════════
-async function genQuestions(){
-  const input=document.getElementById('p-role').value.trim();
-  const type=document.getElementById('p-type').value;
-  const diff=document.getElementById('p-diff').value;
-  if(!input){toast('Enter a role or paste a JD','var(--am)');return}
-  document.getElementById('p-questions').innerHTML=`<div class="card">${ldHTML('Generating interview questions...')}</div>`;
-  try{
-    const r=await ai(`Role/JD: ${input}\nQuestion type: ${type} | Panel level: ${diff}\nCandidate: ${C.role}, ${C.exp} exp, skills: ${C.skills}\n\nGenerate 12 interview questions a ${diff} would ask THIS candidate for THIS role.\n\nFor EACH question include:\n- The question\n- WHY they will ask it (the real concern behind it)\n- TONE GUIDE: how to approach the answer\n- ONE PHRASE TO AVOID\n- STAR HINT: what Situation/Task to draw from this candidate's actual background\n\nMake questions specific to the candidate's background — reference their BAW experience, IDP work, banking domain. No generic questions.`);
-    document.getElementById('p-questions').innerHTML=`<div class="card"><div class="cl">12 Questions — ${type}</div><div class="ai-body">${fmt(r)}</div></div>`;
-    document.getElementById('p-practice').style.display='block';
-  }catch(e){document.getElementById('p-questions').innerHTML=errHTML(e)}
-}
-
-async function scoreAnswer(){
-  const q=document.getElementById('p-current-q').textContent;
-  const a=document.getElementById('p-answer').value.trim();
-  if(!a){toast('Write your answer first','var(--am)');return}
-  document.getElementById('p-feedback').innerHTML=`<div class="card">${ldHTML('Scoring answer...')}</div>`;
-  try{
-    const r=await ai(`QUESTION: ${q}\nCANDIDATE ANSWER: ${a}\nCANDIDATE BACKGROUND: ${C.role}, ${C.skills}\n\nScore this answer strictly across 5 dimensions (each /10):\n1. Relevance to the question\n2. Use of specific personal experience\n3. STAR structure completeness\n4. Communication clarity (active voice, no hedging, confident)\n5. Senior-level impact language\n\nOVERALL SCORE /10\n\nThen:\n- WEAKEST ELEMENT: quote the exact weak phrase\n- REWRITTEN ANSWER: how this person should have answered — using their actual background, confident senior tone, under 200 words\n- DELIVERY NOTE: one specific instruction for how to say this out loud (pace, emphasis, pause points)\n\nBe strict. No encouragement. Only actionable improvement.`);
-    document.getElementById('p-feedback').innerHTML=`<div class="card card-accent"><div class="cl">Answer Score & Rewrite</div><div class="ai-body">${fmt(r)}</div></div>`;
-  }catch(e){document.getElementById('p-feedback').innerHTML=errHTML(e)}
-}
-
-async function toneCoach(){
-  const txt=document.getElementById('tone-input').value.trim();
-  if(!txt){toast('Paste your answer first','var(--am)');return}
-  document.getElementById('tone-out').innerHTML=ldHTML('Analysing tone...');
-  try{
-    const r=await ai(`Analyse the speech tone and delivery of this interview answer:\n"${txt}"\n\nAssess:\n1. CONFIDENCE LEVEL: does it sound senior and assured?\n2. PASSIVE VS ACTIVE VOICE: quote specific passive phrases\n3. HEDGING LANGUAGE: identify any "kind of", "sort of", "I think", "maybe" — these must go\n4. PACE NOTES: where to slow down, pause, or emphasise when speaking this out loud\n5. OPENING STRENGTH: does it grab attention in the first 8 seconds?\n6. CLOSING STRENGTH: does it end decisively?\n\nThen rewrite the opening 2 sentences to be stronger.\nBe specific. Quote actual phrases.`);
-    document.getElementById('tone-out').innerHTML=`<div class="ai-wrap" style="margin-top:10px"><div class="ai-lbl">Tone Analysis</div><div class="ai-body">${fmt(r)}</div></div>`;
-  }catch(e){document.getElementById('tone-out').innerHTML=errHTML(e)}
-}
-
-// ═══ RESUME ══════════════════════════════════════════════════════
-async function handleResume(e){
-  const file=e.target.files[0];if(!file)return;
-  if(file.type==='application/pdf'){
-    const reader=new FileReader();
-    reader.onload=ev=>{
-      const arr=new Uint8Array(ev.target.result);
-      let str='';for(let i=0;i<arr.length;i++)if(arr[i]>31&&arr[i]<127)str+=String.fromCharCode(arr[i]);
-      const chunks=str.match(/[A-Za-z][A-Za-z0-9 ,.\-:()\n]{15,}/g)||[];
-      document.getElementById('r-text').value=chunks.join('\n').slice(0,5000)||'PDF extraction limited. Please paste resume text manually for best results.';
-      toast('PDF processed — verify text and analyse');
-    };reader.readAsArrayBuffer(file);
-  }else{
-    const reader=new FileReader();
-    reader.onload=ev=>{document.getElementById('r-text').value=ev.target.result;toast('File loaded')};
-    reader.readAsText(file);
-  }
-}
-
-async function analyseResume(){
-  const txt=document.getElementById('r-text').value.trim();
-  const target=document.getElementById('r-target').value.trim()||C.target||'AI Security Engineer';
-  const depth=document.getElementById('r-depth').value;
-  if(!txt){toast('Upload or paste your resume first','var(--am)');return}
-  document.getElementById('r-out').innerHTML=`<div class="card">${ldHTML('Analysing resume...')}</div>`;
-  try{
-    let prompt=`RESUME:\n${txt.slice(0,4000)}\n\nTARGET ROLE: ${target}\nMARKET: 2026, AI Security / LLM Engineering is high-growth\n\n`;
-    if(depth==='full')prompt+=`Full resume audit:\n1. OVERALL SCORE /100 with breakdown: Content(30) Clarity(20) Metrics/Impact(20) ATS(15) Positioning(15)\n2. TOP 3 STRENGTHS in this resume\n3. TOP 5 WEAKNESSES — quote exact weak line, then rewrite it stronger\n4. ATS KEYWORD GAPS for ${target} — list missing keywords\n5. REWRITTEN PROFESSIONAL SUMMARY — one powerful paragraph for ${target}\n6. ONE STRUCTURAL CHANGE with highest impact on interview callback rate`;
-    else if(depth==='quick')prompt+=`Quick scan — identify the 5 most impactful issues only. Quote the exact problem and fix for each.`;
-    else if(depth==='ats')prompt+=`ATS audit only: List every keyword gap for a ${target} role. Group by: Must-have (missing), Nice-to-have (missing), Present (confirm). No other feedback.`;
-    else prompt+=`Rewrite the professional summary section only. Make it powerful, specific to ${target}, uses the candidate's actual background: ${C.skills}. Under 60 words. No clichés.`;
-    
-    const r=await ai(prompt);
-    document.getElementById('r-out').innerHTML=`<div class="card card-accent"><div class="cl">Resume Analysis — ${depth}</div><div class="ai-body">${fmt(r)}</div></div>`;
-  }catch(e){document.getElementById('r-out').innerHTML=errHTML(e)}
-}
-
-// ═══ AI COACH ════════════════════════════════════════════════════
-async function sendChat(){
-  const inp=document.getElementById('chat-in');
-  const msg=inp.value.trim();if(!msg)return;
-  inp.value='';
-  appendChat('user',msg);
-  chatHistory.push({role:'user',content:msg});
+    const r=await ai(`Career signal for: ${C.role||'Senior IBM BAW Developer'} targeting ${C.target||'AI Security Engineer'}. Skills: ${C.skills}. Give ONE specific market signal — a skill gap, niche role, or action to take today. 2 sentences max. Direct and specific. No generic advice.`);
   const thinkEl=appendChat('ai','...',true);
   try{
     const r=await ai(msg,null,true);
