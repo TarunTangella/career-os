@@ -2,211 +2,189 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>AI Engineering Lab</title>
 <style>
-  :root {
-    --bg: #0a0f1a; --bg2: #111827; --bg3: #1a2236; --border: #1e2d45;
-    --accent: #3b82f6; --accent2: #6366f1; --green: #10b981; --amber: #f59e0b;
-    --red: #ef4444; --text: #e2e8f0; --text2: #94a3b8; --text3: #475569;
-    --mono: 'JetBrains Mono','Fira Code',monospace; --sans: 'Inter',system-ui,sans-serif;
-  }
-  * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { background: var(--bg); color: var(--text); font-family: var(--sans); min-height: 100vh; display: flex; }
+:root {
+  --bg:#0a0f1a; --bg2:#111827; --bg3:#1a2236; --border:#1e2d45;
+  --accent:#3b82f6; --accent2:#6366f1; --green:#10b981; --amber:#f59e0b; --red:#ef4444;
+  --text:#e2e8f0; --text2:#94a3b8; --text3:#475569;
+  --mono:'JetBrains Mono','Fira Code',monospace; --sans:'Inter',system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);min-height:100vh}
 
-  #sidebar {
-    width: 240px; min-width: 240px; background: var(--bg2);
-    border-right: 1px solid var(--border); display: flex; flex-direction: column;
-    height: 100vh; position: sticky; top: 0; overflow-y: auto;
-  }
-  .logo { padding: 18px 16px 12px; border-bottom: 1px solid var(--border); }
-  .logo-title { font-size: 15px; font-weight: 700; background: linear-gradient(90deg,var(--accent),var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-  .logo-sub { font-size: 11px; color: var(--text3); margin-top: 2px; }
+/* MOBILE NAV */
+#mob-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--bg2);border-top:1px solid var(--border);z-index:100;padding:8px 0 max(8px,env(safe-area-inset-bottom))}
+.mob-tabs{display:flex;justify-content:space-around}
+.mob-tab{display:flex;flex-direction:column;align-items:center;gap:3px;padding:4px 12px;cursor:pointer;border:none;background:none;color:var(--text3);font-family:var(--sans);font-size:10px;font-weight:500;transition:color .15s}
+.mob-tab.active{color:var(--accent)}
+.mob-tab svg{width:20px;height:20px}
 
-  .nav-section { padding: 10px 8px 4px; }
-  .nav-label { font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; color: var(--text3); padding: 0 8px 5px; }
-  .nav-btn { display: flex; align-items: center; gap: 8px; padding: 7px 10px; border-radius: 7px; cursor: pointer; font-size: 13px; color: var(--text2); border: none; background: none; width: 100%; text-align: left; transition: all .15s; }
-  .nav-btn:hover { background: var(--bg3); color: var(--text); }
-  .nav-btn.active { background: rgba(59,130,246,.15); color: var(--accent); font-weight: 500; }
-  .dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
-  .d-blue{background:var(--accent)} .d-purple{background:var(--accent2)} .d-green{background:var(--green)} .d-amber{background:var(--amber)} .d-red{background:var(--red)}
+/* DESKTOP LAYOUT */
+#app{display:flex;min-height:100vh}
+#sidebar{width:240px;min-width:240px;background:var(--bg2);border-right:1px solid var(--border);display:flex;flex-direction:column;height:100vh;position:sticky;top:0;overflow-y:auto}
+.logo{padding:18px 16px 12px;border-bottom:1px solid var(--border)}
+.logo-title{font-size:15px;font-weight:700;background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.logo-sub{font-size:11px;color:var(--text3);margin-top:2px}
+.nav-section{padding:10px 8px 4px}
+.nav-label{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);padding:0 8px 5px}
+.nav-btn{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:7px;cursor:pointer;font-size:13px;color:var(--text2);border:none;background:none;width:100%;text-align:left;transition:all .15s}
+.nav-btn:hover,.nav-btn.active{background:rgba(59,130,246,.15);color:var(--accent)}
+.ndot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.nb{background:var(--accent)}.ng{background:var(--green)}.np{background:var(--accent2)}.na{background:var(--amber)}.nr{background:var(--red)}
+#prog-wrap{padding:12px 14px;border-top:1px solid var(--border);margin-top:auto}
+.prog-lbl{font-size:11px;color:var(--text3);margin-bottom:5px}
+.prog-bar{height:4px;background:var(--border);border-radius:2px}
+.prog-fill{height:100%;border-radius:2px;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .4s}
 
-  /* API KEY SECTION */
-  #key-section { padding: 12px 14px; border-top: 1px solid var(--border); margin-top: auto; }
-  #key-section label { font-size: 10px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; color: var(--text3); display: block; margin-bottom: 6px; }
-  #api-key-input { width: 100%; padding: 7px 10px; background: var(--bg3); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-size: 12px; font-family: var(--mono); outline: none; }
-  #api-key-input:focus { border-color: var(--accent); }
-  #key-save-btn { width: 100%; margin-top: 6px; padding: 7px; background: var(--accent); color: #fff; border: none; border-radius: 6px; font-size: 12px; cursor: pointer; font-family: var(--sans); font-weight: 500; }
-  #key-save-btn:hover { background: #2563eb; }
-  #key-status { font-size: 11px; margin-top: 5px; text-align: center; }
+#main{flex:1;display:flex;flex-direction:column;min-width:0}
+#topbar{padding:13px 24px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;background:var(--bg2);position:sticky;top:0;z-index:10}
+#topbar h1{font-size:14px;font-weight:600;flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tag{font-size:11px;font-weight:600;padding:3px 9px;border-radius:20px;white-space:nowrap}
+.tb{background:rgba(59,130,246,.15);color:var(--accent)}
+.tg{background:rgba(16,185,129,.15);color:var(--green)}
+.ta{background:rgba(245,158,11,.15);color:var(--amber)}
 
-  #prog-wrap { padding: 12px 14px; border-top: 1px solid var(--border); }
-  .prog-lbl { font-size: 11px; color: var(--text3); margin-bottom: 5px; }
-  .prog-bar { height: 4px; background: var(--border); border-radius: 2px; }
-  .prog-fill { height: 100%; border-radius: 2px; background: linear-gradient(90deg,var(--accent),var(--accent2)); transition: width .4s; }
+#content{flex:1;overflow-y:auto;padding:24px}
 
-  #main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
-  #topbar { padding: 13px 24px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; background: var(--bg2); position: sticky; top: 0; z-index: 10; }
-  #topbar h1 { font-size: 14px; font-weight: 600; flex: 1; }
-  .tag { font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 20px; }
-  .tag-blue { background: rgba(59,130,246,.15); color: var(--accent); }
-  .tag-green { background: rgba(16,185,129,.15); color: var(--green); }
-  .tag-amber { background: rgba(245,158,11,.15); color: var(--amber); }
-  #refresh-btn { padding: 6px 13px; border-radius: 7px; border: 1px solid var(--border); background: var(--bg3); color: var(--text2); font-size: 12px; cursor: pointer; font-family: var(--sans); transition: all .15s; }
-  #refresh-btn:hover { border-color: var(--accent); color: var(--accent); }
+/* CARDS */
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
+.stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:16px}
+.stat-val{font-size:26px;font-weight:700;letter-spacing:-1px}
+.stat-lbl{font-size:11px;color:var(--text3);margin-top:2px}
+.track-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.track-card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:16px;cursor:pointer;transition:border-color .15s,transform .1s}
+.track-card:hover{border-color:var(--accent);transform:translateY(-1px)}
+.tc-icon{font-size:22px;margin-bottom:8px}
+.tc-title{font-size:13px;font-weight:600;margin-bottom:4px}
+.tc-desc{font-size:12px;color:var(--text2);line-height:1.5}
 
-  #content { flex: 1; overflow-y: auto; padding: 24px; }
+/* LAB ITEMS */
+.lab-item{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:13px 16px;cursor:pointer;display:flex;align-items:flex-start;gap:12px;margin-bottom:8px;transition:border-color .15s}
+.lab-item:hover{border-color:var(--accent)}
+.lab-num{font-size:11px;font-weight:700;color:var(--text3);font-family:var(--mono);width:26px;flex-shrink:0;padding-top:1px}
+.lab-info{flex:1}
+.lab-title{font-size:13px;font-weight:600;margin-bottom:2px}
+.lab-desc-sm{font-size:12px;color:var(--text2)}
+.lab-tags{display:flex;flex-wrap:wrap;gap:3px;margin-top:5px}
+.lab-done{border-left:3px solid var(--green)!important}
 
-  /* HOME */
-  .stat-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; margin-bottom: 24px; }
-  .stat-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
-  .stat-val { font-size: 26px; font-weight: 700; letter-spacing: -1px; }
-  .stat-lbl { font-size: 11px; color: var(--text3); margin-top: 2px; }
+/* LAB CONTENT */
+.lab-content{background:var(--bg2);border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.lab-content-inner{padding:22px 24px;font-size:13.5px;line-height:1.85;color:var(--text)}
+.lab-content-inner h1{font-size:17px;font-weight:700;margin:18px 0 8px;color:var(--text)}
+.lab-content-inner h2{font-size:15px;font-weight:600;margin:16px 0 7px;border-bottom:1px solid var(--border);padding-bottom:5px}
+.lab-content-inner h3{font-size:14px;font-weight:600;color:var(--accent);margin:14px 0 6px}
+.lab-content-inner p{margin-bottom:10px}
+.lab-content-inner ul,.lab-content-inner ol{margin:8px 0 10px 20px}
+.lab-content-inner li{margin-bottom:5px}
+.lab-content-inner strong{color:var(--text);font-weight:600}
+.lab-content-inner a{color:var(--accent);text-decoration:none}
+.lab-content-inner a:hover{text-decoration:underline}
+.lab-content-inner hr{border:none;border-top:1px solid var(--border);margin:16px 0}
+.lab-content-inner blockquote{border-left:3px solid var(--accent2);padding-left:12px;color:var(--text2);margin:12px 0;font-style:italic}
+.lab-content-inner pre{background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:16px;margin:12px 0;overflow-x:auto;font-family:var(--mono);font-size:12.5px;line-height:1.7;position:relative}
+.lab-content-inner code:not(pre code){background:rgba(59,130,246,.1);color:#93c5fd;padding:2px 6px;border-radius:4px;font-family:var(--mono);font-size:12px}
+.lab-content-inner pre code{color:#a8d8a8;background:none;padding:0}
+.copy-btn{position:absolute;top:8px;right:8px;padding:3px 9px;background:var(--bg2);border:1px solid var(--border);border-radius:4px;color:var(--text3);font-size:11px;cursor:pointer;font-family:var(--sans)}
+.copy-btn:hover{color:var(--text)}
 
-  .track-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; }
-  .track-card { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 16px; cursor: pointer; transition: border-color .15s, transform .1s; }
-  .track-card:hover { border-color: var(--accent); transform: translateY(-1px); }
-  .tc-icon { font-size: 22px; margin-bottom: 8px; }
-  .tc-title { font-size: 13px; font-weight: 600; margin-bottom: 4px; }
-  .tc-desc { font-size: 12px; color: var(--text2); line-height: 1.5; }
-  .tc-badge { display: inline-block; margin-top: 8px; }
+/* BREADCRUMB */
+.bc{font-size:12px;color:var(--text3);margin-bottom:14px;display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.bc-link{cursor:pointer}.bc-link:hover{color:var(--accent)}
 
-  /* OUTPUT */
-  .out-wrap { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; overflow: hidden; min-height: 200px; }
-  .out-header { padding: 11px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px; background: var(--bg3); }
-  .pulse { width: 8px; height: 8px; border-radius: 50%; background: var(--green); animation: pulse 2s infinite; }
-  @keyframes pulse { 0%,100%{opacity:1}50%{opacity:.3} }
-  .out-status { font-size: 12px; color: var(--text2); flex: 1; }
-  .out-body { padding: 20px 22px; font-size: 13.5px; line-height: 1.8; color: var(--text); }
+/* BTNS */
+.btn-row{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap}
+.btn{padding:8px 16px;border-radius:7px;font-size:13px;font-weight:500;cursor:pointer;border:none;font-family:var(--sans);transition:all .15s}
+.btn-p{background:var(--accent);color:#fff}.btn-p:hover{background:#2563eb}
+.btn-s{background:var(--bg3);color:var(--text);border:1px solid var(--border)}.btn-s:hover{border-color:var(--accent);color:var(--accent)}
+.btn-g{background:transparent;color:var(--text2);border:1px solid var(--border)}.btn-g:hover{color:var(--text)}
 
-  /* MARKDOWN */
-  .out-body h1 { font-size: 17px; font-weight: 700; margin: 18px 0 8px; }
-  .out-body h2 { font-size: 15px; font-weight: 600; margin: 16px 0 7px; border-bottom: 1px solid var(--border); padding-bottom: 5px; }
-  .out-body h3 { font-size: 14px; font-weight: 600; color: var(--accent); margin: 14px 0 6px; }
-  .out-body p { margin-bottom: 10px; }
-  .out-body ul,ol { margin: 8px 0 10px 20px; }
-  .out-body li { margin-bottom: 4px; }
-  .out-body strong { color: var(--text); font-weight: 600; }
-  .out-body a { color: var(--accent); text-decoration: none; }
-  .out-body a:hover { text-decoration: underline; }
-  .out-body hr { border: none; border-top: 1px solid var(--border); margin: 16px 0; }
-  .out-body blockquote { border-left: 3px solid var(--accent2); padding-left: 12px; color: var(--text2); margin: 12px 0; }
-  .out-body pre { background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 14px; margin: 12px 0; overflow-x: auto; font-family: var(--mono); font-size: 12.5px; line-height: 1.7; position: relative; }
-  .out-body code:not(pre code) { background: rgba(59,130,246,.1); color: #93c5fd; padding: 2px 6px; border-radius: 4px; font-family: var(--mono); font-size: 12px; }
-  .out-body pre code { color: #a8d8a8; background: none; padding: 0; font-family: var(--mono); }
-  .copy-btn { position: absolute; top: 8px; right: 8px; padding: 3px 9px; background: var(--bg2); border: 1px solid var(--border); border-radius: 4px; color: var(--text3); font-size: 11px; cursor: pointer; font-family: var(--sans); }
-  .copy-btn:hover { color: var(--text); }
+.sec{display:none}.sec.on{display:block}
 
-  /* LABS LIST */
-  .lab-item { background: var(--bg2); border: 1px solid var(--border); border-radius: 8px; padding: 13px 16px; cursor: pointer; display: flex; align-items: center; gap: 12px; margin-bottom: 8px; transition: border-color .15s; }
-  .lab-item:hover { border-color: var(--accent); }
-  .lab-num { font-size: 11px; font-weight: 700; color: var(--text3); font-family: var(--mono); width: 26px; flex-shrink: 0; }
-  .lab-info { flex: 1; }
-  .lab-title { font-size: 13px; font-weight: 600; margin-bottom: 2px; }
-  .lab-desc { font-size: 12px; color: var(--text2); }
-  .lab-done { border-left: 3px solid var(--green) !important; }
-  .lab-tags { display: flex; flex-direction: column; align-items: flex-end; gap: 3px; }
+/* SEARCH */
+.search-wrap{position:relative;margin-bottom:16px}
+.search-wrap input{width:100%;padding:10px 14px 10px 36px;background:var(--bg2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:13px;font-family:var(--sans);outline:none;transition:border-color .15s}
+.search-wrap input:focus{border-color:var(--accent)}
+.search-wrap .si{position:absolute;left:12px;top:50%;transform:translateY(-50%);color:var(--text3);font-size:16px}
 
-  /* BREADCRUMB */
-  .bc { font-size: 12px; color: var(--text3); margin-bottom: 14px; display: flex; align-items: center; gap: 5px; }
-  .bc span { cursor: pointer; } .bc span:hover { color: var(--accent); }
-
-  /* BTNS */
-  .btn-row { display: flex; gap: 8px; margin-top: 14px; flex-wrap: wrap; }
-  .btn { padding: 8px 16px; border-radius: 7px; font-size: 13px; font-weight: 500; cursor: pointer; border: none; font-family: var(--sans); display: flex; align-items: center; gap: 6px; transition: all .15s; }
-  .btn-p { background: var(--accent); color: #fff; } .btn-p:hover { background: #2563eb; }
-  .btn-s { background: var(--bg3); color: var(--text); border: 1px solid var(--border); } .btn-s:hover { border-color: var(--accent); color: var(--accent); }
-  .btn-g { background: transparent; color: var(--text2); border: 1px solid var(--border); } .btn-g:hover { color: var(--text); }
-
-  /* CUSTOM */
-  .custom-box { background: var(--bg2); border: 1px solid var(--border); border-radius: 10px; padding: 18px; margin-bottom: 16px; }
-  .custom-box label { font-size: 12px; color: var(--text2); display: block; margin-bottom: 7px; font-weight: 500; }
-  .custom-box textarea { width: 100%; background: var(--bg3); border: 1px solid var(--border); border-radius: 7px; padding: 12px; color: var(--text); font-size: 13px; font-family: var(--sans); resize: vertical; min-height: 90px; outline: none; transition: border-color .15s; }
-  .custom-box textarea:focus { border-color: var(--accent); }
-
-  .spinner { width: 18px; height: 18px; border: 2px solid var(--border); border-top-color: var(--accent); border-radius: 50%; animation: spin .7s linear infinite; flex-shrink: 0; }
-  @keyframes spin { to { transform: rotate(360deg); } }
-
-  .sec { display: none; }
-  .sec.on { display: block; }
-
-  @media (max-width: 700px) {
-    #sidebar { display: none; }
-    .stat-grid { grid-template-columns: repeat(2,1fr); }
-    .track-grid { grid-template-columns: 1fr; }
-  }
+@media(max-width:768px){
+  #sidebar{display:none}
+  #mob-nav{display:block}
+  #content{padding:16px;padding-bottom:80px}
+  .stat-grid{grid-template-columns:repeat(2,1fr)}
+  .track-grid{grid-template-columns:1fr 1fr}
+  #topbar{padding:11px 16px}
+  .lab-content-inner{padding:16px}
+  .lab-content-inner pre{font-size:11.5px;padding:12px}
+}
+@media(max-width:400px){
+  .track-grid{grid-template-columns:1fr}
+}
 </style>
 </head>
 <body>
+<div id="app">
 
+<!-- SIDEBAR (desktop) -->
 <nav id="sidebar">
-  <div class="logo">
-    <div class="logo-title">⚡ AI Lab</div>
-    <div class="logo-sub">Living AI Engineering Runbook</div>
-  </div>
+  <div class="logo"><div class="logo-title">⚡ AI Lab</div><div class="logo-sub">Living AI Engineering Runbook</div></div>
   <div class="nav-section">
-    <div class="nav-label">Start here</div>
-    <button class="nav-btn active" id="nav-home" onclick="show('home')"><span class="dot d-blue"></span>Dashboard</button>
-    <button class="nav-btn" id="nav-custom" onclick="show('custom')"><span class="dot d-purple"></span>Ask anything</button>
+    <div class="nav-label">Navigate</div>
+    <button class="nav-btn active" onclick="goHome()"><span class="ndot nb"></span>Dashboard</button>
+    <button class="nav-btn" onclick="goSearch()"><span class="ndot np"></span>Search labs</button>
   </div>
   <div class="nav-section">
     <div class="nav-label">Learning tracks</div>
-    <button class="nav-btn" onclick="showTrack('python')"><span class="dot d-amber"></span>Python for AI</button>
-    <button class="nav-btn" onclick="showTrack('rag')"><span class="dot d-blue"></span>RAG from scratch</button>
-    <button class="nav-btn" onclick="showTrack('vectordb')"><span class="dot d-green"></span>Vector databases</button>
-    <button class="nav-btn" onclick="showTrack('langchain')"><span class="dot d-purple"></span>LangChain / agents</button>
-    <button class="nav-btn" onclick="showTrack('langgraph')"><span class="dot d-red"></span>LangGraph / multi-agent</button>
-    <button class="nav-btn" onclick="showTrack('mlops')"><span class="dot d-amber"></span>MLOps + deployment</button>
+    <button class="nav-btn" onclick="showTrack('python')"><span class="ndot na"></span>Python for AI</button>
+    <button class="nav-btn" onclick="showTrack('rag')"><span class="ndot nb"></span>RAG from scratch</button>
+    <button class="nav-btn" onclick="showTrack('vectordb')"><span class="ndot ng"></span>Vector databases</button>
+    <button class="nav-btn" onclick="showTrack('langchain')"><span class="ndot np"></span>LangChain / agents</button>
+    <button class="nav-btn" onclick="showTrack('langgraph')"><span class="ndot nr"></span>LangGraph / multi-agent</button>
+    <button class="nav-btn" onclick="showTrack('mlops')"><span class="ndot na"></span>MLOps + deployment</button>
   </div>
   <div class="nav-section">
     <div class="nav-label">Real projects</div>
-    <button class="nav-btn" onclick="showProject('banking')"><span class="dot d-green"></span>Banking AI systems</button>
-    <button class="nav-btn" onclick="showProject('trending')"><span class="dot d-blue"></span>Trending in 2026</button>
-    <button class="nav-btn" onclick="showProject('portfolio')"><span class="dot d-purple"></span>Portfolio projects</button>
-  </div>
-  <div id="key-section">
-    <label>Anthropic API Key</label>
-    <input type="password" id="api-key-input" placeholder="sk-ant-..." />
-    <button id="key-save-btn" onclick="saveKey()">Save key</button>
-    <div id="key-status"></div>
+    <button class="nav-btn" onclick="showTrack('projects')"><span class="ndot ng"></span>2026 project ideas</button>
   </div>
   <div id="prog-wrap">
-    <div class="prog-lbl">Labs done · <span id="prog-n">0</span></div>
+    <div class="prog-lbl">Labs done · <span id="prog-n">0</span> / <span id="prog-t">0</span></div>
     <div class="prog-bar"><div class="prog-fill" id="prog-fill" style="width:0%"></div></div>
   </div>
 </nav>
 
+<!-- MAIN -->
 <div id="main">
   <div id="topbar">
     <h1 id="tb-title">Dashboard</h1>
-    <span class="tag tag-blue" id="tb-tag">AI Engineering Lab</span>
-    <button id="refresh-btn" onclick="refreshCurrent()">↻ Refresh</button>
+    <span class="tag tb" id="tb-tag">AI Engineering Lab</span>
   </div>
-
   <div id="content">
 
     <!-- HOME -->
     <div class="sec on" id="sec-home">
       <div class="stat-grid">
-        <div class="stat-card"><div class="stat-val" style="color:var(--accent)" id="s-total">28</div><div class="stat-lbl">Total labs</div></div>
+        <div class="stat-card"><div class="stat-val" style="color:var(--accent)" id="s-total">0</div><div class="stat-lbl">Total labs</div></div>
         <div class="stat-card"><div class="stat-val" style="color:var(--green)" id="s-done">0</div><div class="stat-lbl">Completed</div></div>
-        <div class="stat-card"><div class="stat-val" style="color:var(--amber)">2026</div><div class="stat-lbl">Tools updated for</div></div>
-        <div class="stat-card"><div class="stat-val" style="color:var(--accent2)">AI</div><div class="stat-lbl">Generated live</div></div>
+        <div class="stat-card"><div class="stat-val" style="color:var(--amber)">2026</div><div class="stat-lbl">Content updated</div></div>
+        <div class="stat-card"><div class="stat-val" style="color:var(--accent2)">6</div><div class="stat-lbl">Tracks</div></div>
       </div>
-      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin-bottom:12px">Choose a track</div>
-      <div class="track-grid">
-        <div class="track-card" onclick="showTrack('python')"><div class="tc-icon">🐍</div><div class="tc-title">Python for AI</div><div class="tc-desc">Practical Python — data, APIs, files, AI libraries. No theory.</div><span class="tag tag-green tc-badge">Start here</span></div>
-        <div class="track-card" onclick="showTrack('rag')"><div class="tc-icon">🔍</div><div class="tc-title">RAG from scratch</div><div class="tc-desc">Build Retrieval Augmented Generation end-to-end. Understand every component.</div><span class="tag tag-blue tc-badge">Core</span></div>
-        <div class="track-card" onclick="showTrack('vectordb')"><div class="tc-icon">🗄️</div><div class="tc-title">Vector databases</div><div class="tc-desc">ChromaDB, Qdrant, Pinecone — hands-on with real semantic search.</div><span class="tag tag-green tc-badge">Core</span></div>
-        <div class="track-card" onclick="showTrack('langchain')"><div class="tc-icon">🔗</div><div class="tc-title">LangChain / agents</div><div class="tc-desc">Build AI agents that reason and use tools. Real chains, not tutorials.</div><span class="tag tag-amber tc-badge">Intermediate</span></div>
-        <div class="track-card" onclick="showTrack('langgraph')"><div class="tc-icon">🕸️</div><div class="tc-title">LangGraph / multi-agent</div><div class="tc-desc">Orchestrate multiple AI agents. Most in-demand skill in 2026.</div><span class="tag tag-amber tc-badge">Advanced</span></div>
-        <div class="track-card" onclick="showProject('trending')"><div class="tc-icon">🚀</div><div class="tc-title">Trending projects 2026</div><div class="tc-desc">AI-generated list of what the market wants built right now.</div><span class="tag tag-blue tc-badge">Market-driven</span></div>
-      </div>
+      <div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--text3);margin-bottom:12px">Learning tracks</div>
+      <div class="track-grid" id="home-tracks"></div>
+    </div>
+
+    <!-- SEARCH -->
+    <div class="sec" id="sec-search">
+      <div style="font-size:18px;font-weight:700;margin-bottom:4px">Search labs</div>
+      <div style="font-size:13px;color:var(--text2);margin-bottom:16px">Find any lab across all tracks</div>
+      <div class="search-wrap"><span class="si">🔍</span><input type="text" id="search-in" placeholder="e.g. vector, RAG, FastAPI, embeddings..." oninput="doSearch(this.value)"></div>
+      <div id="search-results"></div>
     </div>
 
     <!-- TRACK -->
     <div class="sec" id="sec-track">
-      <div class="bc"><span onclick="show('home')">Dashboard</span><span style="color:var(--text3)">›</span><span id="bc-track" style="color:var(--accent)"></span></div>
+      <div class="bc"><span class="bc-link" onclick="goHome()">Dashboard</span><span>›</span><span id="bc-track" style="color:var(--accent)"></span></div>
       <div style="font-size:18px;font-weight:700;margin-bottom:4px" id="track-title"></div>
       <div style="font-size:13px;color:var(--text2);margin-bottom:16px" id="track-desc"></div>
       <div id="labs-list"></div>
@@ -214,202 +192,1513 @@
 
     <!-- LAB -->
     <div class="sec" id="sec-lab">
-      <div class="bc"><span onclick="show('home')">Dashboard</span><span style="color:var(--text3)">›</span><span id="bc-t" style="cursor:pointer;color:var(--text2)" onclick="goBackToTrack()"></span><span style="color:var(--text3)">›</span><span id="bc-l" style="color:var(--accent)"></span></div>
-      <div style="font-size:18px;font-weight:700;margin-bottom:4px" id="lab-title2"></div>
-      <div style="font-size:13px;color:var(--text2);margin-bottom:14px" id="lab-desc2"></div>
-      <div id="lab-meta2" style="display:flex;gap:7px;margin-bottom:16px;flex-wrap:wrap"></div>
-      <div class="out-wrap" id="lab-out">
-        <div class="out-header"><div class="pulse"></div><span class="out-status" id="lab-status">Generating...</span></div>
-        <div class="out-body" id="lab-body"></div>
+      <div class="bc">
+        <span class="bc-link" onclick="goHome()">Dashboard</span><span>›</span>
+        <span class="bc-link" id="bc-t" onclick="goBackToTrack()"></span><span>›</span>
+        <span id="bc-l" style="color:var(--accent)"></span>
       </div>
+      <div style="font-size:18px;font-weight:700;margin-bottom:4px" id="lab-h"></div>
+      <div style="font-size:13px;color:var(--text2);margin-bottom:10px" id="lab-d"></div>
+      <div id="lab-meta" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px"></div>
+      <div class="lab-content"><div class="lab-content-inner" id="lab-body"></div></div>
       <div class="btn-row">
-        <button class="btn btn-p" onclick="markDone()">✓ Mark complete</button>
-        <button class="btn btn-s" onclick="refreshCurrent()">↻ Regenerate</button>
+        <button class="btn btn-p" id="done-btn" onclick="markDone()">✓ Mark complete</button>
         <button class="btn btn-g" onclick="nextLab()">Next lab →</button>
-      </div>
-    </div>
-
-    <!-- PROJECT -->
-    <div class="sec" id="sec-project">
-      <div class="bc"><span onclick="show('home')">Dashboard</span><span style="color:var(--text3)">›</span><span id="bc-proj" style="color:var(--accent)"></span></div>
-      <div style="font-size:18px;font-weight:700;margin-bottom:4px" id="proj-title"></div>
-      <div style="font-size:13px;color:var(--text2);margin-bottom:16px">AI-generated on demand · refreshes with current market data</div>
-      <div class="out-wrap" id="proj-out">
-        <div class="out-header"><div class="pulse"></div><span class="out-status" id="proj-status">Generating...</span></div>
-        <div class="out-body" id="proj-body"></div>
-      </div>
-      <div class="btn-row"><button class="btn btn-s" onclick="refreshCurrent()">↻ Regenerate</button></div>
-    </div>
-
-    <!-- CUSTOM -->
-    <div class="sec" id="sec-custom">
-      <div class="bc"><span onclick="show('home')">Dashboard</span><span style="color:var(--text3)">›</span><span style="color:var(--accent)">Ask anything</span></div>
-      <div style="font-size:18px;font-weight:700;margin-bottom:4px">Ask anything</div>
-      <div style="font-size:13px;color:var(--text2);margin-bottom:16px">Type any AI concept, tool, or project. Get a hands-on lab generated instantly.</div>
-      <div class="custom-box">
-        <label>What do you want to learn or build?</label>
-        <textarea id="custom-in" placeholder="e.g. How does RAG work — build one from scratch&#10;e.g. Build a document classifier with sentence-transformers&#10;e.g. Deploy a FastAPI + Ollama app to Azure&#10;e.g. LangGraph multi-agent for loan document review"></textarea>
-        <div class="btn-row" style="margin-top:10px">
-          <button class="btn btn-p" onclick="runCustom()">Generate lab →</button>
-          <button class="btn btn-g" onclick="suggestTopics()">Suggest topics for me</button>
-        </div>
-      </div>
-      <div id="custom-out-wrap" style="display:none">
-        <div class="out-wrap">
-          <div class="out-header"><div class="pulse"></div><span class="out-status" id="custom-status">Generating...</span></div>
-          <div class="out-body" id="custom-body"></div>
-        </div>
-        <div class="btn-row"><button class="btn btn-s" onclick="runCustom()">↻ Regenerate</button></div>
       </div>
     </div>
 
   </div>
 </div>
+</div>
+
+<!-- MOBILE NAV -->
+<div id="mob-nav">
+  <div class="mob-tabs">
+    <button class="mob-tab active" onclick="goHome();setMobActive(0)">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
+      Home
+    </button>
+    <button class="mob-tab" onclick="goSearch();setMobActive(1)">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+      Search
+    </button>
+    <button class="mob-tab" onclick="showTrack('rag');setMobActive(2)">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"/></svg>
+      Labs
+    </button>
+    <button class="mob-tab" onclick="showTrack('projects');setMobActive(3)">
+      <svg fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+      Projects
+    </button>
+  </div>
+</div>
 
 <script>
-// ── API KEY MANAGEMENT ────────────────────────────────────────────────────────
-let API_KEY = localStorage.getItem('ai_lab_key') || '';
-function saveKey() {
-  const v = document.getElementById('api-key-input').value.trim();
-  if (!v) { setKeyStatus('Enter a key first', '#ef4444'); return; }
-  API_KEY = v;
-  localStorage.setItem('ai_lab_key', v);
-  setKeyStatus('✓ Saved', '#10b981');
-  setTimeout(() => setKeyStatus('', ''), 2000);
-}
-function setKeyStatus(msg, color) {
-  const el = document.getElementById('key-status');
-  el.textContent = msg; el.style.color = color;
-}
-// Pre-fill saved key (masked)
-if (API_KEY) {
-  document.getElementById('api-key-input').placeholder = '✓ Key saved';
-  setKeyStatus('✓ Key loaded', '#10b981');
+// ── STATE ───────────────────────────────────────────────────────────────
+let curTrack=null,curLabIdx=0,curSection='home';
+let done=JSON.parse(localStorage.getItem('ailab_done')||'[]');
+
+// ── ALL LAB CONTENT ──────────────────────────────────────────────────────
+const LABS = {
+python:[
+{title:'Python data structures for AI',desc:'Lists, dicts, sets — how AI pipelines actually use them',time:'45 min',tags:['Python','Beginner'],content:`
+## What you'll build
+A mini data pipeline that reads a list of loan documents, classifies them by type using a dictionary lookup, deduplicates using sets, and outputs a structured summary — the same pattern used in real IDP (Intelligent Document Processing) pipelines.
+
+## Prerequisites
+\`\`\`bash
+pip install python==3.11  # already installed — no extras needed
+\`\`\`
+
+## Concept in 2 minutes
+AI pipelines are mostly data transformation: take raw input → clean → structure → pass to model → parse output. Lists hold sequences. Dicts map keys to values (document type → processor). Sets remove duplicates fast. Master these three and you can build 80% of any AI pipeline's data layer.
+
+## Step 1: Set up your document pipeline
+\`\`\`python
+# document_pipeline.py
+
+# Simulated incoming documents (real-world: these come from FileNet, email, API)
+raw_docs = [
+    {"id": "D001", "filename": "salary_slip_jan.pdf", "type": "unknown"},
+    {"id": "D002", "filename": "bank_statement_feb.pdf", "type": "unknown"},
+    {"id": "D003", "filename": "salary_slip_jan.pdf", "type": "unknown"},  # duplicate
+    {"id": "D004", "filename": "emirates_id_front.jpg", "type": "unknown"},
+    {"id": "D005", "filename": "trade_license_2024.pdf", "type": "unknown"},
+]
+
+print(f"Total documents received: {len(raw_docs)}")
+\`\`\`
+**Expected output:**
+\`\`\`
+Total documents received: 5
+\`\`\`
+
+## Step 2: Classify documents using a dictionary
+\`\`\`python
+# Keyword-to-type mapping — this is the simplest classifier
+# In production: replace with an LLM call
+DOC_CLASSIFIER = {
+    "salary": "salary_slip",
+    "bank_statement": "bank_statement",
+    "emirates_id": "identity_doc",
+    "passport": "identity_doc",
+    "trade_license": "business_doc",
+    "tenancy": "address_proof",
+    "utility": "address_proof",
 }
 
-// ── STATE ────────────────────────────────────────────────────────────────────
-let curSection = 'home', curTrack = null, curLabIdx = 0, curProject = null;
-let done = JSON.parse(localStorage.getItem('ai_lab_done') || '[]');
+def classify_doc(filename: str) -> str:
+    filename_lower = filename.lower()
+    for keyword, doc_type in DOC_CLASSIFIER.items():
+        if keyword in filename_lower:
+            return doc_type
+    return "unknown"
 
-// ── TRACKS ───────────────────────────────────────────────────────────────────
-const TRACKS = {
-  python: { name:'Python for AI', icon:'🐍', desc:'Practical Python — only what you need for AI engineering. Real code, real output.',
-    labs:[
-      {title:'Python data structures for AI', desc:'Lists, dicts, sets — how AI pipelines use them', time:'45 min', tags:['Python','Beginner']},
-      {title:'Working with files and APIs', desc:'Read PDFs, call REST APIs, handle JSON — real workflow', time:'1 hr', tags:['Python','Practical']},
-      {title:'Python for data with pandas', desc:'Load, filter, transform — preparation for AI models', time:'1.5 hr', tags:['pandas','Data']},
-      {title:'Calling LLM APIs from Python', desc:'OpenAI, Anthropic, Ollama — your first real AI call', time:'1 hr', tags:['LLM','APIs']},
-      {title:'Async Python for AI pipelines', desc:'async/await, concurrent requests, streaming responses', time:'1.5 hr', tags:['Advanced','Python']},
-    ]},
-  rag: { name:'RAG from scratch', icon:'🔍', desc:'Build a production-ready Retrieval Augmented Generation system step by step.',
-    labs:[
-      {title:'What RAG is and why it matters', desc:'The concept, the architecture, and when to use it', time:'30 min', tags:['Concept','Beginner']},
-      {title:'Document loading and chunking', desc:'Load PDFs, split intelligently, handle edge cases', time:'1 hr', tags:['Python','Practical']},
-      {title:'Text embeddings — built from scratch', desc:'What embeddings are, how to generate them, compare models', time:'1.5 hr', tags:['Embeddings','Core']},
-      {title:'Build a simple RAG pipeline', desc:'End-to-end: load → embed → store → retrieve → answer', time:'2 hr', tags:['RAG','Build']},
-      {title:'RAG for document Q&A — banking use case', desc:'Apply RAG to loan docs, extract answers from policy PDFs', time:'2.5 hr', tags:['Real project','Banking']},
-      {title:'Evaluate and improve RAG quality', desc:'Measure retrieval accuracy, reduce hallucinations', time:'2 hr', tags:['Advanced','MLOps']},
-    ]},
-  vectordb: { name:'Vector databases', icon:'🗄️', desc:'Understand vector search and build hands-on with real databases.',
-    labs:[
-      {title:'Vector databases explained clearly', desc:'What vectors are, why semantic search beats keyword', time:'30 min', tags:['Concept','Beginner']},
-      {title:'ChromaDB hands-on', desc:'Local vector DB — set up, insert, query, filter', time:'1 hr', tags:['ChromaDB','Practical']},
-      {title:'Qdrant for production', desc:'Cloud-ready vector DB with filtering and collections', time:'1.5 hr', tags:['Qdrant','Production']},
-      {title:'Pinecone serverless', desc:'Managed vector DB — scale without infrastructure', time:'1 hr', tags:['Pinecone','Cloud']},
-      {title:'Hybrid search: vector + keyword', desc:'Combine semantic and exact matching for better results', time:'2 hr', tags:['Advanced','Real project']},
-    ]},
-  langchain: { name:'LangChain / agents', icon:'🔗', desc:'Build AI agents that reason and act — from zero to working system.',
-    labs:[
-      {title:'LangChain core concepts', desc:'Chains, prompts, memory, tools — what each does', time:'45 min', tags:['Concept','LangChain']},
-      {title:'Build your first chain', desc:'Connect LLM → prompt → output, then add memory', time:'1.5 hr', tags:['LangChain','Build']},
-      {title:'Tools and function calling', desc:'Give AI the ability to search, calculate, call APIs', time:'2 hr', tags:['Agents','Tools']},
-      {title:'ReAct agent from scratch', desc:'Reason + Act loop — foundation of all AI agents', time:'2 hr', tags:['Agents','Advanced']},
-      {title:'Document QA agent', desc:'Agent that reads your documents and answers questions', time:'2.5 hr', tags:['Real project','RAG']},
-    ]},
-  langgraph: { name:'LangGraph / multi-agent', icon:'🕸️', desc:'Orchestrate multiple AI agents — the most in-demand skill in 2026.',
-    labs:[
-      {title:'Why LangGraph over LangChain', desc:'State machines vs chains — when LangGraph wins', time:'30 min', tags:['Concept','LangGraph']},
-      {title:'Nodes, edges, and state', desc:'Core building blocks of every LangGraph workflow', time:'1.5 hr', tags:['LangGraph','Core']},
-      {title:'Build a document review agent', desc:'Multi-step: fetch → analyse → validate → report', time:'3 hr', tags:['Real project','Build']},
-      {title:'Multi-agent coordination', desc:'Supervisor + worker agents — orchestrate parallel tasks', time:'3 hr', tags:['Advanced','Multi-agent']},
-      {title:'LangGraph + FastAPI deployment', desc:'Deploy your agent as a real API — production pattern', time:'2.5 hr', tags:['MLOps','Deployment']},
-    ]},
-  mlops: { name:'MLOps + deployment', icon:'⚙️', desc:'Get AI systems running in production — not just on your laptop.',
-    labs:[
-      {title:'FastAPI for AI — patterns that work', desc:'Structure, streaming, async endpoints for LLM APIs', time:'2 hr', tags:['FastAPI','Practical']},
-      {title:'Docker for AI apps', desc:'Containerise your RAG or agent app the right way', time:'1.5 hr', tags:['Docker','DevOps']},
-      {title:'Deploy to Azure (free tier)', desc:'Azure Container Apps — push your AI app live today', time:'2 hr', tags:['Azure','Cloud']},
-      {title:'Monitoring AI in production', desc:'Log inputs/outputs, track latency, catch failures', time:'1.5 hr', tags:['Monitoring','Advanced']},
-    ]},
+# Apply classifier to all docs
+for doc in raw_docs:
+    doc["type"] = classify_doc(doc["filename"])
+    print(f"{doc['filename']:35} → {doc['type']}")
+\`\`\`
+**Expected output:**
+\`\`\`
+salary_slip_jan.pdf                 → salary_slip
+bank_statement_feb.pdf              → bank_statement
+salary_slip_jan.pdf                 → salary_slip
+emirates_id_front.jpg               → identity_doc
+trade_license_2024.pdf              → business_doc
+\`\`\`
+
+## Step 3: Deduplicate using sets
+\`\`\`python
+# Track seen filenames — sets automatically prevent duplicates
+seen_files = set()
+unique_docs = []
+
+for doc in raw_docs:
+    if doc["filename"] not in seen_files:
+        seen_files.add(doc["filename"])
+        unique_docs.append(doc)
+    else:
+        print(f"⚠️  Duplicate removed: {doc['filename']}")
+
+print(f"\nAfter dedup: {len(unique_docs)} unique documents")
+\`\`\`
+**Expected output:**
+\`\`\`
+⚠️  Duplicate removed: salary_slip_jan.pdf
+After dedup: 4 unique documents
+\`\`\`
+
+## Step 4: Group by type using dict of lists
+\`\`\`python
+from collections import defaultdict
+
+# Group documents by type — common pattern in any document processing system
+grouped = defaultdict(list)
+for doc in unique_docs:
+    grouped[doc["type"]].append(doc["id"])
+
+print("\n📁 Document summary by type:")
+for doc_type, ids in grouped.items():
+    print(f"  {doc_type:20}: {len(ids)} doc(s) → {ids}")
+\`\`\`
+**Expected output:**
+\`\`\`
+📁 Document summary by type:
+  salary_slip         : 1 doc(s) → ['D001']
+  bank_statement      : 1 doc(s) → ['D002']
+  identity_doc        : 1 doc(s) → ['D004']
+  business_doc        : 1 doc(s) → ['D005']
+\`\`\`
+
+## ✅ Checkpoint
+You now have a working mini-pipeline: receive → classify → deduplicate → group. This is the exact data layer that sits before any LLM in a document intelligence system.
+
+## Real-world variation
+In the SIB-style IDP system, this same pattern handles 13 document types across auto finance applications. The classifier dict gets replaced by an LLM call, but the list/dict/set structure stays identical.
+
+## Common errors and fixes
+- **KeyError on dict access** → Use \`dict.get(key, default)\` instead of \`dict[key]\`
+- **Set not removing duplicates** → Sets compare by value; if docs are dicts, convert the key field to a string first
+- **defaultdict import error** → \`from collections import defaultdict\` — it's in stdlib, no pip needed
+
+## What to build next
+Add a JSON export: \`json.dump(grouped, open('output.json','w'), indent=2)\` — then you're one step away from passing this to an LLM for extraction.
+
+## References
+- 🔗 [Python docs — data structures](https://docs.python.org/3/tutorial/datastructures.html)
+- 🔗 [Real Python — defaultdict](https://realpython.com/python-defaultdict/)
+- 🔗 [GitHub — document processing patterns](https://github.com/topics/document-processing)
+`},
+
+{title:'Calling LLM APIs from Python',desc:'Ollama, OpenAI, Anthropic — make your first real AI call with real code',time:'1 hr',tags:['LLM','APIs','Practical'],content:`
+## What you'll build
+A Python script that calls three different LLM APIs (Ollama local, OpenAI, Anthropic) with the same prompt — a loan document field extractor — so you understand the pattern once and can switch providers.
+
+## Prerequisites
+\`\`\`bash
+pip install anthropic==0.25.0 openai==1.30.0 requests==2.31.0
+# For Ollama (free, local): install from https://ollama.com then run: ollama pull llama3.2
+\`\`\`
+
+## Concept in 2 minutes
+Every LLM API is the same pattern: send a list of messages → get text back. The differences are just auth headers and field names. Once you know the pattern, switching between providers takes 5 minutes.
+
+## Step 1: Call Ollama (free, local, no key needed)
+\`\`\`python
+# ollama_call.py — works offline, completely free
+import requests, json
+
+def call_ollama(prompt: str, model: str = "llama3.2") -> str:
+    response = requests.post(
+        "http://localhost:11434/api/generate",
+        json={"model": model, "prompt": prompt, "stream": False}
+    )
+    return response.json()["response"]
+
+# Test with a real document extraction task
+prompt = """Extract these fields from the text below. Return JSON only.
+Fields: applicant_name, monthly_salary, employer_name, date
+
+Text: "This is to certify that Mr. Ahmed Al-Rashidi is employed at Gulf Finance Corp 
+as Senior Engineer with a monthly salary of AED 18,500 effective from March 2024."
+"""
+
+result = call_ollama(prompt)
+print("Ollama response:")
+print(result)
+\`\`\`
+**Expected output:**
+\`\`\`json
+{
+  "applicant_name": "Ahmed Al-Rashidi",
+  "monthly_salary": "AED 18,500",
+  "employer_name": "Gulf Finance Corp",
+  "date": "March 2024"
+}
+\`\`\`
+
+## Step 2: Call Anthropic Claude API
+\`\`\`python
+import anthropic
+
+client = anthropic.Anthropic(api_key="sk-ant-...")  # your key here
+
+def call_claude(prompt: str) -> str:
+    message = client.messages.create(
+        model="claude-sonnet-4-6",
+        max_tokens=500,
+        messages=[{"role": "user", "content": prompt}]
+    )
+    return message.content[0].text
+
+result = call_claude(prompt)
+print("Claude response:", result)
+\`\`\`
+
+## Step 3: Build a unified wrapper (use any provider)
+\`\`\`python
+# unified_llm.py — switch provider with one variable
+import os, requests, json
+
+PROVIDER = "ollama"  # change to "anthropic" or "openai"
+
+def llm(prompt: str) -> str:
+    if PROVIDER == "ollama":
+        r = requests.post("http://localhost:11434/api/generate",
+            json={"model": "llama3.2", "prompt": prompt, "stream": False})
+        return r.json()["response"]
+    
+    elif PROVIDER == "anthropic":
+        import anthropic
+        c = anthropic.Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
+        m = c.messages.create(model="claude-sonnet-4-6", max_tokens=500,
+            messages=[{"role": "user", "content": prompt}])
+        return m.content[0].text
+    
+    elif PROVIDER == "openai":
+        from openai import OpenAI
+        c = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+        r = c.chat.completions.create(model="gpt-4o-mini", max_tokens=500,
+            messages=[{"role": "user", "content": prompt}])
+        return r.choices[0].message.content
+
+# Use it
+print(llm("Summarise this in one sentence: Banks assess loan eligibility based on income, credit score, and debt-to-income ratio."))
+\`\`\`
+**Expected output:**
+\`\`\`
+Banks evaluate loan applications by examining applicants' income levels, credit history, and the ratio of their existing debt to income.
+\`\`\`
+
+## ✅ Checkpoint
+You can now call any LLM from Python. The \`llm()\` wrapper is the foundation of every AI feature you'll build.
+
+## Common errors and fixes
+- **ConnectionError on Ollama** → Run \`ollama serve\` in a terminal first, then \`ollama pull llama3.2\`
+- **AuthenticationError** → API key not set — use \`os.getenv()\` with environment variables, never hardcode
+- **JSONDecodeError on LLM output** → LLMs don't always return valid JSON. Wrap in try/except and retry once
+
+## What to build next
+Add a system prompt: \`messages=[{"role":"system","content":"You are a banking document analyst..."},{"role":"user","content":prompt}]\` — this dramatically improves extraction accuracy.
+
+## References
+- 🔗 [Ollama docs](https://ollama.com/library)
+- 🔗 [Anthropic Python SDK](https://github.com/anthropics/anthropic-sdk-python)
+- 🔗 [OpenAI Python cookbook](https://cookbook.openai.com)
+`},
+],
+
+rag:[
+{title:'What RAG is and why it matters',desc:'The concept, architecture, and when to use it — with real analogies',time:'30 min',tags:['Concept','Beginner'],content:`
+## What is RAG?
+RAG = Retrieval Augmented Generation. It solves one problem: **LLMs don't know your private data.**
+
+A base LLM knows everything from its training data (up to a cutoff date) but knows nothing about your company's loan policies, your client's documents, or your internal knowledge base. RAG fixes this.
+
+## The analogy
+Think of it like an open-book exam vs a closed-book exam:
+- **Without RAG:** LLM answers from memory only — may hallucinate or say "I don't know"
+- **With RAG:** Before answering, the LLM first looks up relevant pages from your private documents, then answers using that context — accurate, grounded, verifiable
+
+## The 3-step architecture
+\`\`\`
+INDEXING (done once)
+Your documents → Split into chunks → Convert to vectors → Store in vector DB
+
+RETRIEVAL (at query time)
+User question → Convert to vector → Find similar chunks → Return top-K chunks
+
+GENERATION (at query time)
+User question + Retrieved chunks → LLM → Answer grounded in your documents
+\`\`\`
+
+## When to use RAG vs fine-tuning
+| Situation | Use |
+|---|---|
+| Private documents change frequently | RAG |
+| Need to cite sources | RAG |
+| Domain-specific knowledge base | RAG |
+| Want to change model behaviour/personality | Fine-tuning |
+| Want model to learn new skills | Fine-tuning |
+| Banking document Q&A | RAG ✅ |
+
+## Real banking example
+**Problem:** A loan officer asks: "What is our policy on DBR (Debt Burden Ratio) for personal loans to non-residents?"
+
+**Without RAG:** LLM guesses based on general banking knowledge — wrong for your specific bank's policy.
+
+**With RAG:**
+1. Question is converted to a vector
+2. Vector DB finds the 3 most relevant chunks from your policy PDF
+3. LLM reads those chunks + answers accurately: "Per Section 4.2 of the Personal Loan Policy (2024), DBR for non-residents is capped at 35%..."
+
+## What you'll learn in the next labs
+1. How to split documents into chunks
+2. How to convert text to vectors (embeddings)
+3. How to store and search vectors
+4. How to build the full pipeline end-to-end
+
+## References
+- 🔗 [Anthropic — RAG overview](https://docs.anthropic.com/en/docs/build-with-claude/retrieval-augmented-generation)
+- 🔗 [LangChain RAG tutorial](https://python.langchain.com/docs/tutorials/rag/)
+- 🔗 [RAG paper (original)](https://arxiv.org/abs/2005.11401)
+`},
+
+{title:'Build a simple RAG pipeline',desc:'End-to-end: load → embed → store → retrieve → answer',time:'2 hr',tags:['RAG','Build','Core'],content:`
+## What you'll build
+A working RAG system that answers questions about a bank's loan policy PDF. By the end you'll have a script you can point at any document and query it in natural language.
+
+## Prerequisites
+\`\`\`bash
+pip install langchain==0.2.16 langchain-community==0.2.16 chromadb==0.5.3 sentence-transformers==3.0.1 pypdf==4.3.1
+# For local LLM (free): install Ollama + run: ollama pull llama3.2
+\`\`\`
+
+## Step 1: Create a sample policy document
+\`\`\`python
+# Create sample_policy.txt (or use your own PDF)
+policy_text = """
+PERSONAL LOAN POLICY — GULF ISLAMIC BANK
+Effective Date: January 2024
+
+Section 1: Eligibility
+- Minimum age: 21 years
+- Maximum age at loan maturity: 65 years (salaried), 70 years (self-employed)
+- Minimum monthly salary: AED 5,000
+
+Section 2: Debt Burden Ratio (DBR)
+- Maximum DBR for UAE nationals: 50%
+- Maximum DBR for expatriates: 45%
+- Maximum DBR for non-residents: 35%
+- DBR = Total monthly obligations / Gross monthly salary
+
+Section 3: Loan Limits
+- Minimum loan amount: AED 10,000
+- Maximum loan amount: 20x monthly salary or AED 1,500,000 (whichever is lower)
+- Maximum tenor: 48 months for expatriates, 60 months for nationals
+
+Section 4: Required Documents
+- Valid Emirates ID or passport
+- 3 months bank statements
+- 3 months salary slips
+- Employment confirmation letter
+"""
+
+with open("sample_policy.txt", "w") as f:
+    f.write(policy_text)
+print("✅ Policy document created")
+\`\`\`
+
+## Step 2: Load and chunk the document
+\`\`\`python
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain_community.document_loaders import TextLoader
+
+# Load document
+loader = TextLoader("sample_policy.txt")
+docs = loader.load()
+print(f"Loaded: {len(docs)} document(s)")
+
+# Split into chunks
+splitter = RecursiveCharacterTextSplitter(
+    chunk_size=300,       # characters per chunk
+    chunk_overlap=50,     # overlap to preserve context at boundaries
+    separators=["\n\n", "\n", ". ", " "]  # try these split points in order
+)
+chunks = splitter.split_documents(docs)
+print(f"Split into: {len(chunks)} chunks")
+for i, chunk in enumerate(chunks[:3]):
+    print(f"\nChunk {i}: {chunk.page_content[:100]}...")
+\`\`\`
+**Expected output:**
+\`\`\`
+Loaded: 1 document(s)
+Split into: 8 chunks
+Chunk 0: PERSONAL LOAN POLICY — GULF ISLAMIC BANK
+Effective Date: January 2024...
+\`\`\`
+
+## Step 3: Create embeddings and store in ChromaDB
+\`\`\`python
+from langchain_community.embeddings import HuggingFaceEmbeddings
+from langchain_community.vectorstores import Chroma
+
+# Use a free local embedding model (no API key needed)
+embeddings = HuggingFaceEmbeddings(
+    model_name="all-MiniLM-L6-v2",  # 80MB, downloads once, runs locally
+    model_kwargs={"device": "cpu"}
+)
+
+# Store in ChromaDB (local, no server needed)
+vectorstore = Chroma.from_documents(
+    documents=chunks,
+    embedding=embeddings,
+    persist_directory="./policy_db"  # saves to disk
+)
+print(f"✅ Stored {len(chunks)} chunks in ChromaDB")
+\`\`\`
+**Expected output:**
+\`\`\`
+✅ Stored 8 chunks in ChromaDB
+\`\`\`
+
+## Step 4: Query and retrieve relevant chunks
+\`\`\`python
+# Test retrieval before adding LLM
+query = "What is the maximum DBR for expatriates?"
+retrieved = vectorstore.similarity_search(query, k=2)
+
+print(f"Query: {query}")
+print(f"Retrieved {len(retrieved)} chunks:\n")
+for i, doc in enumerate(retrieved):
+    print(f"--- Chunk {i+1} ---")
+    print(doc.page_content)
+\`\`\`
+**Expected output:**
+\`\`\`
+Query: What is the maximum DBR for expatriates?
+Retrieved 2 chunks:
+
+--- Chunk 1 ---
+Section 2: Debt Burden Ratio (DBR)
+- Maximum DBR for UAE nationals: 50%
+- Maximum DBR for expatriates: 45%
+...
+\`\`\`
+
+## Step 5: Add LLM to answer with context
+\`\`\`python
+import requests
+
+def answer_with_rag(question: str) -> str:
+    # 1. Retrieve relevant chunks
+    docs = vectorstore.similarity_search(question, k=3)
+    context = "\n\n".join([d.page_content for d in docs])
+    
+    # 2. Build prompt with context
+    prompt = f"""You are a banking policy assistant. Answer the question using ONLY the policy context below.
+If the answer is not in the context, say "Not covered in policy."
+
+POLICY CONTEXT:
+{context}
+
+QUESTION: {question}
+ANSWER:"""
+    
+    # 3. Call Ollama (replace with any LLM)
+    r = requests.post("http://localhost:11434/api/generate",
+        json={"model": "llama3.2", "prompt": prompt, "stream": False})
+    return r.json()["response"]
+
+# Test it
+questions = [
+    "What is the maximum loan tenor for expatriates?",
+    "What DBR applies to non-residents?",
+    "What documents are required?",
+]
+for q in questions:
+    print(f"Q: {q}")
+    print(f"A: {answer_with_rag(q)}\n")
+\`\`\`
+**Expected output:**
+\`\`\`
+Q: What is the maximum loan tenor for expatriates?
+A: According to the policy, the maximum tenor for expatriates is 48 months.
+
+Q: What DBR applies to non-residents?
+A: The maximum DBR for non-residents is 35%.
+\`\`\`
+
+## ✅ You now have a working RAG system
+Point it at any document. Change the policy file, re-run Step 3, and it works for any domain.
+
+## Common errors and fixes
+- **Model download hangs** → \`all-MiniLM-L6-v2\` is 80MB. First run takes 2-3 min. Check your internet.
+- **Ollama connection refused** → Run \`ollama serve\` in a separate terminal window first
+- **Poor retrieval quality** → Reduce chunk_size to 150, increase k to 5
+
+## What to build next
+Replace \`TextLoader\` with \`PyPDFLoader\` for real PDFs: \`from langchain_community.document_loaders import PyPDFLoader\`
+
+## References
+- 🔗 [LangChain RAG docs](https://python.langchain.com/docs/tutorials/rag/)
+- 🔗 [ChromaDB docs](https://docs.trychroma.com)
+- 🔗 [all-MiniLM model card](https://huggingface.co/sentence-transformers/all-MiniLM-L6-v2)
+`},
+],
+
+vectordb:[
+{title:'Vector databases explained clearly',desc:'What vectors are, why semantic search beats keyword search',time:'30 min',tags:['Concept','Beginner'],content:`
+## What is a vector?
+A vector is just a list of numbers that represents the meaning of text.
+
+\`\`\`python
+# "bank statement" in vector space (simplified — real vectors have 384+ dimensions)
+"bank statement"    → [0.23, -0.81, 0.44, 0.12, ...]  # 384 numbers
+"salary certificate" → [0.21, -0.79, 0.41, 0.15, ...]  # similar numbers = similar meaning
+"pizza recipe"      → [-0.92, 0.33, -0.71, 0.88, ...]  # very different numbers
+\`\`\`
+
+## Why semantic search beats keyword search
+\`\`\`
+Keyword search for "proof of income":
+✅ Finds: "proof of income letter"
+❌ Misses: "salary certificate"  ← same meaning, different words
+❌ Misses: "payslip"             ← same meaning, different words
+
+Vector search for "proof of income":
+✅ Finds: "proof of income letter"
+✅ Finds: "salary certificate"   ← close in vector space
+✅ Finds: "payslip"              ← close in vector space
+✅ Finds: "employment letter"    ← related meaning
+\`\`\`
+
+## How a vector DB works
+\`\`\`
+1. STORE:  text → embedding model → vector → vector DB stores [text + vector]
+2. QUERY:  question → embedding model → query vector
+3. SEARCH: find stored vectors closest to query vector (cosine similarity)
+4. RETURN: top-K most similar texts
+\`\`\`
+
+## Choosing a vector DB in 2026
+| DB | Best for | Free? | Setup |
+|---|---|---|---|
+| **ChromaDB** | Local dev, fast prototyping | ✅ | pip install, in-memory |
+| **Qdrant** | Production, filtering, large scale | ✅ Cloud free tier | Docker or cloud |
+| **Pinecone** | Serverless, zero infra | Free tier (1 index) | API only |
+| **pgvector** | Already using PostgreSQL | ✅ | Extension |
+| **FAISS** | Maximum speed, no server | ✅ | pip install |
+
+**Start with ChromaDB. Move to Qdrant when you need production.**
+
+## The key metric: cosine similarity
+\`\`\`
+Score of 1.0  = identical meaning
+Score of 0.8+ = very similar
+Score of 0.5  = somewhat related
+Score of 0.0  = completely unrelated
+Score < 0     = opposite meaning
+\`\`\`
+
+## References
+- 🔗 [ChromaDB quickstart](https://docs.trychroma.com/getting-started)
+- 🔗 [Qdrant docs](https://qdrant.tech/documentation/)
+- 🔗 [Vector DB comparison 2024](https://superlinked.com/vectorhub/vector-db-comparison)
+`},
+
+{title:'ChromaDB hands-on',desc:'Local vector DB — set up, insert, query, filter. Fastest to start.',time:'1 hr',tags:['ChromaDB','Practical'],content:`
+## What you'll build
+A searchable knowledge base of 10 banking FAQs using ChromaDB. Query it with natural language and get the most relevant answer back instantly.
+
+## Prerequisites
+\`\`\`bash
+pip install chromadb==0.5.3 sentence-transformers==3.0.1
+\`\`\`
+
+## Step 1: Set up ChromaDB and add documents
+\`\`\`python
+import chromadb
+from chromadb.utils import embedding_functions
+
+# Use a local embedding model (free, no API key)
+ef = embedding_functions.SentenceTransformerEmbeddingFunction(
+    model_name="all-MiniLM-L6-v2"
+)
+
+# Create client and collection
+client = chromadb.Client()  # in-memory (use PersistentClient for disk)
+collection = client.create_collection(
+    name="banking_faq",
+    embedding_function=ef
+)
+
+# Add banking FAQs
+faqs = [
+    "The minimum salary requirement for a personal loan is AED 5,000 per month",
+    "Loan applications take 3-5 business days to process after document submission",
+    "You can prepay your loan after 12 months with a 1% early settlement fee",
+    "The maximum loan amount is 20 times your monthly salary up to AED 1.5 million",
+    "Required documents include Emirates ID, 3 months bank statements, and salary slips",
+    "DBR limit for UAE nationals is 50%, for expatriates it is 45%",
+    "Personal loans are available for tenors of 12 to 60 months",
+    "Interest rate is calculated on reducing balance method starting from 5.99% per annum",
+    "You must be between 21 and 65 years of age to apply for a personal loan",
+    "Joint applications are allowed with a spouse as a co-applicant",
+]
+
+collection.add(
+    documents=faqs,
+    ids=[f"faq_{i}" for i in range(len(faqs))]
+)
+print(f"✅ Added {len(faqs)} documents to ChromaDB")
+\`\`\`
+**Expected output:**
+\`\`\`
+✅ Added 10 documents to ChromaDB
+\`\`\`
+
+## Step 2: Query with natural language
+\`\`\`python
+def search_faq(question: str, n_results: int = 3):
+    results = collection.query(
+        query_texts=[question],
+        n_results=n_results
+    )
+    print(f"Query: '{question}'")
+    print(f"Top {n_results} results:")
+    for i, (doc, dist) in enumerate(zip(
+        results['documents'][0],
+        results['distances'][0]
+    )):
+        score = 1 - dist  # convert distance to similarity
+        print(f"  {i+1}. [{score:.2f}] {doc}")
+    print()
+
+search_faq("What salary do I need to get a loan?")
+search_faq("How long does loan approval take?")
+search_faq("Can I pay back early?")
+\`\`\`
+**Expected output:**
+\`\`\`
+Query: 'What salary do I need to get a loan?'
+Top 3 results:
+  1. [0.91] The minimum salary requirement for a personal loan is AED 5,000 per month
+  2. [0.74] The maximum loan amount is 20 times your monthly salary...
+  3. [0.68] You must be between 21 and 65 years of age to apply...
+\`\`\`
+
+## Step 3: Filter by metadata
+\`\`\`python
+# Recreate with metadata for filtering
+client2 = chromadb.Client()
+col2 = client2.create_collection("faq_with_meta", embedding_function=ef)
+
+col2.add(
+    documents=faqs,
+    ids=[f"faq_{i}" for i in range(len(faqs))],
+    metadatas=[
+        {"category": "eligibility"},
+        {"category": "process"},
+        {"category": "repayment"},
+        {"category": "eligibility"},
+        {"category": "documents"},
+        {"category": "eligibility"},
+        {"category": "eligibility"},
+        {"category": "rates"},
+        {"category": "eligibility"},
+        {"category": "eligibility"},
+    ]
+)
+
+# Query only eligibility FAQs
+results = col2.query(
+    query_texts=["age requirements"],
+    n_results=2,
+    where={"category": "eligibility"}  # filter!
+)
+print("Filtered to eligibility only:")
+for doc in results['documents'][0]:
+    print(f"  • {doc}")
+\`\`\`
+**Expected output:**
+\`\`\`
+Filtered to eligibility only:
+  • You must be between 21 and 65 years of age to apply for a personal loan
+  • The minimum salary requirement for a personal loan is AED 5,000 per month
+\`\`\`
+
+## ✅ Checkpoint
+You can now store, search, and filter documents using vector similarity. This is the core of every RAG system.
+
+## Common errors and fixes
+- **Model download on first run** → Takes 2-3 min for 80MB model. Normal.
+- **empty results** → collection.count() must be > 0 before querying
+- **wrong similarity scores** → ChromaDB returns L2 distance by default; use cosine with \`metadata={"hnsw:space": "cosine"}\` on collection creation
+
+## What to build next
+Replace the in-memory client with \`chromadb.PersistentClient(path="./my_db")\` to save your data to disk between runs.
+
+## References
+- 🔗 [ChromaDB docs](https://docs.trychroma.com)
+- 🔗 [ChromaDB GitHub](https://github.com/chroma-core/chroma)
+- 🔗 [Sentence transformers models](https://www.sbert.net/docs/pretrained_models.html)
+`},
+],
+
+langchain:[
+{title:'Build your first LangChain chain',desc:'Connect LLM → prompt → output. Then add memory.',time:'1.5 hr',tags:['LangChain','Build'],content:`
+## What you'll build
+A loan eligibility checker agent that takes applicant details, runs them through a chain of checks, and produces a structured decision with reasoning. Your first real LangChain chain — not a hello world.
+
+## Prerequisites
+\`\`\`bash
+pip install langchain==0.2.16 langchain-community==0.2.16 langchain-core==0.2.38
+# Ollama for free local LLM: https://ollama.com → ollama pull llama3.2
+\`\`\`
+
+## Concept in 2 minutes
+A LangChain "chain" is just: PromptTemplate → LLM → OutputParser. You define what goes in (variables), what the LLM should do (prompt), and what comes out (parsed format). Chain multiple of these together and you have an agent.
+
+## Step 1: Your first chain
+\`\`\`python
+from langchain_community.llms import Ollama
+from langchain_core.prompts import PromptTemplate
+from langchain_core.output_parsers import StrOutputParser
+
+# Create LLM
+llm = Ollama(model="llama3.2")
+
+# Create prompt template
+prompt = PromptTemplate.from_template("""
+You are a loan eligibility officer at a bank.
+
+Applicant details:
+- Monthly salary: {salary} AED
+- Monthly existing obligations: {obligations} AED  
+- Loan requested: {loan_amount} AED over {tenor} months
+
+Calculate DBR = obligations / salary.
+If DBR > 45%, REJECT. Otherwise, APPROVE with estimated monthly payment.
+Give a 3-line decision with reason.
+""")
+
+# Create chain: prompt → LLM → string output
+chain = prompt | llm | StrOutputParser()
+
+# Run it
+result = chain.invoke({
+    "salary": 15000,
+    "obligations": 4000,
+    "loan_amount": 100000,
+    "tenor": 36,
+})
+print(result)
+\`\`\`
+**Expected output:**
+\`\`\`
+DBR = 4000/15000 = 26.7% — within the 45% limit.
+APPROVED: The applicant qualifies for the requested AED 100,000 loan.
+Estimated monthly payment: AED 3,143 over 36 months at standard rates.
+\`\`\`
+
+## Step 2: Add memory (conversation history)
+\`\`\`python
+from langchain.memory import ConversationBufferWindowMemory
+from langchain.chains import ConversationChain
+
+memory = ConversationBufferWindowMemory(k=5)  # remember last 5 exchanges
+
+convo = ConversationChain(llm=llm, memory=memory, verbose=False)
+
+# Simulate a conversation with an applicant
+responses = [
+    convo.predict(input="My monthly salary is AED 20,000"),
+    convo.predict(input="I have car loan payments of AED 3,000 per month"),
+    convo.predict(input="I want to borrow AED 200,000 for 48 months. Am I eligible?"),
+]
+for r in responses:
+    print(r)
+    print("---")
+\`\`\`
+**Expected output:**
+\`\`\`
+Thank you, I've noted your monthly salary of AED 20,000.
+---
+Understood. That gives you AED 3,000 in existing monthly obligations.
+---
+With salary AED 20,000 and obligations AED 3,000, your DBR is 15%. 
+Adding a AED 200,000 / 48-month loan (~AED 4,600/month) brings total DBR to 38% — 
+within our 45% limit. You are eligible.
+---
+\`\`\`
+
+## Step 3: Sequential chain (multi-step reasoning)
+\`\`\`python
+from langchain_core.prompts import ChatPromptTemplate
+
+# Chain 1: Calculate eligibility
+eligibility_prompt = ChatPromptTemplate.from_template(
+    "Calculate loan eligibility: salary={salary}, obligations={obligations}, loan={loan}. Return: ELIGIBLE or INELIGIBLE with DBR percentage."
+)
+
+# Chain 2: Generate recommendation based on eligibility
+recommendation_prompt = ChatPromptTemplate.from_template(
+    "Based on this eligibility result: {eligibility_result}\nGenerate a professional customer-facing response in 2 sentences."
+)
+
+chain1 = eligibility_prompt | llm | StrOutputParser()
+chain2 = recommendation_prompt | llm | StrOutputParser()
+
+# Run sequentially
+elig_result = chain1.invoke({"salary":12000,"obligations":3000,"loan":80000})
+final_response = chain2.invoke({"eligibility_result": elig_result})
+print("Step 1:", elig_result)
+print("Step 2:", final_response)
+\`\`\`
+
+## Common errors and fixes
+- **Ollama not running** → \`ollama serve\` in separate terminal
+- **PromptTemplate variable mismatch** → variable names in \`{}\` must match keys in \`.invoke({})\`
+- **Memory not persisting** → ConversationBufferWindowMemory is in-memory only. Use SQLiteMemory for persistence.
+
+## What to build next
+Add a tool: let the chain call a function to look up real interest rates before making a decision.
+
+## References
+- 🔗 [LangChain LCEL docs](https://python.langchain.com/docs/concepts/lcel/)
+- 🔗 [LangChain memory](https://python.langchain.com/docs/concepts/memory/)
+- 🔗 [LangChain cookbook](https://github.com/langchain-ai/langchain/tree/master/cookbook)
+`},
+],
+
+langgraph:[
+{title:'Why LangGraph over LangChain',desc:'State machines vs chains — when and why LangGraph wins',time:'30 min',tags:['Concept','LangGraph'],content:`
+## The core difference in one line
+**LangChain:** A → B → C (fixed sequence)
+**LangGraph:** A → B → C or back to A or jump to E (stateful, conditional)
+
+## When chains break down
+Imagine a loan document review process:
+\`\`\`
+1. Receive documents
+2. Check if all documents present
+   → If missing: request missing docs (loop back to step 1)
+   → If complete: proceed
+3. Validate document authenticity
+   → If fraud detected: escalate to compliance (branch)
+   → If valid: proceed
+4. Extract financial data
+5. Calculate eligibility
+   → If eligible: generate approval letter
+   → If not: generate rejection with reason
+\`\`\`
+
+This has **loops** and **conditional branches**. A linear chain can't do this. LangGraph can.
+
+## LangGraph's 3 core concepts
+
+**Nodes** — functions that do work (call LLM, run calculation, check condition)
+\`\`\`python
+def check_documents(state): ...    # a node
+def validate_docs(state): ...      # a node
+def calculate_eligibility(state): ... # a node
+\`\`\`
+
+**Edges** — connections between nodes (fixed or conditional)
+\`\`\`python
+graph.add_edge("check_documents", "validate_docs")  # always go here
+graph.add_conditional_edges("validate_docs", decide_next,  # go here based on output
+    {"valid": "calculate_eligibility", "fraud": "escalate"})
+\`\`\`
+
+**State** — shared memory that all nodes can read and write
+\`\`\`python
+class LoanState(TypedDict):
+    documents: list
+    is_complete: bool
+    is_valid: bool
+    eligibility: str
+    decision: str
+\`\`\`
+
+## The market view
+LangGraph is the **most in-demand agentic AI skill in 2026** because enterprises need agents that can:
+- Loop until a condition is met
+- Branch based on data
+- Handle errors and retry
+- Run multiple agents in parallel
+
+Linear chains can't do any of this reliably.
+
+## What you'll build in the next lab
+A document review agent with real conditional logic: check completeness → validate → extract → decide → output. If documents are missing, it loops back. If fraud is detected, it branches to a different handler.
+
+## References
+- 🔗 [LangGraph docs](https://langchain-ai.github.io/langgraph/)
+- 🔗 [LangGraph GitHub](https://github.com/langchain-ai/langgraph)
+- 🔗 [LangGraph tutorial — agent patterns](https://langchain-ai.github.io/langgraph/tutorials/)
+`},
+
+{title:'Build a document review agent with LangGraph',desc:'Multi-step: receive → validate → extract → decide. With real conditional logic.',time:'3 hr',tags:['LangGraph','Real project','Build'],content:`
+## What you'll build
+A loan document review agent that: checks if all required documents are present, validates each one, extracts key financial data, and makes an eligibility decision — with proper conditional branching and state management.
+
+## Prerequisites
+\`\`\`bash
+pip install langgraph==0.2.28 langchain==0.2.16 langchain-community==0.2.16
+# Ollama: ollama pull llama3.2
+\`\`\`
+
+## Step 1: Define the state
+\`\`\`python
+from typing import TypedDict, List, Optional
+from langgraph.graph import StateGraph, END
+
+class LoanReviewState(TypedDict):
+    # Input
+    applicant_name: str
+    submitted_docs: List[str]
+    
+    # Computed during review
+    missing_docs: List[str]
+    validation_errors: List[str]
+    extracted_data: dict
+    
+    # Decision
+    decision: str           # APPROVED / REJECTED / PENDING
+    decision_reason: str
+    next_step: str          # controls flow
+\`\`\`
+
+## Step 2: Define the nodes
+\`\`\`python
+import requests, json
+
+REQUIRED_DOCS = ["emirates_id", "bank_statement", "salary_slip", "employment_letter"]
+
+def call_llm(prompt: str) -> str:
+    r = requests.post("http://localhost:11434/api/generate",
+        json={"model": "llama3.2", "prompt": prompt, "stream": False})
+    return r.json()["response"]
+
+# Node 1: Check document completeness
+def check_completeness(state: LoanReviewState) -> LoanReviewState:
+    submitted = [d.lower().replace(" ", "_") for d in state["submitted_docs"]]
+    missing = [doc for doc in REQUIRED_DOCS if doc not in submitted]
+    
+    state["missing_docs"] = missing
+    state["next_step"] = "incomplete" if missing else "validate"
+    
+    print(f"📋 Completeness check: {'PASS' if not missing else f'FAIL — missing: {missing}'}")
+    return state
+
+# Node 2: Validate documents
+def validate_documents(state: LoanReviewState) -> LoanReviewState:
+    errors = []
+    
+    prompt = f"""You are a document validator. The applicant has submitted: {state['submitted_docs']}.
+Check for obvious issues (expired docs, mismatched names, etc.).
+Return JSON only: {{"errors": ["list of issues"], "is_valid": true/false}}"""
+    
+    response = call_llm(prompt)
+    try:
+        result = json.loads(response)
+        errors = result.get("errors", [])
+    except:
+        errors = []  # if LLM returns non-JSON, assume valid
+    
+    state["validation_errors"] = errors
+    state["next_step"] = "fraud_check" if errors else "extract"
+    
+    print(f"✅ Validation: {'ISSUES FOUND' if errors else 'PASS'}")
+    return state
+
+# Node 3: Extract financial data
+def extract_data(state: LoanReviewState) -> LoanReviewState:
+    prompt = f"""Extract financial data from these submitted documents: {state['submitted_docs']}
+Simulate realistic data extraction. Return JSON only:
+{{"monthly_salary": 15000, "existing_obligations": 3000, "employer": "ABC Corp", "employment_years": 3}}"""
+    
+    response = call_llm(prompt)
+    try:
+        data = json.loads(response)
+    except:
+        data = {"monthly_salary": 15000, "existing_obligations": 3000}
+    
+    state["extracted_data"] = data
+    state["next_step"] = "decide"
+    
+    print(f"📊 Extracted: salary={data.get('monthly_salary')}, obligations={data.get('existing_obligations')}")
+    return state
+
+# Node 4: Make eligibility decision
+def make_decision(state: LoanReviewState) -> LoanReviewState:
+    data = state["extracted_data"]
+    salary = data.get("monthly_salary", 0)
+    obligations = data.get("existing_obligations", 0)
+    
+    dbr = obligations / salary if salary > 0 else 1
+    
+    if dbr <= 0.45:
+        state["decision"] = "APPROVED"
+        state["decision_reason"] = f"DBR of {dbr:.1%} is within the 45% limit. Applicant qualifies."
+    else:
+        state["decision"] = "REJECTED"
+        state["decision_reason"] = f"DBR of {dbr:.1%} exceeds the 45% maximum limit."
+    
+    state["next_step"] = "done"
+    print(f"🏦 Decision: {state['decision']} — {state['decision_reason']}")
+    return state
+
+# Node 5: Handle incomplete documents
+def request_documents(state: LoanReviewState) -> LoanReviewState:
+    state["decision"] = "PENDING"
+    state["decision_reason"] = f"Missing documents: {', '.join(state['missing_docs'])}. Please resubmit."
+    state["next_step"] = "done"
+    print(f"📬 Requesting missing docs: {state['missing_docs']}")
+    return state
+\`\`\`
+
+## Step 3: Build the graph
+\`\`\`python
+def route_after_completeness(state: LoanReviewState) -> str:
+    return state["next_step"]  # "incomplete" or "validate"
+
+def route_after_validation(state: LoanReviewState) -> str:
+    return state["next_step"]  # "extract" or "fraud_check"
+
+# Build the graph
+graph = StateGraph(LoanReviewState)
+
+# Add nodes
+graph.add_node("check_completeness", check_completeness)
+graph.add_node("validate_documents", validate_documents)
+graph.add_node("extract_data", extract_data)
+graph.add_node("make_decision", make_decision)
+graph.add_node("request_documents", request_documents)
+
+# Set entry point
+graph.set_entry_point("check_completeness")
+
+# Add edges
+graph.add_conditional_edges("check_completeness", route_after_completeness, {
+    "incomplete": "request_documents",
+    "validate": "validate_documents"
+})
+graph.add_conditional_edges("validate_documents", route_after_validation, {
+    "extract": "extract_data",
+    "fraud_check": "request_documents"  # simplified — would be a separate node
+})
+graph.add_edge("extract_data", "make_decision")
+graph.add_edge("make_decision", END)
+graph.add_edge("request_documents", END)
+
+# Compile
+agent = graph.compile()
+print("✅ LangGraph agent compiled")
+\`\`\`
+
+## Step 4: Run the agent
+\`\`\`python
+# Test 1: Complete application
+print("\\n=== TEST 1: Complete application ===")
+result1 = agent.invoke({
+    "applicant_name": "Ahmed Al-Rashidi",
+    "submitted_docs": ["emirates_id", "bank_statement", "salary_slip", "employment_letter"],
+    "missing_docs": [], "validation_errors": [], "extracted_data": {},
+    "decision": "", "decision_reason": "", "next_step": ""
+})
+print(f"Final: {result1['decision']} — {result1['decision_reason']}")
+
+# Test 2: Incomplete application  
+print("\\n=== TEST 2: Missing documents ===")
+result2 = agent.invoke({
+    "applicant_name": "Sara Mohammed",
+    "submitted_docs": ["emirates_id", "salary_slip"],  # missing bank_statement + employment_letter
+    "missing_docs": [], "validation_errors": [], "extracted_data": {},
+    "decision": "", "decision_reason": "", "next_step": ""
+})
+print(f"Final: {result2['decision']} — {result2['decision_reason']}")
+\`\`\`
+**Expected output:**
+\`\`\`
+=== TEST 1: Complete application ===
+📋 Completeness check: PASS
+✅ Validation: PASS
+📊 Extracted: salary=15000, obligations=3000
+🏦 Decision: APPROVED — DBR of 20.0% is within the 45% limit.
+Final: APPROVED — DBR of 20.0% is within the 45% limit.
+
+=== TEST 2: Missing documents ===
+📋 Completeness check: FAIL — missing: ['bank_statement', 'employment_letter']
+📬 Requesting missing docs: ['bank_statement', 'employment_letter']
+Final: PENDING — Missing documents: bank_statement, employment_letter.
+\`\`\`
+
+## ✅ You now have a working multi-step AI agent
+This is the same architecture used in enterprise AI workflow systems. The nodes are LLM calls + business logic. The edges are your business rules.
+
+## Common errors and fixes
+- **StateGraph import error** → \`pip install langgraph==0.2.28\` exactly — versions change fast
+- **Routing function returns wrong key** → The dict in add_conditional_edges must match all possible return values
+- **Infinite loop** → Always make sure a node sets a terminal \`next_step\` that leads to END
+
+## What to build next
+Add a parallel node: run document extraction and fraud check simultaneously using \`graph.add_node\` with async functions.
+
+## References
+- 🔗 [LangGraph quickstart](https://langchain-ai.github.io/langgraph/tutorials/introduction/)
+- 🔗 [LangGraph how-to guides](https://langchain-ai.github.io/langgraph/how-tos/)
+- 🔗 [LangGraph examples GitHub](https://github.com/langchain-ai/langgraph/tree/main/examples)
+`},
+],
+
+mlops:[
+{title:'FastAPI for AI — patterns that work',desc:'Structure, streaming, async endpoints for LLM APIs',time:'2 hr',tags:['FastAPI','Practical'],content:`
+## What you'll build
+A production-ready FastAPI service that wraps an LLM — with streaming responses, proper error handling, request validation, and health checks. The exact pattern used in real AI microservices.
+
+## Prerequisites
+\`\`\`bash
+pip install fastapi==0.111.0 uvicorn==0.30.1 pydantic==2.7.4 httpx==0.27.0
+\`\`\`
+
+## Step 1: Basic FastAPI + LLM endpoint
+\`\`\`python
+# main.py
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel
+import requests, json
+
+app = FastAPI(title="Loan AI API", version="1.0.0")
+
+class LoanQuery(BaseModel):
+    question: str
+    applicant_id: str = "unknown"
+    
+class AIResponse(BaseModel):
+    answer: str
+    model: str
+    applicant_id: str
+
+def call_llm(prompt: str) -> str:
+    try:
+        r = requests.post("http://localhost:11434/api/generate",
+            json={"model": "llama3.2", "prompt": prompt, "stream": False},
+            timeout=30)
+        return r.json()["response"]
+    except Exception as e:
+        raise HTTPException(status_code=503, detail=f"LLM unavailable: {str(e)}")
+
+@app.get("/health")
+def health():
+    return {"status": "ok", "service": "loan-ai"}
+
+@app.post("/ask", response_model=AIResponse)
+def ask(query: LoanQuery):
+    prompt = f"You are a loan advisor. Answer concisely: {query.question}"
+    answer = call_llm(prompt)
+    return AIResponse(answer=answer, model="llama3.2", applicant_id=query.applicant_id)
+\`\`\`
+\`\`\`bash
+# Run it
+uvicorn main:app --reload --port 8000
+
+# Test it
+curl -X POST http://localhost:8000/ask \\
+  -H "Content-Type: application/json" \\
+  -d '{"question": "What is DBR?", "applicant_id": "APP001"}'
+\`\`\`
+**Expected output:**
+\`\`\`json
+{
+  "answer": "DBR (Debt Burden Ratio) is the percentage of your gross monthly salary...",
+  "model": "llama3.2",
+  "applicant_id": "APP001"
+}
+\`\`\`
+
+## Step 2: Streaming responses (essential for LLMs)
+\`\`\`python
+from fastapi.responses import StreamingResponse
+import asyncio
+
+@app.post("/ask/stream")
+async def ask_stream(query: LoanQuery):
+    async def generate():
+        # Stream from Ollama
+        with requests.post("http://localhost:11434/api/generate",
+            json={"model": "llama3.2", "prompt": query.question, "stream": True},
+            stream=True) as r:
+            for line in r.iter_lines():
+                if line:
+                    chunk = json.loads(line)
+                    if not chunk.get("done"):
+                        yield chunk.get("response", "")
+    
+    return StreamingResponse(generate(), media_type="text/plain")
+\`\`\`
+\`\`\`bash
+# Test streaming
+curl -X POST http://localhost:8000/ask/stream \\
+  -H "Content-Type: application/json" \\
+  -d '{"question": "Explain loan eligibility in 3 points"}' \\
+  --no-buffer
+\`\`\`
+
+## Step 3: Add middleware, logging, and rate limiting
+\`\`\`python
+from fastapi.middleware.cors import CORSMiddleware
+import time, logging
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+app.add_middleware(CORSMiddleware,
+    allow_origins=["*"], allow_methods=["*"], allow_headers=["*"])
+
+@app.middleware("http")
+async def log_requests(request, call_next):
+    start = time.time()
+    response = await call_next(request)
+    duration = time.time() - start
+    logger.info(f"{request.method} {request.url.path} → {response.status_code} ({duration:.2f}s)")
+    return response
+\`\`\`
+
+## ✅ Production-ready patterns summary
+- Use \`response_model=\` for automatic response validation
+- Always set \`timeout=\` on external calls
+- Log every request with timing
+- \`/health\` endpoint for load balancer checks
+- Use \`HTTPException\` not bare exceptions
+
+## Common errors and fixes
+- **422 Unprocessable Entity** → Request body doesn't match Pydantic model. Check field names.
+- **Streaming cuts off** → Add \`--no-buffer\` to curl. In production use SSE with proper headers.
+- **CORS blocked** → Add CORSMiddleware before routes are added
+
+## References
+- 🔗 [FastAPI docs](https://fastapi.tiangolo.com)
+- 🔗 [FastAPI best practices](https://github.com/zhanymkanov/fastapi-best-practices)
+- 🔗 [Uvicorn deployment](https://www.uvicorn.org/deployment/)
+`},
+],
+
+projects:[
+{title:'Top AI project ideas for 2026',desc:'Market-driven, buildable in 2-4 weekends, impressive to AI hiring managers',time:'Reference',tags:['Projects','2026','Portfolio'],content:`
+## What the market wants built in 2026
+
+Based on current job postings, GitHub trends, and enterprise AI adoption patterns — here are the projects that will get you noticed.
+
+---
+
+## 🏆 Project 1: Loan Document Intelligence System
+**Why it matters:** Every bank in India and the Middle East is automating this. Direct career leverage for your background.
+
+**What it does:** Upload loan application documents → AI extracts fields → validates completeness → checks eligibility → outputs structured decision
+
+**Tech stack:**
+\`\`\`
+FastAPI (API layer)
+LangGraph (orchestration)
+ChromaDB (policy vector store)
+Ollama + llama3.2 (local LLM, free)
+pypdf (document reading)
+sentence-transformers (embeddings)
+\`\`\`
+**Build time:** 2 weekends
+**Demo talking point:** "This is a working 4-agent pipeline that processes loan documents end-to-end — the same architecture I deployed in production at SIB"
+
+---
+
+## 🥈 Project 2: Agentic Research Assistant
+**Why it matters:** Every consulting firm wants this. Shows LangGraph + tool use.
+
+**What it does:** Give it a company name → agent searches web, reads annual reports, extracts financials, generates credit risk summary
+
+**Tech stack:**
+\`\`\`
+LangGraph (multi-agent orchestration)
+Tavily API (web search — free tier)
+LangChain (document loading)
+FastAPI + React (frontend)
+\`\`\`
+**Build time:** 3 weekends
+**Demo talking point:** "It autonomously researches a company and produces a credit risk brief in 90 seconds"
+
+---
+
+## 🥉 Project 3: RAG-powered Policy Q&A
+**Why it matters:** Simplest to build, most universally applicable across industries.
+
+**What it does:** Upload any policy PDF → natural language Q&A → cites exact sections
+
+**Tech stack:**
+\`\`\`
+LangChain RAG pipeline
+ChromaDB or Qdrant
+HuggingFace embeddings (free)
+Streamlit (fast UI, no frontend needed)
+\`\`\`
+**Build time:** 1 weekend
+**Demo talking point:** "Deployed this against 200 pages of banking policy — answers are grounded and cited"
+
+---
+
+## Project 4: AI Workflow Automation Engine
+**Why it matters:** Directly positions you as BAW → Agentic AI engineer.
+
+**What it does:** Replace a simple IBM BAW process with a LangGraph equivalent — shows you understand both and can bridge them
+
+**Tech stack:**
+\`\`\`
+LangGraph (workflow engine)
+FastAPI (REST API)
+SQLite or PostgreSQL (state persistence)
+Docker (containerised)
+\`\`\`
+**Build time:** 2 weekends
+
+---
+
+## Project 5: Multi-agent Customer Support Bot
+**Why it matters:** Every bank, telecom, insurance company is building this.
+
+**What it does:** Supervisor agent routes queries → specialist agents handle loans/accounts/complaints → escalates to human when needed
+
+**Tech stack:**
+\`\`\`
+LangGraph (supervisor + worker pattern)
+ChromaDB (product knowledge base)
+FastAPI + WebSockets (real-time)
+Streamlit or Next.js (frontend)
+\`\`\`
+**Build time:** 3-4 weekends
+
+---
+
+## How to present these on GitHub
+\`\`\`
+README structure that gets attention:
+1. Problem statement (1 sentence)
+2. Architecture diagram (even ASCII is fine)
+3. Demo GIF or screenshot
+4. Quick start (3 commands max)
+5. Tech stack with versions
+6. What you'd do next (shows engineering thinking)
+\`\`\`
+
+## References
+- 🔗 [LangGraph templates](https://github.com/langchain-ai/langgraph/tree/main/examples)
+- 🔗 [Streamlit for AI apps](https://docs.streamlit.io)
+- 🔗 [FastAPI project templates](https://github.com/tiangolo/full-stack-fastapi-template)
+`},
+],
 };
 
-const PROJECTS = {
-  banking: {name:'Banking AI systems', prompt:`Generate 6 real-world AI project ideas for banking/financial services that a developer can build and showcase in 2026. For each: title, what it does, tech stack with versions, why employers value it, build time, starter architecture diagram (ASCII). Make them genuinely buildable.`},
-  trending: {name:'Trending in 2026', prompt:`What are the 8 most in-demand AI engineering projects in mid-2026 based on job postings and GitHub trends? For each: project name, problem it solves, exact tech stack with versions, why it is trending, which domains pay for it, build time, one-paragraph starter guide. Be specific and current.`},
-  portfolio: {name:'Portfolio projects', prompt:`Suggest 5 portfolio projects for someone moving from IBM BAW/BPM developer to Agentic AI engineer in 2026. Projects should: use workflow automation background as advantage, be completable in 2-4 weekends, impress AI hiring managers, use current tools (LangGraph, FastAPI, ChromaDB, Ollama). For each: title, problem, tech stack, what makes it stand out, GitHub README structure, demo talking points.`},
+// ── HELPERS ───────────────────────────────────────────────────────────
+const TRACKS_META = {
+  python:{name:'Python for AI',icon:'🐍',desc:'Practical Python — only what you need for AI engineering'},
+  rag:{name:'RAG from scratch',icon:'🔍',desc:'Build a production-ready RAG system step by step'},
+  vectordb:{name:'Vector databases',icon:'🗄️',desc:'ChromaDB, Qdrant, Pinecone — hands-on with real semantic search'},
+  langchain:{name:'LangChain / agents',icon:'🔗',desc:'Build AI agents that reason and act — from zero to working system'},
+  langgraph:{name:'LangGraph / multi-agent',icon:'🕸️',desc:'Orchestrate multiple AI agents — most in-demand skill in 2026'},
+  mlops:{name:'MLOps + deployment',icon:'⚙️',desc:'Get AI systems running in production — not just on your laptop'},
+  projects:{name:'2026 Project ideas',icon:'🚀',desc:'Market-driven projects to build your portfolio'},
 };
 
-// ── API CALL ─────────────────────────────────────────────────────────────────
-const SYSTEM = `You are an expert AI engineering instructor and hands-on lab creator. Today is June 2026.
+function show(id){
+  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('on'));
+  document.getElementById('sec-'+id).classList.add('on');
+  curSection=id;
+}
 
-RULES:
-- Use current 2026 tool versions and real syntax
-- Every code block must be runnable — no pseudocode, no placeholders
-- Include exact pip install commands with version numbers
-- After every code block show "Expected output:" with what the developer will see
-- Add "Common errors:" section with real fixes
-- Add "References:" with real URLs — official docs, best tutorial, GitHub example
-- Use banking/financial domain for examples where possible
-- Be direct — developers learn by doing
+function goHome(){
+  show('home');
+  document.getElementById('tb-title').textContent='Dashboard';
+  document.getElementById('tb-tag').textContent='AI Engineering Lab';
+  document.getElementById('tb-tag').className='tag tb';
+}
 
-FORMAT: Clear markdown headers. Code blocks with language. ✅ for checkpoints. ⚠️ for warnings. 🔗 for links.`;
+function goSearch(){
+  show('search');
+  document.getElementById('tb-title').textContent='Search labs';
+  setTimeout(()=>document.getElementById('search-in').focus(),100);
+}
 
-async function callAI(prompt, bodyEl, statusEl) {
-  if (!API_KEY) {
-    bodyEl.innerHTML = '<div style="color:var(--amber);padding:10px 0"><strong>⚠️ API key required</strong><br><br>Enter your Anthropic API key in the sidebar to generate labs.<br><br><span style="color:var(--text3);font-size:12px">Get a key at console.anthropic.com — free credits available on signup.</span></div>';
-    if (statusEl) statusEl.textContent = 'API key required';
-    return;
-  }
-  if (statusEl) statusEl.textContent = 'Generating...';
-  bodyEl.innerHTML = '<div style="display:flex;align-items:center;gap:10px;padding:8px 0"><div class="spinner"></div><span style="color:var(--text3)">Generating with current 2026 tools...</span></div>';
+function goBackToTrack(){ if(curTrack) showTrack(curTrack); }
 
-  try {
-    const res = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-api-key': API_KEY,
-        'anthropic-version': '2023-06-01',
-        'anthropic-dangerous-direct-browser-access': 'true'
-      },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-6',
-        max_tokens: 4000,
-        system: SYSTEM,
-        messages: [{ role: 'user', content: prompt }]
-      })
+function showTrack(tid){
+  curTrack=tid;
+  const meta=TRACKS_META[tid];
+  const labs=LABS[tid]||[];
+  show('track');
+  document.getElementById('bc-track').textContent=meta.name;
+  document.getElementById('track-title').textContent=meta.icon+' '+meta.name;
+  document.getElementById('track-desc').textContent=meta.desc;
+  document.getElementById('tb-title').textContent=meta.name;
+
+  const list=document.getElementById('labs-list');
+  list.innerHTML='<div style="font-size:12px;color:var(--text3);margin-bottom:12px">Tap a lab to open it. Content loads instantly — no internet required.</div>';
+  labs.forEach((lab,i)=>{
+    const isDone=done.includes(tid+'_'+i);
+    const div=document.createElement('div');
+    div.className='lab-item'+(isDone?' lab-done':'');
+    div.onclick=()=>openLab(tid,i);
+    div.innerHTML=`<div class="lab-num">Lab ${i+1}</div>
+      <div class="lab-info">
+        <div class="lab-title">${isDone?'✅ ':''}${lab.title}</div>
+        <div class="lab-desc-sm">${lab.desc}</div>
+        <div class="lab-tags">${lab.tags.map(t=>`<span class="tag tb" style="font-size:10px;padding:2px 6px">${t}</span>`).join('')} <span style="font-size:11px;color:var(--text3)">${lab.time}</span></div>
+      </div>`;
+    list.appendChild(div);
+  });
+}
+
+function openLab(tid,idx){
+  curTrack=tid; curLabIdx=idx;
+  const meta=TRACKS_META[tid];
+  const lab=LABS[tid][idx];
+  show('lab');
+  document.getElementById('bc-t').textContent=meta.name;
+  document.getElementById('bc-l').textContent=lab.title;
+  document.getElementById('lab-h').textContent=lab.title;
+  document.getElementById('lab-d').textContent=lab.desc;
+  document.getElementById('tb-title').textContent=lab.title;
+  document.getElementById('lab-meta').innerHTML=
+    lab.tags.map(t=>`<span class="tag tb">${t}</span>`).join('')+
+    `<span class="tag ta">${lab.time}</span>`;
+
+  const isDone=done.includes(tid+'_'+idx);
+  document.getElementById('done-btn').textContent=isDone?'✅ Completed':'✓ Mark complete';
+
+  renderMD(lab.content, document.getElementById('lab-body'));
+}
+
+function nextLab(){
+  const labs=LABS[curTrack]||[];
+  if(curLabIdx+1<labs.length) openLab(curTrack,curLabIdx+1);
+  else showTrack(curTrack);
+}
+
+function markDone(){
+  const key=curTrack+'_'+curLabIdx;
+  if(!done.includes(key)){done.push(key);localStorage.setItem('ailab_done',JSON.stringify(done));}
+  document.getElementById('done-btn').textContent='✅ Completed';
+  updateProgress();
+}
+
+// ── SEARCH ───────────────────────────────────────────────────────────
+function doSearch(q){
+  const res=document.getElementById('search-results');
+  if(!q){res.innerHTML='';return;}
+  q=q.toLowerCase();
+  const matches=[];
+  Object.entries(LABS).forEach(([tid,labs])=>{
+    labs.forEach((lab,i)=>{
+      if(lab.title.toLowerCase().includes(q)||lab.desc.toLowerCase().includes(q)||lab.tags.some(t=>t.toLowerCase().includes(q))||lab.content.toLowerCase().includes(q)){
+        matches.push({tid,i,lab});
+      }
     });
-
-    if (!res.ok) {
-      const err = await res.json().catch(() => ({}));
-      throw new Error(err.error?.message || 'API error ' + res.status);
-    }
-    const data = await res.json();
-    const text = data.content?.[0]?.text || '';
-    if (statusEl) statusEl.textContent = 'Ready · ' + new Date().toLocaleTimeString();
-    renderMD(text, bodyEl);
-  } catch (e) {
-    const msg = e.message.includes('Failed to fetch') || e.message.includes('ERR_NAME_NOT_RESOLVED')
-      ? 'Network error — run from localhost or GitHub Pages (not file://). Try: python -m http.server 8080'
-      : e.message;
-    bodyEl.innerHTML = '<div style="color:var(--red);padding:8px 0"><strong>Error:</strong> ' + msg + '</div>';
-    if (statusEl) statusEl.textContent = 'Error';
-  }
+  });
+  if(!matches.length){res.innerHTML='<div style="color:var(--text3);font-size:13px;padding:10px 0">No labs found for "'+q+'"</div>';return;}
+  res.innerHTML=matches.map(({tid,i,lab})=>`
+    <div class="lab-item" onclick="openLab('${tid}',${i})">
+      <div class="lab-num">${TRACKS_META[tid].icon}</div>
+      <div class="lab-info">
+        <div class="lab-title">${lab.title}</div>
+        <div class="lab-desc-sm">${TRACKS_META[tid].name} · ${lab.time}</div>
+        <div class="lab-tags">${lab.tags.map(t=>`<span class="tag tb" style="font-size:10px;padding:2px 6px">${t}</span>`).join('')}</div>
+      </div>
+    </div>`).join('');
 }
 
-// ── MARKDOWN ─────────────────────────────────────────────────────────────────
-function renderMD(text, el) {
-  let h = text
+// ── MARKDOWN RENDERER ─────────────────────────────────────────────────
+function renderMD(text,el){
+  let h=text.trim()
     .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
     .replace(/```(\w+)?\n?([\s\S]*?)```/g,(_,lang,code)=>`<pre><button class="copy-btn" onclick="cpCode(this)">Copy</button><code>${code.trim()}</code></pre>`)
     .replace(/`([^`]+)`/g,'<code>$1</code>')
@@ -420,170 +1709,58 @@ function renderMD(text, el) {
     .replace(/\*(.+?)\*/g,'<em>$1</em>')
     .replace(/^---$/gm,'<hr>')
     .replace(/^> (.+)$/gm,'<blockquote>$1</blockquote>')
-    .replace(/^\- (.+)$/gm,'<li>$1</li>')
+    .replace(/^\| (.+)$/gm,'<div style="overflow-x:auto"><table style="border-collapse:collapse;width:100%;font-size:12px">$1</table></div>')
+    .replace(/^[\-\*] (.+)$/gm,'<li>$1</li>')
     .replace(/^\d+\. (.+)$/gm,'<li>$1</li>')
-    .replace(/(<li>[\s\S]*?<\/li>)/g,'<ul>$1</ul>')
+    .replace(/(<li>.*<\/li>\n?)+/g,s=>`<ul style="margin:8px 0 10px 18px">${s}</ul>`)
     .replace(/\[([^\]]+)\]\(([^)]+)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>')
     .replace(/\n\n/g,'</p><p>').replace(/\n/g,'<br>');
-  el.innerHTML = '<p>' + h + '</p>';
-}
-function cpCode(btn) {
-  navigator.clipboard.writeText(btn.nextElementSibling.textContent);
-  btn.textContent = 'Copied!';
-  setTimeout(()=>btn.textContent='Copy', 2000);
+  el.innerHTML='<p>'+h+'</p>';
+  addCopyBtns(el);
 }
 
-// ── NAVIGATION ───────────────────────────────────────────────────────────────
-function show(id) {
-  document.querySelectorAll('.sec').forEach(s=>s.classList.remove('on'));
-  document.getElementById('sec-'+id).classList.add('on');
-  curSection = id;
-}
-
-function showTrack(tid) {
-  curTrack = tid;
-  const T = TRACKS[tid];
-  show('track');
-  document.getElementById('bc-track').textContent = T.name;
-  document.getElementById('track-title').textContent = T.icon + ' ' + T.name;
-  document.getElementById('track-desc').textContent = T.desc;
-  document.getElementById('tb-title').textContent = T.name;
-
-  const list = document.getElementById('labs-list');
-  list.innerHTML = '<div style="font-size:12px;color:var(--text3);margin-bottom:12px">Click a lab to generate a complete hands-on guide with current 2026 tools.</div>';
-  T.labs.forEach((lab, i) => {
-    const isDone = done.includes(tid+'_'+i);
-    const div = document.createElement('div');
-    div.className = 'lab-item' + (isDone ? ' lab-done' : '');
-    div.onclick = () => openLab(tid, i);
-    div.innerHTML = `<div class="lab-num">Lab ${i+1}</div>
-      <div class="lab-info"><div class="lab-title">${isDone?'✅ ':''}${lab.title}</div><div class="lab-desc">${lab.desc}</div></div>
-      <div class="lab-tags">${lab.tags.map(t=>`<span class="tag tag-blue" style="font-size:10px;padding:2px 6px">${t}</span>`).join('')}<span style="font-size:11px;color:var(--text3)">${lab.time}</span></div>`;
-    list.appendChild(div);
+function addCopyBtns(el){
+  el.querySelectorAll('pre').forEach(pre=>{
+    const btn=pre.querySelector('.copy-btn');
+    if(btn) btn.onclick=function(){
+      navigator.clipboard.writeText(pre.querySelector('code').textContent);
+      btn.textContent='Copied!';setTimeout(()=>btn.textContent='Copy',2000);
+    };
   });
 }
 
-function openLab(tid, idx) {
-  curTrack = tid; curLabIdx = idx;
-  const T = TRACKS[tid]; const lab = T.labs[idx];
-  show('lab');
-  document.getElementById('bc-t').textContent = T.name;
-  document.getElementById('bc-l').textContent = lab.title;
-  document.getElementById('lab-title2').textContent = lab.title;
-  document.getElementById('lab-desc2').textContent = lab.desc;
-  document.getElementById('lab-meta2').innerHTML = lab.tags.map(t=>`<span class="tag tag-blue">${t}</span>`).join('') + `<span class="tag tag-amber">${lab.time}</span>`;
-  document.getElementById('tb-title').textContent = lab.title;
-
-  const prompt = `Generate a complete hands-on lab for: "${lab.title}"
-Context: ${lab.desc} | Track: ${T.name} | Time: ${lab.time}
-
-Structure:
-## What you'll build
-(Specific deliverable — one paragraph)
-
-## Prerequisites  
-(Exact packages with versions: pip install x==y)
-
-## Concept in 2 minutes
-(Core idea with a real analogy — not textbook)
-
-## Step-by-step lab
-### Step 1: [name]
-[code + expected output]
-### Step 2...
-(Continue until complete)
-
-## Real-world variation
-(Banking or enterprise context)
-
-## Common errors and fixes
-(Top 3 mistakes + solutions)
-
-## What to build next
-(One specific follow-on project)
-
-## References
-- Official docs: [real URL]
-- Best tutorial: [real URL]
-- GitHub example: [real URL]
-
-Use Python 3.11+. Real version numbers. Banking domain examples where applicable.`;
-
-  callAI(prompt, document.getElementById('lab-body'), document.getElementById('lab-status'));
+function cpCode(btn){
+  navigator.clipboard.writeText(btn.nextElementSibling.textContent);
+  btn.textContent='Copied!';setTimeout(()=>btn.textContent='Copy',2000);
 }
 
-function goBackToTrack() { if (curTrack) showTrack(curTrack); }
-
-function markDone() {
-  const key = curTrack + '_' + curLabIdx;
-  if (!done.includes(key)) { done.push(key); localStorage.setItem('ai_lab_done', JSON.stringify(done)); }
-  updateProgress();
-  const btn = document.querySelector('.btn-p');
-  btn.textContent = '✅ Done!';
-  setTimeout(()=>btn.textContent='✓ Mark complete', 2000);
+// ── PROGRESS & HOME ───────────────────────────────────────────────────
+function updateProgress(){
+  const total=Object.values(LABS).reduce((s,l)=>s+l.length,0);
+  document.getElementById('prog-n').textContent=done.length;
+  document.getElementById('prog-t').textContent=total;
+  document.getElementById('s-total').textContent=total;
+  document.getElementById('s-done').textContent=done.length;
+  document.getElementById('prog-fill').style.width=Math.round(done.length/total*100)+'%';
 }
 
-function nextLab() {
-  const T = TRACKS[curTrack];
-  if (!T) return;
-  if (curLabIdx + 1 < T.labs.length) openLab(curTrack, curLabIdx + 1);
-  else showTrack(curTrack);
+function buildHomeGrid(){
+  const grid=document.getElementById('home-tracks');
+  const colors={python:'var(--amber)',rag:'var(--accent)',vectordb:'var(--green)',langchain:'var(--accent2)',langgraph:'var(--red)',mlops:'var(--amber)',projects:'var(--green)'};
+  grid.innerHTML=Object.entries(TRACKS_META).map(([tid,meta])=>`
+    <div class="track-card" onclick="showTrack('${tid}')">
+      <div class="tc-icon">${meta.icon}</div>
+      <div class="tc-title">${meta.name}</div>
+      <div class="tc-desc">${meta.desc}</div>
+      <div style="margin-top:8px;font-size:11px;color:${colors[tid]||'var(--accent)'};font-weight:600">${LABS[tid]?.length||0} labs</div>
+    </div>`).join('');
 }
 
-function showProject(pid) {
-  curProject = pid;
-  const P = PROJECTS[pid];
-  show('project');
-  document.getElementById('bc-proj').textContent = P.name;
-  document.getElementById('proj-title').textContent = P.name;
-  document.getElementById('tb-title').textContent = P.name;
-  callAI(P.prompt, document.getElementById('proj-body'), document.getElementById('proj-status'));
+function setMobActive(idx){
+  document.querySelectorAll('.mob-tab').forEach((t,i)=>t.classList.toggle('active',i===idx));
 }
 
-function refreshCurrent() {
-  if (curSection === 'lab') openLab(curTrack, curLabIdx);
-  else if (curSection === 'project') showProject(curProject);
-  else if (curSection === 'custom') runCustom();
-}
-
-function runCustom() {
-  const q = document.getElementById('custom-in').value.trim();
-  if (!q) { alert('Enter a topic first.'); return; }
-  document.getElementById('custom-out-wrap').style.display = '';
-  const prompt = `Generate a complete hands-on lab for: "${q}"
-
-Make it:
-- Fully runnable with real code (no pseudocode)
-- Current 2026 tools with exact version numbers
-- Step-by-step with expected output at each step
-- Include install commands, common errors, real reference URLs
-- Banking/enterprise context preferred
-
-Format with clear markdown headers. Be practical, not theoretical.`;
-  callAI(prompt, document.getElementById('custom-body'), document.getElementById('custom-status'));
-  curSection = 'custom';
-}
-
-function suggestTopics() {
-  document.getElementById('custom-out-wrap').style.display = '';
-  const prompt = `Suggest 10 specific hands-on AI engineering lab topics for mid-2026 that are:
-1. In high demand (cite what job postings are asking for)
-2. Buildable in 1-3 hours by a developer
-3. Useful for someone from IBM BAW/enterprise workflow background moving to AI roles
-
-Format as a numbered list: topic name | why it matters now | estimated time. Be specific, no vague suggestions.`;
-  callAI(prompt, document.getElementById('custom-body'), document.getElementById('custom-status'));
-  curSection = 'custom';
-}
-
-// ── PROGRESS ─────────────────────────────────────────────────────────────────
-function updateProgress() {
-  const total = Object.values(TRACKS).reduce((s,t)=>s+t.labs.length,0);
-  document.getElementById('prog-n').textContent = done.length;
-  document.getElementById('s-done').textContent = done.length;
-  document.getElementById('s-total').textContent = total;
-  document.getElementById('prog-fill').style.width = Math.round(done.length/total*100)+'%';
-}
+buildHomeGrid();
 updateProgress();
 </script>
 </body>
