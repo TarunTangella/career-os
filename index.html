@@ -956,7 +956,144 @@ async function loadSignal(force){
   if(!force&&D.sigCache[k]){document.getElementById('signal-txt').innerHTML=D.sigCache[k];return}
   document.getElementById('signal-txt').innerHTML=ldHTML('Scanning market intelligence...');
   try{
-    const r=await ai(`Career signal for: ${C.role||'Senior IBM BAW Developer'} targeting ${C.target||'AI Security Engineer'}. Skills: ${C.skills}. Give ONE specific market signal — a skill gap, niche role, or action to take today. 2 sentences max. Direct and specific. No generic advice.`);
+    const r=await ai('Career signal for: '+(C.role||'Senior IBM BAW Developer')+' targeting '+(C.target||'AI Security Engineer')+'. Skills: '+C.skills+'. Give ONE specific market signal — a skill gap, niche role, or action to take today. 2 sentences max. Direct and specific. No generic advice.');
+    const sigEl=document.getElementById('signal-txt');
+    if(sigEl){sigEl.innerHTML=fmt(r);D.sigCache[k]=fmt(r);sv();}
+  }catch(e){const sigEl=document.getElementById('signal-txt');if(sigEl)sigEl.innerHTML=errHTML(e);}
+}
+
+
+
+// ═══ JOB SEARCH ═══════════════════════════════════════════════
+async function searchJobs(){
+  const q=document.getElementById('j-search').value.trim();
+  const loc=document.getElementById('j-loc').value.trim()||'India or Remote';
+  const lvl=document.getElementById('j-level').value;
+  if(!q){toast('Enter a role or skill','var(--am)');return}
+  document.getElementById('j-results').innerHTML=`<div class="card">${ldHTML('Finding opportunities...')}</div>`;
+  const encoded=encodeURIComponent(q);
+  const encodedLoc=encodeURIComponent(loc.split(',')[0].trim());
+  const links=[
+    {name:'LinkedIn',url:'https://www.linkedin.com/jobs/search/?keywords='+encoded+'&location='+encodedLoc,color:'#0077B5'},
+    {name:'Naukri',url:'https://www.naukri.com/'+q.toLowerCase().replace(/[^a-z0-9]+/g,'-')+'-jobs',color:'#FF7555'},
+    {name:'Indeed',url:'https://in.indeed.com/jobs?q='+encoded+'&l='+encodedLoc,color:'#003A9B'},
+    {name:'Glassdoor',url:'https://www.glassdoor.co.in/Job/jobs.htm?sc.keyword='+encoded,color:'#0CAA41'},
+    {name:'Wellfound',url:'https://wellfound.com/jobs?q='+encoded,color:'#EF5858'},
+  ];
+  const linkHTML='<div style="margin-bottom:14px"><div style="font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--t2);margin-bottom:8px">Apply directly on</div><div style="display:flex;flex-wrap:wrap;gap:7px">'+links.map(function(l){return '<a href="'+l.url+'" target="_blank" style="display:inline-flex;align-items:center;gap:5px;padding:7px 12px;border-radius:var(--rs);background:'+l.color+';color:#fff;font-size:12px;font-weight:600;text-decoration:none">'+l.name+' \u2192</a>';}).join('')+'</div></div>';
+  try{
+    const r=await ai('Job: "'+q+'" | Level: '+lvl+' | Location: '+loc+'\nCandidate: '+C.exp+' exp, skills: '+C.skills+', target: '+C.target+'\n\nShort analysis (max 150 words):\n1. Match strength for this candidate (one sentence)\n2. Top 3 company types hiring for this role in '+loc+'\n3. Exact LinkedIn search string to copy-paste\n4. One skill gap to address in application\n5. Approx salary range for '+lvl+' in India\nNo fabricated URLs.');
+    document.getElementById('j-results').innerHTML='<div class="card">'+linkHTML+'<div style="border-top:1px solid var(--b1);padding-top:12px"><div class="cl">Market intelligence for &ldquo;'+q+'&rdquo;</div><div class="ai-body">'+fmt(r)+'</div></div></div>';
+  }catch(e){
+    document.getElementById('j-results').innerHTML='<div class="card">'+linkHTML+'<div style="font-size:12px;color:var(--am)">AI analysis unavailable \u2014 use links above to search directly.</div></div>';
+  }
+}
+
+async function analyseJD(){
+  const jd=document.getElementById('jd-text').value.trim();
+  if(!jd){toast('Paste a job description first','var(--am)');return}
+  document.getElementById('jd-out').innerHTML='<div class="card">'+ldHTML('Analysing fit...')+'</div>';
+  try{
+    const r=await ai('JD:\n'+jd+'\n\nCandidate: '+C.role+', skills: '+C.skills+', target: '+C.target+', exp: '+C.exp+'\n\nStrict fit analysis:\n1. Match score 0-100 with one-line reason\n2. Skills you HAVE that match\n3. Skills MISSING and weeks to close each\n4. Top 3 strengths to lead with\n5. One concern the interviewer might raise\nBe specific. Under 200 words.');
+    document.getElementById('jd-out').innerHTML='<div class="card card-accent"><div class="cl">Fit Analysis</div><div class="ai-body">'+fmt(r)+'</div></div>';
+  }catch(e){document.getElementById('jd-out').innerHTML=errHTML(e)}
+}
+
+async function prepFromJD(){
+  const jd=document.getElementById('jd-text').value.trim();
+  if(!jd){toast('Paste a job description first','var(--am)');return}
+  goTab('prep');
+  document.getElementById('p-role').value=jd;
+  await genQuestions();
+}
+
+async function loadMarketPulse(){
+  document.getElementById('market-pulse').innerHTML=ldHTML('Loading trends...');
+  try{
+    const r=await ai('Mid-2026 market. Background: '+C.skills+'. Target: '+C.target+'.\n\nTop 5 fastest-growing roles relevant to this candidate. For each: role name, trend arrow (up/stable/emerging), one reason it fits, one skill gap, India salary range. Under 150 words. Direct and specific.');
+    document.getElementById('market-pulse').innerHTML='<div class="ai-body">'+fmt(r)+'</div>';
+  }catch(e){document.getElementById('market-pulse').innerHTML=errHTML(e)}
+}
+
+// ═══ INTERVIEW PREP ════════════════════════════════════════════
+async function genQuestions(){
+  const input=document.getElementById('p-role').value.trim();
+  const type=document.getElementById('p-type').value;
+  const diff=document.getElementById('p-diff').value;
+  if(!input){toast('Enter a role or paste a JD','var(--am)');return}
+  document.getElementById('p-questions').innerHTML='<div class="card">'+ldHTML('Generating questions...')+'</div>';
+  try{
+    const r=await ai('Role/JD: '+input+'\nType: '+type+' | Panel: '+diff+'\nCandidate: '+C.role+', '+C.exp+' exp, skills: '+C.skills+'\n\nGenerate 10 interview questions a '+diff+' would ask this candidate.\nFor each: question, why they ask it, tone guide (one line), one phrase to avoid, STAR hint using candidate background.\nMake questions specific to the candidate. No generic questions. Under 400 words total.');
+    document.getElementById('p-questions').innerHTML='<div class="card"><div class="cl">10 Questions</div><div class="ai-body">'+fmt(r)+'</div></div>';
+    document.getElementById('p-practice').style.display='block';
+  }catch(e){document.getElementById('p-questions').innerHTML=errHTML(e)}
+}
+
+async function scoreAnswer(){
+  const q=document.getElementById('p-current-q').textContent;
+  const a=document.getElementById('p-answer').value.trim();
+  if(!a){toast('Write your answer first','var(--am)');return}
+  document.getElementById('p-feedback').innerHTML='<div class="card">'+ldHTML('Scoring...')+'</div>';
+  try{
+    const r=await ai('Q: '+q+'\nAnswer: '+a+'\nBackground: '+C.role+', '+C.skills+'\n\nScore /10 on: Relevance, Specific experience, STAR structure, Communication clarity, Senior impact language.\nOverall /10.\nWeakest element (quote exact phrase).\nRewrite the answer in candidate voice, senior tone, under 150 words.\nOne delivery note for speaking it aloud.\nBe strict. Under 250 words total.');
+    document.getElementById('p-feedback').innerHTML='<div class="card card-accent"><div class="cl">Score & Rewrite</div><div class="ai-body">'+fmt(r)+'</div></div>';
+  }catch(e){document.getElementById('p-feedback').innerHTML=errHTML(e)}
+}
+
+async function toneCoach(){
+  const txt=document.getElementById('tone-input').value.trim();
+  if(!txt){toast('Paste your answer first','var(--am)');return}
+  document.getElementById('tone-out').innerHTML=ldHTML('Analysing...');
+  try{
+    const r=await ai('Analyse interview answer tone:\n"'+txt+'"\n\nCheck: confidence level, passive vs active voice (quote examples), hedging language ("kind of","I think"), pace notes for speaking, opening strength, closing strength.\nRewrite opening 2 sentences stronger.\nUnder 150 words.');
+    document.getElementById('tone-out').innerHTML='<div class="ai-wrap" style="margin-top:10px"><div class="ai-lbl">Tone Analysis</div><div class="ai-body">'+fmt(r)+'</div></div>';
+  }catch(e){document.getElementById('tone-out').innerHTML=errHTML(e)}
+}
+
+// ═══ RESUME ════════════════════════════════════════════════════
+async function handleResume(e){
+  const file=e.target.files[0];if(!file)return;
+  if(file.type==='application/pdf'){
+    const reader=new FileReader();
+    reader.onload=function(ev){
+      const arr=new Uint8Array(ev.target.result);
+      let str='';for(let i=0;i<arr.length;i++)if(arr[i]>31&&arr[i]<127)str+=String.fromCharCode(arr[i]);
+      const chunks=str.match(/[A-Za-z][A-Za-z0-9 ,.\-:()\n]{15,}/g)||[];
+      document.getElementById('r-text').value=chunks.join('\n').slice(0,4000)||'PDF extraction limited. Please paste your resume text manually.';
+      toast('PDF processed \u2014 verify text and analyse');
+    };
+    reader.readAsArrayBuffer(file);
+  }else{
+    const reader=new FileReader();
+    reader.onload=function(ev){document.getElementById('r-text').value=ev.target.result;toast('File loaded')};
+    reader.readAsText(file);
+  }
+}
+
+async function analyseResume(){
+  const txt=document.getElementById('r-text').value.trim();
+  const target=document.getElementById('r-target').value.trim()||C.target||'AI Security Engineer';
+  const depth=document.getElementById('r-depth').value;
+  if(!txt){toast('Upload or paste your resume first','var(--am)');return}
+  document.getElementById('r-out').innerHTML='<div class="card">'+ldHTML('Analysing resume...')+'</div>';
+  try{
+    let prompt='Resume:\n'+txt.slice(0,3000)+'\n\nTarget: '+target+'\nMarket: 2026, AI Security / LLM Engineering\n\n';
+    if(depth==='full')prompt+='Full audit:\n1. Score /100 (Content 30, Clarity 20, Metrics 20, ATS 15, Positioning 15)\n2. Top 3 strengths\n3. Top 5 weaknesses (quote exact line, rewrite stronger)\n4. Missing ATS keywords for '+target+'\n5. Rewrite professional summary in one paragraph\n6. One structural change for higher callback rate\nUnder 300 words.';
+    else if(depth==='quick')prompt+='Quick scan: top 5 issues only. Quote the problem and fix for each. Under 150 words.';
+    else if(depth==='ats')prompt+='ATS audit only: list keyword gaps for '+target+'. Group: Must-have missing, Nice-to-have missing, Present. Under 100 words.';
+    else prompt+='Rewrite professional summary only for '+target+'. Use candidate background: '+C.skills+'. Under 60 words. No clichés.';
+    const r=await ai(prompt);
+    document.getElementById('r-out').innerHTML='<div class="card card-accent"><div class="cl">Resume Analysis</div><div class="ai-body">'+fmt(r)+'</div></div>';
+  }catch(e){document.getElementById('r-out').innerHTML=errHTML(e)}
+}
+
+// ═══ AI COACH CHAT ══════════════════════════════════════════════
+async function sendChat(){
+  const inp=document.getElementById('chat-in');
+  const msg=inp.value.trim();if(!msg)return;
+  inp.value='';
+  appendChat('user',msg);
+  chatHistory.push({role:'user',content:msg});
   const thinkEl=appendChat('ai','...',true);
   try{
     const r=await ai(msg,null,true);
@@ -964,7 +1101,7 @@ async function loadSignal(force){
     chatHistory.push({role:'assistant',content:r});
     if(chatHistory.length>20)chatHistory=chatHistory.slice(-20);
     D.chatHist=chatHistory;sv();
-  }catch(e){thinkEl.querySelector('.ai-body').innerHTML=`<span style="color:var(--rd)">${e.message}</span>`}
+  }catch(e){thinkEl.querySelector('.ai-body').innerHTML='<span style="color:var(--rd)">'+e.message+'</span>'}
 }
 
 function quickAsk(q){
